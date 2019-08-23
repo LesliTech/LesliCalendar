@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
     spec.authors     = ["LesliTech"]
     spec.email       = ["hello@lesli.tech"]
     spec.homepage    = "https://lesli.cloud"
-    spec.summary     = "Smart business assitant"
-    spec.description = "chatbot"
+    spec.summary     = "Unified calendar app"
+    spec.description = "CloudDriver - Unified calendar app"
     spec.license     = "All rights reserved"
 
     spec.files = Dir["{app,config,db,lib}/**/*", "license", "Rakefile", "readme.md"]
