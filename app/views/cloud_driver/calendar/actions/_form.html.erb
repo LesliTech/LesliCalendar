@@ -1,0 +1,17 @@
+<%= form_with(model: calendar_action, local: true) do |form| %>
+  <% if calendar_action.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(calendar_action.errors.count, "error") %> prohibited this calendar_action from being saved:</h2>
+
+      <ul>
+        <% calendar_action.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

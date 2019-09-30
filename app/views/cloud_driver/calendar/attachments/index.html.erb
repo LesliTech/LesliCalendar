@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Calendar Attachments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @calendar_attachments.each do |calendar_attachment| %>
+      <tr>
+        <td><%= link_to 'Show', calendar_attachment %></td>
+        <td><%= link_to 'Edit', edit_calendar_attachment_path(calendar_attachment) %></td>
+        <td><%= link_to 'Destroy', calendar_attachment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Calendar Attachment', new_calendar_attachment_path %>
