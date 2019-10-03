@@ -28,4 +28,68 @@ Building a better future, one line of code at a time.
 
 //  · Loading core framework and libraries
 // ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
-import 'LesliCloud/vue/apps/lesli.js'
+import Vue from 'vue'
+//import VueRouter from 'vue-router'
+
+
+//  · Loading app plugins
+// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
+import pluginBus from 'LesliCloud/vue/plugins/bus'
+import pluginUrl from 'LesliCloud/vue/plugins/url'
+import pluginHttp from 'LesliCloud/vue/plugins/http'
+
+
+//  · Loading app functions
+// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
+import "lesli-nodejs-debug-message/browser-bar"
+import debug from 'lesli-nodejs-debug-message/browser'
+import functionDocument from 'LesliCloud/vue/functions/document'
+
+
+//  · Loading app layout
+// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
+import componentLayoutHeader from 'LesliCloud/vue/layout/header.vue'
+import componentLesliChatbox from 'LesliCloud/vue/layout/chatbox.vue'
+
+
+//  · Loading apps, modules and components
+// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import componentLesliCalendar from 'LesliCloud/vue/components/calendar.vue'
+import VCalendar from 'v-calendar';
+
+
+// · Initializing frameworks, libraries and tools
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+Vue.use(pluginBus)
+Vue.use(pluginUrl)
+Vue.use(pluginHttp)
+Vue.use(VCalendar, { })
+
+
+// · LesliCloud app
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+let cloud = new Vue({
+
+    data: {
+        plugins: [dayGridPlugin]
+    },
+    components: {
+        'component-layout-header': componentLayoutHeader,
+        'component-layout-chatbox': componentLesliChatbox,
+        'component-lesli-calendar': componentLesliCalendar,
+        'fullcalendar': FullCalendar
+    }
+
+})
+
+// · 
+functionDocument.ready(() => {
+
+    cloud.$mount("#lesli-cloud-app")
+
+    if (leslicloud_app_mode_production) debug.userWarningMessage()
+    if (leslicloud_app_mode_development) debug.info("Dashboard simple", "CloudLesli")
+    
+})
