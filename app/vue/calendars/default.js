@@ -56,7 +56,9 @@ import componentLesliChatbox from 'LesliCloud/vue/layout/chatbox.vue'
 // ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid';
 import componentLesliCalendar from 'LesliCloud/vue/components/calendar.vue'
+import componentCalendarList from './components/list.vue'
 import VCalendar from 'v-calendar';
 
 
@@ -73,12 +75,13 @@ Vue.use(VCalendar, { })
 let cloud = new Vue({
 
     data: {
-        plugins: [dayGridPlugin]
+        plugins: [timeGridPlugin]
     },
     components: {
         'component-layout-header': componentLayoutHeader,
         'component-layout-chatbox': componentLesliChatbox,
         'component-lesli-calendar': componentLesliCalendar,
+        'component-calendar-list' : componentCalendarList,
         'fullcalendar': FullCalendar
     }
 
