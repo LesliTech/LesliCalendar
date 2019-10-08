@@ -29,6 +29,7 @@ Building a better future, one line of code at a time.
 //  · Loading core framework and libraries
 // ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
 import Vue from 'vue'
+import Buefy from 'buefy'
 //import VueRouter from 'vue-router'
 
 
@@ -49,6 +50,7 @@ import functionDocument from 'LesliCloud/vue/functions/document'
 //  · Loading app layout
 // ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
 import componentLayoutHeader from 'LesliCloud/vue/layout/header.vue'
+import componentLayoutNotify from 'LesliCloud/vue/layout/notify.vue'
 import componentLesliChatbox from 'LesliCloud/vue/layout/chatbox.vue'
 
 
@@ -64,6 +66,7 @@ import VCalendar from 'v-calendar';
 
 // · Initializing frameworks, libraries and tools
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+Vue.use(Buefy)
 Vue.use(pluginBus)
 Vue.use(pluginUrl)
 Vue.use(pluginHttp)
@@ -79,6 +82,7 @@ let cloud = new Vue({
     },
     components: {
         'component-layout-header': componentLayoutHeader,
+        'component-layout-notify': componentLayoutNotify,
         'component-layout-chatbox': componentLesliChatbox,
         'component-lesli-calendar': componentLesliCalendar,
         'component-calendar-list' : componentCalendarList,
