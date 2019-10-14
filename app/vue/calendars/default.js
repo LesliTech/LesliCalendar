@@ -38,6 +38,7 @@ import Buefy from 'buefy'
 import pluginBus from 'LesliCloud/vue/plugins/bus'
 import pluginUrl from 'LesliCloud/vue/plugins/url'
 import pluginHttp from 'LesliCloud/vue/plugins/http'
+import pluginCable from 'LesliCloud/vue/plugins/cable'
 
 
 //  · Loading app functions
@@ -70,6 +71,7 @@ Vue.use(Buefy)
 Vue.use(pluginBus)
 Vue.use(pluginUrl)
 Vue.use(pluginHttp)
+Vue.use(pluginCable)
 Vue.use(VCalendar, { })
 
 

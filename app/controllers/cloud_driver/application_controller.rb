@@ -1,5 +1,5 @@
 module CloudDriver
-    class ApplicationController < LesliApplicationController
+    class ApplicationController < ApplicationLesliController
         protect_from_forgery with: :exception
 
         before_action :check_account
