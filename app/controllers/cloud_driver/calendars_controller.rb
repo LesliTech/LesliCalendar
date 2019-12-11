@@ -19,7 +19,8 @@ module CloudDriver
                     id: event.id,
                     title: event.title,
                     start: event.time_start,
-                    end: event.time_end
+                    end: event.time_end,
+                    url: root_authenticated_path + 'babel'
                 }
             end
 
