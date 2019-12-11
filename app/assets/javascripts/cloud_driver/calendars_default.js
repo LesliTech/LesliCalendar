@@ -47737,7 +47737,7 @@ Building a better future, one line of code at a time.
 // ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 
 /* harmony default export */ var plugins_http = ({
-  install: function install(Vue, options) {
+  install: function install(Vue, _options) {
     // Get authentication token from rails
     var meta = document.querySelector('meta[name="csrf-token"]');
     var token = '';
@@ -47770,8 +47770,10 @@ Building a better future, one line of code at a time.
     }, function (error) {
       var message = "";
 
-      if (error.response.data.error.message) {
+      if (error.response.data.error && error.response.data.error.message) {
         message = error.response.data.error.message;
+      } else {
+        message = "Ajax ".concat(error.config.method, " to url ").concat(error.config.url, " ").concat(error.message);
       }
 
       return {
@@ -50724,17 +50726,73 @@ var listvue_type_template_id_7685d678_render = function() {
   return _c("section", [
     _c(
       "div",
-      { staticClass: "list is-hoverable" },
-      _vm._l([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], function(
-        calendar
-      ) {
-        return _c("a", { key: calendar, staticClass: "list-item" }, [
-          _vm._v(
-            "\n            calendar #" + _vm._s(calendar + 1) + "\n        "
+      { staticClass: "box" },
+      [
+        _vm._l([0, 0], function(calendar) {
+          return _c(
+            "div",
+            { key: calendar, staticClass: "field" },
+            [_c("b-checkbox", [_vm._v("Basic")])],
+            1
           )
-        ])
-      }),
-      0
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "field" },
+          [
+            _c("b-checkbox", { attrs: { value: true } }, [
+              _vm._v("\n                Default\n            ")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "field" },
+          [
+            _c("b-checkbox", { attrs: { value: true, type: "is-info" } }, [
+              _vm._v("\n                Info\n            ")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "field" },
+          [
+            _c("b-checkbox", { attrs: { value: true, type: "is-success" } }, [
+              _vm._v("\n                Success\n            ")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "field" },
+          [
+            _c("b-checkbox", { attrs: { value: true, type: "is-danger" } }, [
+              _vm._v("\n                Danger\n            ")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "field" },
+          [
+            _c("b-checkbox", { attrs: { value: true, type: "is-warning" } }, [
+              _vm._v("\n                Warning\n            ")
+            ])
+          ],
+          1
+        )
+      ],
+      2
     )
   ])
 }
