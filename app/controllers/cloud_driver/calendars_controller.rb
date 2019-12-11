@@ -13,12 +13,13 @@ module CloudDriver
         def show
 
             calendar_events = @calendar.events.joins(:detail).select(
-                :id, :name, :time_start
+                :id, :title, :time_start, :time_end
             ).map do |event|
                 {
                     id: event.id,
-                    title: event.name,
-                    start: event.time_start
+                    title: event.title,
+                    start: event.time_start,
+                    end: event.time_end
                 }
             end
 
