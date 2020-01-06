@@ -13,14 +13,14 @@ module CloudDriver
         def show
 
             calendar_events = @calendar.events.joins(:detail).select(
-                :id, :title, :time_start, :time_end
+                :id, :title, :time_start, :time_end, :url
             ).map do |event|
                 {
                     id: event.id,
                     title: event.title,
                     start: event.time_start,
                     end: event.time_end,
-                    url: root_authenticated_path + 'babel'
+                    url: event.url
                 }
             end
 
@@ -29,7 +29,6 @@ module CloudDriver
                 name: @calendar.name,
                 events: calendar_events
             }
-            
 
             respond_to do |format|
                 format.html { }

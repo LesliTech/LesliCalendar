@@ -47737,7 +47737,7 @@ Building a better future, one line of code at a time.
 // ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 
 /* harmony default export */ var plugins_http = ({
-  install: function install(Vue, _options) {
+  install: function install(Vue, options) {
     // Get authentication token from rails
     var meta = document.querySelector('meta[name="csrf-token"]');
     var token = '';
@@ -47836,11 +47836,24 @@ function date_defineProperty(obj, key, value) { if (key in obj) { Object.defineP
       }
 
       return date.toLocaleDateString(I18n.currentLocale(), options);
+    }; //receives a Date object and returns its string representation
+
+
+    var toString = function toString(date) {
+      var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      date = date.toISOString().substr(0, 10);
+
+      if (format) {
+        date = toLocalFormat(date);
+      }
+
+      return date;
     };
 
     Vue.prototype.date = {
       today: today,
-      toLocalFormat: toLocalFormat
+      toLocalFormat: toLocalFormat,
+      toString: toString
     };
   }
 });
@@ -50724,76 +50737,62 @@ var listvue_type_template_id_7685d678_render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("section", [
-    _c(
-      "div",
-      { staticClass: "box" },
-      [
-        _vm._l([0, 0], function(calendar) {
-          return _c(
-            "div",
-            { key: calendar, staticClass: "field" },
-            [_c("b-checkbox", [_vm._v("Basic")])],
-            1
-          )
-        }),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "field" },
-          [
-            _c("b-checkbox", { attrs: { value: true } }, [
-              _vm._v("\n                Default\n            ")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "field" },
-          [
-            _c("b-checkbox", { attrs: { value: true, type: "is-info" } }, [
-              _vm._v("\n                Info\n            ")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "field" },
-          [
-            _c("b-checkbox", { attrs: { value: true, type: "is-success" } }, [
-              _vm._v("\n                Success\n            ")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "field" },
-          [
-            _c("b-checkbox", { attrs: { value: true, type: "is-danger" } }, [
-              _vm._v("\n                Danger\n            ")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "field" },
-          [
-            _c("b-checkbox", { attrs: { value: true, type: "is-warning" } }, [
-              _vm._v("\n                Warning\n            ")
-            ])
-          ],
-          1
-        )
-      ],
-      2
-    )
+    _c("div", { staticClass: "box" }, [
+      _c(
+        "div",
+        { staticClass: "field" },
+        [
+          _c("b-checkbox", { attrs: { value: true } }, [
+            _vm._v("\n                Calendar #1\n            ")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "field" },
+        [
+          _c("b-checkbox", { attrs: { value: true, type: "is-info" } }, [
+            _vm._v("\n                Calendar #2\n            ")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "field" },
+        [
+          _c("b-checkbox", { attrs: { value: true, type: "is-success" } }, [
+            _vm._v("\n                Calendar #3\n            ")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "field" },
+        [
+          _c("b-checkbox", { attrs: { value: true, type: "is-danger" } }, [
+            _vm._v("\n                Calendar #4\n            ")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "field" },
+        [
+          _c("b-checkbox", { attrs: { value: true, type: "is-warning" } }, [
+            _vm._v("\n                Calendar #5\n            ")
+          ])
+        ],
+        1
+      )
+    ])
   ])
 }
 var listvue_type_template_id_7685d678_staticRenderFns = []
@@ -50880,7 +50879,7 @@ Building a better future, one line of code at a time.
       var _this = this;
 
       this.http.get('/driver/calendar.json').then(function (result) {
-        console.log(result.data);
+        //console.log(JSON.parse(JSON.stringify(result.data)))
         _this.calendar = result.data;
       })["catch"](function (error) {
         console.log(error);

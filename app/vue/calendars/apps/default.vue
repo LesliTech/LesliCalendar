@@ -54,7 +54,7 @@ export default {
         
         getCalendar() {
             this.http.get('/driver/calendar.json').then(result => {
-                console.log(result.data)
+                //console.log(JSON.parse(JSON.stringify(result.data)))
                 this.calendar = result.data
             }).catch(error => {
                 console.log(error)
