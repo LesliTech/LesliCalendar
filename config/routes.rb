@@ -2,7 +2,6 @@ CloudDriver::Engine.routes.draw do
 
     root to: 'calendars#default'
 
-    resource  :calendar
     resources :calendars do
         scope module: :calendar do
             resources :actions

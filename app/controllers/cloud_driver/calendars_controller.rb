@@ -6,35 +6,35 @@ module CloudDriver
 
         # GET /calendars
         def index
-            @calendars = Calendar.all
+            respond_to do |format|
+                format.html { }
+                format.json do
+                    responseWithSuccessful(current_user.account.driver.calendars.joins(:detail).select(:id, :name, :color))
+                end
+            end
         end
 
         # GET /calendars/1
         def show
-
-            calendar_events = @calendar.events.joins(:detail).select(
-                :id, :title, :time_start, :time_end, :url
-            ).map do |event|
-                {
-                    id: event.id,
-                    title: event.title,
-                    start: event.time_start,
-                    end: event.time_end,
-                    url: event.url
-                }
-            end
-
-            calendar = {
-                id: @calendar.id,
-                name: @calendar.name,
-                events: calendar_events
-            }
-
             respond_to do |format|
                 format.html { }
-                format.json {
+                format.json do
+                    calendar = {
+                        id: @calendar.id,
+                        name: @calendar.name,
+                        events: @calendar.events.joins(:detail)
+                        .select(:id, :title, :description, :time_start, :time_end, :location, :url)
+                        .map do |event|
+                            {
+                                title: event[:title],
+                                start: event[:time_start].strftime("%Y-%m-%d"),
+                                end: event[:time_end].strftime("%Y-%m-%d"),
+                                url: event[:url]
+                            }
+                        end
+                    }
                     responseWithSuccessful(calendar)
-                }
+                end
             end
         end
 

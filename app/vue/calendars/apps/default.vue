@@ -29,7 +29,7 @@ Building a better future, one line of code at a time.
 
 // · Import components, libraries and tools
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import FullCalendar from '@fullcalendar/vue'
+import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import componentList from '../components/list.vue'
 
@@ -38,24 +38,56 @@ import componentList from '../components/list.vue'
 // · 
 export default {
     components: {
-        'full-calendar': FullCalendar,
         'component-list': componentList
     },
     data() {
         return {
             calendarPlugins: [ dayGridPlugin ],
-            calendar: {}
+            calendarData: {},
+            calendar: {},
         }
     },
     mounted() {
-        this.getCalendar()
+        this.initCalendar()
+        this.getDefaultCalendar()
+        
     },
     methods: {
+
+        initCalendar() {
+            this.calendar = new Calendar(document.getElementById("calendar"), {
+                plugins: this.calendarPlugins,
+                header: false
+            })
+            this.calendar.render()
+        },
+
+        resetEvents() {
+
+            this.calendar.batchRendering(() => {
+
+                // get rendered events in calendar
+                let events = this.calendar.getEvents()
+
+                // remove events from calendar
+                events.forEach(event => event.remove() )
+
+                // events from my calendar
+                this.calendarData.events.forEach(event => {
+
+                    // add new events to calendar
+                    this.calendar.addEvent(event)
+
+                })
+                
+            })
+
+        },
         
-        getCalendar() {
-            this.http.get('/driver/calendar.json').then(result => {
-                //console.log(JSON.parse(JSON.stringify(result.data)))
-                this.calendar = result.data
+        getDefaultCalendar() {
+            this.http.get("/driver/calendars/default.json").then(result => {
+                this.calendarData = result.data
+                this.resetEvents()
             }).catch(error => {
                 console.log(error)
             })
@@ -70,12 +102,15 @@ export default {
                 <component-list />
             </div>
             <div class="column is-9">
-                <div class="card">
-                    <div class="card-content">
-                        <full-calendar defaultView="dayGridMonth" :plugins="calendarPlugins" :events="calendar.events" />
+                <div class="card box">
+                    <div class="card-content is-paddingless">
+                        <div id="calendar"></div>
                     </div>
                 </div>        
             </div>
         </div>
     </section>
 </template>
+<style>
+    
+</style>

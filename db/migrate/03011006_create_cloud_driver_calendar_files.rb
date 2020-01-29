@@ -1,6 +1,6 @@
 class CreateCloudDriverCalendarFiles < ActiveRecord::Migration[6.0]
     def change
-        table_base_structure = JSON.parse(File.read(Rails.root.join('db','structure','00000000_files.json')))
+        table_base_structure = JSON.parse(File.read(Rails.root.join('db','structure','00000006_files.json')))
         create_table :cloud_driver_calendar_files do |t|
             table_base_structure.each do |column|
                 t.send(

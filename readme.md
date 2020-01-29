@@ -4,7 +4,7 @@
 	</a>
 </p>
 
-<h3 align="center">CloudDriver - Unified calendar app</h3>
+<h3 align="center">CloudDriver - Unified calendar app for LesliCloud</h3>
 
 <hr/>
 
