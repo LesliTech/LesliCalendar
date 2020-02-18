@@ -19,21 +19,42 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
+
+                    #TODO: find a way to make this operation faster
+                        # do not parse the events on every request
+                        # implement cache
+
+                    # tasks from CloudFocus
+                    focus_tasks = Courier::Focus::Task.for_with_deadline(current_user).map do |event|
+                        {
+                            title: event[:title],
+                            start: event[:deadline].strftime("%Y-%m-%d"),
+                            end: event[:deadline].strftime("%Y-%m-%d"),
+                            url: event[:url]
+                        }
+                    end
+
+                    # tasks from default calendar
+                    driver_events = @calendar.events.joins(:detail)
+                    .select(:id, :title, :description, :time_start, :time_end, :location, :url)
+                    .map do |event|
+                        {
+                            title: event[:title],
+                            start: event[:time_start].strftime("%Y-%m-%d"),
+                            end: event[:time_end].strftime("%Y-%m-%d"),
+                            url: event[:url]
+                        }
+                    end
+
                     calendar = {
                         id: @calendar.id,
                         name: @calendar.name,
-                        events: @calendar.events.joins(:detail)
-                        .select(:id, :title, :description, :time_start, :time_end, :location, :url)
-                        .map do |event|
-                            {
-                                title: event[:title],
-                                start: event[:time_start].strftime("%Y-%m-%d"),
-                                end: event[:time_end].strftime("%Y-%m-%d"),
-                                url: event[:url]
-                            }
-                        end
+                        events: driver_events,
+                        focus_tasks: focus_tasks
                     }
+
                     responseWithSuccessful(calendar)
+
                 end
             end
         end

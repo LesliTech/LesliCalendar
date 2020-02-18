@@ -2,7 +2,7 @@
 /*
 Lesli
 
-Copyright (c) 2019, Lesli Technologies, S. A.
+Copyright (c) 2020, Lesli Technologies, S. A.
 
 All the information provided by this website is protected by laws of Guatemala related 
 to industrial property, intellectual property, copyright and relative international laws. 
@@ -17,7 +17,6 @@ LesliCloud - Your Smart Business Assistant
 Powered by https://www.lesli.tech
 Building a better future, one line of code at a time.
 
-@author   LesliTech <hello@lesli.tech>
 @license  Propietary - all rights reserved.
 @version  0.1.0-alpha
 
@@ -73,12 +72,10 @@ export default {
                 events.forEach(event => event.remove() )
 
                 // events from my calendar
-                this.calendarData.events.forEach(event => {
+                this.calendarData.events.forEach(event => this.calendar.addEvent(event))
 
-                    // add new events to calendar
-                    this.calendar.addEvent(event)
-
-                })
+                // events from CloudFocus tasks
+                this.calendarData.focus_tasks.forEach(event => this.calendar.addEvent(event))
                 
             })
 
@@ -102,7 +99,7 @@ export default {
                 <component-list />
             </div>
             <div class="column is-9">
-                <div class="card box">
+                <div class="card">
                     <div class="card-content is-paddingless">
                         <div id="calendar"></div>
                     </div>
