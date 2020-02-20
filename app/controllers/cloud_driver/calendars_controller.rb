@@ -25,7 +25,7 @@ module CloudDriver
                         # implement cache
 
                     # tasks from CloudFocus
-                    focus_tasks = Courier::Focus::Task.for_with_deadline(current_user).map do |event|
+                    focus_tasks = Courier::Focus::Task.with_deadline(current_user).map do |event|
                         {
                             title: event[:title],
                             start: event[:deadline].strftime("%Y-%m-%d"),
@@ -46,11 +46,22 @@ module CloudDriver
                         }
                     end
 
+                    # tasks from CloudFocus
+                    help_tickets = Courier::Help::Ticket.with_deadline(current_user).map do |event|
+                        {
+                            title: event[:subject],
+                            start: event[:deadline].strftime("%Y-%m-%d"),
+                            end: event[:deadline].strftime("%Y-%m-%d"),
+                            url: event[:url]
+                        }
+                    end
+
                     calendar = {
                         id: @calendar.id,
                         name: @calendar.name,
                         events: driver_events,
-                        focus_tasks: focus_tasks
+                        focus_tasks: focus_tasks,
+                        help_tickets: help_tickets
                     }
 
                     responseWithSuccessful(calendar)

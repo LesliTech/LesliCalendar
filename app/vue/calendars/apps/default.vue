@@ -76,6 +76,9 @@ export default {
 
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(event => this.calendar.addEvent(event))
+
+                // events from CloudHelo tasks
+                this.calendarData.help_tickets.forEach(event => this.calendar.addEvent(event))
                 
             })
 
