@@ -34,6 +34,63 @@ import componentList from '../components/list.vue'
 export default {
     components: {
         'component-list': componentList
+<<<<<<< HEAD
+=======
+    },
+    data() {
+        return {
+            calendarPlugins: [ dayGridPlugin ],
+            calendarData: {},
+            calendar: {},
+        }
+    },
+    mounted() {
+        this.initCalendar()
+        this.getDefaultCalendar()
+        
+    },
+    methods: {
+
+        initCalendar() {
+            this.calendar = new Calendar(document.getElementById("calendar"), {
+                plugins: this.calendarPlugins,
+                header: false
+            })
+            this.calendar.render()
+        },
+
+        resetEvents() {
+
+            this.calendar.batchRendering(() => {
+
+                // get rendered events in calendar
+                let events = this.calendar.getEvents()
+
+                // remove events from calendar
+                events.forEach(event => event.remove() )
+
+                // events from my calendar
+                this.calendarData.events.forEach(event => this.calendar.addEvent(event))
+
+                // events from CloudFocus tasks
+                this.calendarData.focus_tasks.forEach(event => this.calendar.addEvent(event))
+
+                // events from CloudHelo tasks
+                this.calendarData.help_tickets.forEach(event => this.calendar.addEvent(event))
+                
+            })
+
+        },
+        
+        getDefaultCalendar() {
+            this.http.get("/driver/calendars/default.json").then(result => {
+                this.calendarData = result.data
+                this.resetEvents()
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+>>>>>>> b57e6ce3e5470dd71fd67a6a80bf95353054ec01
     }
 }
 </script>
