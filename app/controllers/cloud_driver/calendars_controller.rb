@@ -20,41 +20,16 @@ module CloudDriver
                 format.html { }
                 format.json do
 
-                    #TODO: find a way to make this operation faster
-                        # do not parse the events on every request
-                        # implement cache
-
                     # tasks from CloudFocus
-                    focus_tasks = Courier::Focus::Task.with_deadline(current_user).map do |event|
-                        {
-                            title: event[:title],
-                            start: event[:deadline].strftime("%Y-%m-%d"),
-                            end: event[:deadline].strftime("%Y-%m-%d"),
-                            url: event[:url]
-                        }
-                    end
+                    focus_tasks = Courier::Focus::Task.with_deadline(current_user)
 
                     # tasks from default calendar
                     driver_events = @calendar.events.joins(:detail)
                     .select(:id, :title, :description, :time_start, :time_end, :location, :url)
-                    .map do |event|
-                        {
-                            title: event[:title],
-                            start: event[:time_start].strftime("%Y-%m-%d"),
-                            end: event[:time_end].strftime("%Y-%m-%d"),
-                            url: event[:url]
-                        }
-                    end
+                    .order(:time_start)
 
                     # tasks from CloudFocus
-                    help_tickets = Courier::Help::Ticket.with_deadline(current_user).map do |event|
-                        {
-                            title: event[:subject],
-                            start: event[:deadline].strftime("%Y-%m-%d"),
-                            end: event[:deadline].strftime("%Y-%m-%d"),
-                            url: event[:url]
-                        }
-                    end
+                    help_tickets = Courier::Help::Ticket.with_deadline(current_user)
 
                     calendar = {
                         id: @calendar.id,
