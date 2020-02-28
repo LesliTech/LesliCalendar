@@ -4,7 +4,9 @@ import dayjs from "dayjs"
 export default {
     props: {
         todayEvents: {
-            default: [],
+            default() {
+                return []
+            },
             required: true
         }
     },
@@ -27,12 +29,12 @@ export default {
         },
         validateEvents() {
             this.todayEvents.forEach(event => {
-                let time_start = new Date(event.time_start) 
-                if (this.isToday(time_start)) {
+                let start = new Date(event.start) 
+                if (this.isToday(start)) {
                     this.events.push({
                         id: event.id,
                         title: event.title,
-                        time_start: time_start
+                        start: start
                     })
                 }
             })
@@ -53,7 +55,7 @@ export default {
             </p>
             <a class="panel-block" v-for="event in events" :key="event.id">
                 <b>
-                    {{ ('0' + event.time_start.getHours()).slice(-2) }}:{{ ('0' + event.time_start.getMinutes()).slice(-2) }}
+                    {{ ('0' + event.start.getHours()).slice(-2) }}:{{ ('0' + event.start.getMinutes()).slice(-2) }}
                 </b>
                 {{ event.title }}
             </a>

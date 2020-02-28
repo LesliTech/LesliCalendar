@@ -25,7 +25,7 @@ module CloudDriver
 
                     # tasks from default calendar
                     driver_events = @calendar.events.joins(:detail)
-                    .select(:id, :title, :description, :time_start, :time_end, :location, :url)
+                    .select(:id, :title, :description, "time_start as start", "time_end as end", :location, :url)
                     .order(:time_start)
 
                     # tasks from CloudFocus

@@ -34,16 +34,20 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 
 // · 
 export default {
+    props: {
+        calendarData: {
+            required: true
+        }
+    },
     data() {
         return {
             calendarPlugins: [ dayGridPlugin ],
-            calendarData: {},
             calendar: {},
         }
     },
     mounted() {
         this.initCalendar()
-        //this.getDefaultCalendar()
+        this.resetEvents()
     },
     methods: {
         initCalendar() {
@@ -71,14 +75,6 @@ export default {
                 
             })
 
-        },
-        getDefaultCalendar() {
-            this.http.get("/driver/calendars/default.json").then(result => {
-                this.calendarData = result.data
-                this.resetEvents()
-            }).catch(error => {
-                console.log(error)
-            })
         }
     }   
 }
