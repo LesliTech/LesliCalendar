@@ -2,13 +2,31 @@
 export default {
     data() {
         return {
-            show: false
+            show: !false,
+            event: {
+                detail_attributes: {
+                    title: null,
+                    description: "",
+                    time_start: "",
+                    time_end: "",
+                    location: "",
+                    url: ""
+                }
+            }
         }
     },
     methods: {
         toggleView() {
             this.show = !this.show
-            console.log(this.show)
+        },
+        postEvent(e) {
+            if (e) { e.preventDefault() }
+            console.log(JSON.stringify(this.event))
+            this.http.post("/driver/events", {event: this.event}).then(result => {
+                this.alert("Event succesfully created")
+            }).catch(error => {
+                console.log(error)
+            })
         }
     }
 
@@ -17,29 +35,29 @@ export default {
 <template>
     <div :class="[{ 'is-active': show }, 'quickview', 'is-size-large']">
         <header class="quickview-header">
-            <h4 class="title">Create new event</h4>
+            <h4 class="title">{{ (this.event.detail_attributes.title ? this.event.detail_attributes.title : 'Create new event') }}</h4>
             <span class="delete" @click="show = false"></span>
         </header>
         <div class="quickview-body">
             <b-tabs>
                 <b-tab-item label="Information">
-                    <form action="">
+                    <form @submit.prevent="postEvent()">
                         <div class="field">
                             <label class="label">Name</label>
                                 <div class="control">
-                                <input class="input" type="text" placeholder="Text input">
+                                <input class="input" type="text" v-model="event.detail_attributes.title" placeholder="Title">
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Description</label>
                                 <div class="control">
-                                <textarea class="textarea"></textarea>
+                                <textarea class="textarea" v-model="event.detail_attributes.description"></textarea>
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Address</label>
                                 <div class="control">
-                                <input class="input" type="text" placeholder="Text input">
+                                <input class="input" type="text" v-model="event.detail_attributes.location" placeholder="Address">
                             </div>
                         </div>
                         <div class="field">
@@ -51,13 +69,15 @@ export default {
                         <b-field label="Start at">
                             <b-timepicker
                                 placeholder="Select time"
-                                icon="clock">
+                                icon="clock"
+                                v-model="event.detail_attributes.time_start">
                             </b-timepicker>
                         </b-field>
                         <b-field label="End at">
                             <b-timepicker
                                 placeholder="Select time"
-                                icon="clock">
+                                icon="clock"
+                                v-model="event.detail_attributes.time_end">
                             </b-timepicker>
                         </b-field>
                         <div class="buttons">
