@@ -38,11 +38,30 @@ module CloudDriver
 
         # GET /events/1
         def show
+            respond_to do |format|
+                format.html { }
+                format.json do
+                    event = Event.joins(:detail)
+                    .select(:id, :title, :description, :time_start, :time_end, :location, :url)
+                    .find(@event.id)
+                    responseWithSuccessful({
+                        id: event[:id],
+                        detail_attributes: {
+                            title: event[:title],
+                            description: event[:description],
+                            time_start: event[:time_start],
+                            time_end: event[:time_start],
+                            location: event[:location],
+                            url: event[:url]
+                        }
+                    })
+                end
+            end
         end
 
         # GET /events/new
         def new
-        @event = Event.new
+            @event = Event.new
         end
 
         # GET /events/1/edit
@@ -57,23 +76,23 @@ module CloudDriver
 
         # PATCH/PUT /events/1
         def update
-        if @event.update(event_params)
-        redirect_to @event, notice: 'Event was successfully updated.'
-        else
-        render :edit
-        end
+            if @event.update(event_params)
+                redirect_to @event, notice: 'Event was successfully updated.'
+            else
+                render :edit
+            end
         end
 
         # DELETE /events/1
         def destroy
-        @event.destroy
-        redirect_to events_url, notice: 'Event was successfully destroyed.'
+            @event.destroy
+            redirect_to events_url, notice: 'Event was successfully destroyed.'
         end
 
         private
         # Use callbacks to share common setup or constraints between actions.
         def set_event
-        @event = Event.find(params[:id])
+            @event = Event.find(params[:id])
         end
 
         # Only allow a trusted parameter "white list" through.

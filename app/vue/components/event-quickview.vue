@@ -3,21 +3,39 @@ export default {
     data() {
         return {
             show: !false,
+            event_id:null,
             event: {
                 detail_attributes: {
                     title: null,
                     description: "",
-                    time_start: "",
-                    time_end: "",
+                    time_start: new Date(),
+                    time_end: new Date(),
                     location: "",
                     url: ""
                 }
             }
         }
     },
+    mounted() {
+        this.addListeners()
+    },
     methods: {
+        addListeners() {
+            this.bus.subscribe("/driver/component/event-quickview#show", (event_id) => {
+                console.log(event_id)
+                this.event_id = event_id
+                this.getEvent()
+                this.show = true
+            })
+        },
         toggleView() {
             this.show = !this.show
+        },
+        getEvent() {
+            this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
+                this.event = result.data
+            }).catch(error => {
+            })
         },
         postEvent(e) {
             if (e) { e.preventDefault() }
