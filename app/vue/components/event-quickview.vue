@@ -45,6 +45,25 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
+        },
+        putEvent(e) {
+            if (e) { e.preventDefault() }
+            console.log(JSON.stringify(this.event))
+            this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
+                this.alert("Event succesfully updated")
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+        submitEvent(e) {
+            if (e) { e.preventDefault() }
+            if (this.event_id) {
+                this.putEvent()
+                return
+            } else {
+                this.postEvent()
+                return
+            }
         }
     }
 
@@ -59,7 +78,7 @@ export default {
         <div class="quickview-body">
             <b-tabs>
                 <b-tab-item label="Information">
-                    <form @submit.prevent="postEvent()">
+                    <form @submit.prevent="submitEvent()">
                         <div class="field">
                             <label class="label">Name</label>
                                 <div class="control">

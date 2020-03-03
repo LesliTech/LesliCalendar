@@ -23,7 +23,6 @@ Building a better future, one line of code at a time.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 
-
 =end
 require_dependency "cloud_driver/application_controller"
 
@@ -76,10 +75,11 @@ module CloudDriver
 
         # PATCH/PUT /events/1
         def update
+            #@event.detail.title = event_params[:]
             if @event.update(event_params)
-                redirect_to @event, notice: 'Event was successfully updated.'
+                responseWithSuccessful(@event)
             else
-                render :edit
+                responseWithError(@event.errors)
             end
         end
 
@@ -90,6 +90,7 @@ module CloudDriver
         end
 
         private
+
         # Use callbacks to share common setup or constraints between actions.
         def set_event
             @event = Event.find(params[:id])
@@ -100,7 +101,7 @@ module CloudDriver
             params.require(:event).permit(
                 :id,
                 detail_attributes: [
-                    :id, :title, :description, :time_start, :time_end, :location, :url
+                    :title, :description, :time_start, :time_end, :location, :url
                 ]
             )
         end
