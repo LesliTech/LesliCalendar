@@ -2,7 +2,7 @@
 export default {
     data() {
         return {
-            show: !false,
+            show: false,
             event_id:null,
             event: {
                 detail_attributes: {
@@ -22,7 +22,6 @@ export default {
     methods: {
         addListeners() {
             this.bus.subscribe("/driver/component/event-quickview#show", (event_id) => {
-                console.log(event_id)
                 this.event_id = event_id
                 this.getEvent()
                 this.show = true
@@ -35,11 +34,11 @@ export default {
             this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
                 this.event = result.data
             }).catch(error => {
+                console.log(error)
             })
         },
         postEvent(e) {
             if (e) { e.preventDefault() }
-            console.log(JSON.stringify(this.event))
             this.http.post("/driver/events", {event: this.event}).then(result => {
                 this.alert("Event succesfully created")
             }).catch(error => {
@@ -48,7 +47,6 @@ export default {
         },
         putEvent(e) {
             if (e) { e.preventDefault() }
-            console.log(JSON.stringify(this.event))
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
                 this.alert("Event succesfully updated")
             }).catch(error => {

@@ -1,9 +1,45 @@
 <script>
+/*
+Lesli
+
+Copyright (c) 2020, Lesli Technologies, S. A.
+
+All the information provided by this website is protected by laws of Guatemala related 
+to industrial property, intellectual property, copyright and relative international laws. 
+Lesli Technologies, S. A. is the exclusive owner of all intellectual or industrial property
+rights of the code, texts, trade mark, design, pictures and any other information.
+Without the written permission of Lesli Technologies, S. A., any replication, modification,
+transmission, publication is strictly forbidden.
+For more information read the license file including with this software.
+
+LesliCloud - Your Smart Business Assistant
+
+Powered by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@license  Propietary - all rights reserved.
+@version  0.1.0-alpha
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+*/
+
+
+// · Import framework libraries and tools
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 import dayjs from "dayjs"
 
+
+// · 
 export default {
     props: {
-        todayEvents: {
+        driverEvents: {
+            default() {
+                return []
+            },
+            required: true
+        },
+        focusTasks: {
             default() {
                 return []
             },
@@ -28,15 +64,24 @@ export default {
             )
         },
         validateEvents() {
-            this.todayEvents.forEach(event => {
+            this.driverEvents.forEach(event => {
+                console.log(event)
                 let start = new Date(event.start) 
-                if (this.isToday(start)) {
-                    this.events.push({
-                        id: event.id,
-                        title: event.title,
-                        start: start
-                    })
-                }
+                this.events.push({
+                    id: event.id,
+                    title: event.title,
+                    start: start,
+                    classNames: event.classNames
+                })
+            })
+            this.focusTasks.forEach(task => {
+                let start = new Date(task.start) 
+                this.events.push({
+                    id: task.id,
+                    title: task.title,
+                    start: start,
+                    classNames: task.classNames
+                })
             })
         }
     },
@@ -53,7 +98,10 @@ export default {
             <p class="panel-heading">
                 Today
             </p>
-            <a class="panel-block" v-for="event in events" :key="event.id">
+            <a  class="panel-block" v-for="(event, index) in events" :key="index">
+                <span class="icon">
+                    <span :class="event.classNames"></span>
+                </span>
                 <b>
                     {{ ('0' + event.start.getHours()).slice(-2) }}:{{ ('0' + event.start.getMinutes()).slice(-2) }}
                 </b>

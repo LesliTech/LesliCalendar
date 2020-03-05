@@ -20,26 +20,10 @@ module CloudDriver
                 format.html { }
                 format.json do
 
-                    # tasks from CloudFocus
-                    focus_tasks = Courier::Focus::Task.with_deadline(current_user)
+                    filter = params[:filter] || nil
 
-                    # tasks from default calendar
-                    driver_events = @calendar.events.joins(:detail)
-                    .select(:id, :title, :description, "time_start as start", "time_end as end", :location, :url)
-                    .order(:time_start)
-
-                    # tasks from CloudFocus
-                    help_tickets = Courier::Help::Ticket.with_deadline(current_user)
-
-                    calendar = {
-                        id: @calendar.id,
-                        name: @calendar.name,
-                        events: driver_events,
-                        focus_tasks: focus_tasks,
-                        help_tickets: help_tickets
-                    }
-
-                    responseWithSuccessful(calendar)
+                    responseWithSuccessful(Calendar.events_from_all_modules(current_user)) if filter.blank?
+                    responseWithSuccessful(Calendar.today_events_from_all_modules(current_user)) if filter == "today"
 
                 end
             end
@@ -86,12 +70,13 @@ module CloudDriver
 
             if params[:id].blank? || params[:id] == "default"
                 @calendar = current_user.account.driver.calendars.default
-                return
             end
 
             #id = params[:id]
             #@calendar = current_user.account.driver.calendars.default if id == "default"
             #@calendar = Calendar.find(params[:id]) if id != "default"
+
+            @calendar
 
         end
 
