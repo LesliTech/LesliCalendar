@@ -65,7 +65,6 @@ export default {
         },
         validateEvents() {
             this.driverEvents.forEach(event => {
-                console.log(event)
                 let start = new Date(event.start) 
                 this.events.push({
                     id: event.id,
@@ -110,3 +109,8 @@ export default {
         </article>
     </section>
 </template>
+<style>
+    section.component-driver-calendar-today {
+        background-color: white;
+    }
+</style>
