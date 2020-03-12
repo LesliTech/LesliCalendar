@@ -1,7 +1,7 @@
 CloudDriver::Engine.routes.draw do
 
   namespace :event do
-    resources :attendances
+    resources :attendants
   end
     root to: 'calendars#default'
 
