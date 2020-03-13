@@ -5,5 +5,7 @@ module CloudDriver
         has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id", dependent: :destroy
         accepts_nested_attributes_for :detail, update_only: true
 
+        has_many :files, foreign_key: "cloud_driver_events_id"
+
     end
 end

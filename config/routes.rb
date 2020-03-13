@@ -1,5 +1,8 @@
 CloudDriver::Engine.routes.draw do
 
+  namespace :event do
+    resources :subscriptions
+  end
     root to: 'calendars#default'
 
     resources :calendars do
@@ -12,6 +15,15 @@ CloudDriver::Engine.routes.draw do
         end
     end
 
-    resources :events
+    resources :events do
+        scope module: :event do
+            resources :actions
+            resources :comments
+            resources :activities
+            resources :attachments
+            resources :details
+            resources :files
+        end
+    end
 
 end

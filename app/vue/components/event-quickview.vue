@@ -1,5 +1,41 @@
 <script>
+/*
+Lesli
+
+Copyright (c) 2020, Lesli Technologies, S. A.
+
+All the information provided by this website is protected by laws of Guatemala related 
+to industrial property, intellectual property, copyright and relative international laws. 
+Lesli Technologies, S. A. is the exclusive owner of all intellectual or industrial property
+rights of the code, texts, trade mark, design, pictures and any other information.
+Without the written permission of Lesli Technologies, S. A., any replication, modification,
+transmission, publication is strictly forbidden.
+For more information read the license file including with this software.
+
+LesliCloud - Your Smart Business Assistant
+
+Powered by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@license  Propietary - all rights reserved.
+@version  0.1.0-alpha
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+*/
+
+
+// · Import core components
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+import componentCloudObjectFileList from 'LesliCoreVue/cloud_objects/files/list.vue'
+import componentCloudObjectFileForm from 'LesliCoreVue/cloud_objects/files/form.vue'
+
+
+// · 
 export default {
+    components: {
+        'component-cloud-object-file-form': componentCloudObjectFileForm
+    },
     data() {
         return {
             show: false,
@@ -18,6 +54,7 @@ export default {
     },
     mounted() {
         this.addListeners()
+        console.log("works")
     },
     methods: {
         addListeners() {
@@ -102,18 +139,22 @@ export default {
                             </label>
                         </div>
                         <b-field label="Start at">
+                           <!-- 
                             <b-timepicker
                                 placeholder="Select time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_start">
                             </b-timepicker>
+ -->
                         </b-field>
                         <b-field label="End at">
+                            <!-- 
                             <b-timepicker
                                 placeholder="Select time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_end">
                             </b-timepicker>
+ -->
                         </b-field>
                         <div class="buttons">
                             <button class="button is-primary">
@@ -130,6 +171,8 @@ export default {
                 <b-tab-item label="Comments">
                 </b-tab-item>
                 <b-tab-item label="Files">
+                    <component-cloud-object-file-form cloud-module="driver/event" :cloud-id="this.event_id" />
+                    <component-cloud-object-file-list cloud-module="driver/event" :cloud-id="this.event_id" />
                 </b-tab-item>
             </b-tabs>
 
