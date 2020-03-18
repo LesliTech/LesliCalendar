@@ -6,6 +6,7 @@ module CloudDriver
         accepts_nested_attributes_for :detail, update_only: true
 
         has_many :files, foreign_key: "cloud_driver_events_id"
+        has_many :activities, foreign_key: "cloud_driver_events_id"
 
     end
 end
