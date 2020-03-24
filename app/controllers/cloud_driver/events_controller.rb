@@ -119,15 +119,9 @@ module CloudDriver
         # Only allow a trusted parameter "white list" through.
         def event_params
             params.require(:event).permit(
-<<<<<<< HEAD
                 :model_id,
                 :model_type,
                 :users_id,
-=======
-                :id,
-                :model_type,
-                :model_id,
->>>>>>> master
                 detail_attributes: [
                     :title, 
                     :description, 
