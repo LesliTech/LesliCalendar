@@ -28,7 +28,7 @@ require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
     class EventsController < ApplicationController
-        before_action :set_event, only: [:show, :edit, :update, :destroy]
+        before_action :set_event, only: [:update, :destroy]
 
         # GET /events
         def index
@@ -39,21 +39,11 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json do
-                    event = Event.joins(:detail)
-                    .select(:id, :title, :description, :time_start, :time_end, :location, :url)
-                    .find(@event.id)
-                    responseWithSuccessful({
-                        id: event[:id],
-                        detail_attributes: {
-                            title: event[:title],
-                            description: event[:description],
-                            time_start: event[:time_start],
-                            time_end: event[:time_start],
-                            location: event[:location],
-                            url: event[:url]
-                        }
-                    })
+                format.json do 
+                    set_task
+                    return responseWithNotFound unless @task
+                    
+                    responseWithSuccessful(@task.show)
                 end
             end
         end
@@ -69,15 +59,16 @@ module CloudDriver
 
         # POST /events
         def create
-            new_event_params = event_params.merge({
-                organizer: current_user
-            })
-
-            event = current_user.account.driver.calendars.default().events.create(new_event_params)
-            if event.persisted?
-                responseWithSuccessful(event)
-
+            # event = current_user.account.driver.calendars.default().events.create(event_params)
+            event = Event.new(event_params)            
+            event.account = current_user.account
+            event.organizer = current_user
+            event.calendar = current_user.account.driver.calendars.default
+            
+            if event.save
                 Event.log_activities_after_creation(current_user, event)
+                
+                responseWithSuccessful(event)
             else
                 responseWithError('Error creationg event', event.errors.full_messages)
             end
@@ -101,24 +92,42 @@ module CloudDriver
 
         def event_options
             options = {
-                task_types: Event.event_types.map {|k, _| {value: k, text: k}},
+                current_employee_id: current_user.id,
+                event_types: Event.event_types.map {|k, _| {value: k, text: k}},
                 users: Courier::Core::Users.list
             }
+
+            responseWithSuccessful(options)
+        end
+
+        def event_by_model_options
+            events = Courier::Driver::Event.by_model(params[:model_type], params[:model_id], current_user, @query)
+            
+            responseWithSuccessful(events)
         end
 
         private
 
         # Use callbacks to share common setup or constraints between actions.
         def set_event
-            @event = Event.find(params[:id])
+            @event = Event.find_by(
+                accounts_id: current_user.account.id,
+                id: params[:id]
+            )
         end
 
         # Only allow a trusted parameter "white list" through.
         def event_params
             params.require(:event).permit(
+<<<<<<< HEAD
+                :model_id,
+                :model_type,
+                :users_id,
+=======
                 :id,
                 :model_type,
                 :model_id,
+>>>>>>> master
                 detail_attributes: [
                     :title, 
                     :description, 
@@ -127,7 +136,6 @@ module CloudDriver
                     :location, 
                     :url, 
                     :event_type,
-                    :address,
                     :public
                 ]
             )

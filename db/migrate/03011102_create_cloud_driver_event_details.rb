@@ -7,7 +7,6 @@ class CreateCloudDriverEventDetails < ActiveRecord::Migration[6.0]
             t.datetime  :time_end
             t.string    :location
             t.string    :url
-            t.string    :address
             t.string    :event_type
             t.boolean   :public
 
