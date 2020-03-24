@@ -40,10 +40,10 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do 
-                    set_task
-                    return responseWithNotFound unless @task
+                    set_event
+                    return responseWithNotFound unless @event
                     
-                    responseWithSuccessful(@task.show)
+                    responseWithSuccessful(@event.show)
                 end
             end
         end
@@ -119,15 +119,9 @@ module CloudDriver
         # Only allow a trusted parameter "white list" through.
         def event_params
             params.require(:event).permit(
-<<<<<<< HEAD
                 :model_id,
                 :model_type,
                 :users_id,
-=======
-                :id,
-                :model_type,
-                :model_id,
->>>>>>> master
                 detail_attributes: [
                     :title, 
                     :description, 
