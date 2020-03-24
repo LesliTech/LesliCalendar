@@ -69,8 +69,18 @@ module CloudDriver
 
         # POST /events
         def create
-            event = current_user.account.driver.calendars.default().events.create(event_params)
-            responseWithSuccessful(event)
+            new_event_params = event_params.merge({
+                organizer: current_user
+            })
+
+            event = current_user.account.driver.calendars.default().events.create(new_event_params)
+            if event.persisted?
+                responseWithSuccessful(event)
+
+                Event.log_activities_after_creation(current_user, event)
+            else
+                responseWithError('Error creationg event', event.errors.full_messages)
+            end
         end
 
         # PATCH/PUT /events/1
@@ -107,6 +117,8 @@ module CloudDriver
         def event_params
             params.require(:event).permit(
                 :id,
+                :model_type,
+                :model_id,
                 detail_attributes: [
                     :title, 
                     :description, 
