@@ -66,9 +66,11 @@ module CloudDriver
             event.calendar = current_user.account.driver.calendars.default
             
             if event.save
+                Event.log_activities_after_creation(current_user, event)
+                
                 responseWithSuccessful(event)
             else
-                responseWithError("error creating new event", event.errors.full_messages)
+                responseWithError('Error creationg event', event.errors.full_messages)
             end
         end
 
@@ -117,9 +119,15 @@ module CloudDriver
         # Only allow a trusted parameter "white list" through.
         def event_params
             params.require(:event).permit(
+<<<<<<< HEAD
                 :model_id,
                 :model_type,
                 :users_id,
+=======
+                :id,
+                :model_type,
+                :model_id,
+>>>>>>> master
                 detail_attributes: [
                     :title, 
                     :description, 

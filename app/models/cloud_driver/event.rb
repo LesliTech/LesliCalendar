@@ -49,5 +49,25 @@ module CloudDriver
             }
         end
 
+        def self.log_activities_after_creation(current_user, event)
+            # Add an activity for the newly created event
+            event.activities.create(
+                users_id: current_user.id,
+                category: "action_create"
+            )
+
+            # Adding an activity to the parent model if this event (if it exists)
+            case event.model_type
+                # Adding an activity to the project throught the courier
+                when "CloudHouse::Project"
+                    activity_params = {
+                        category: "action_create_event",
+                        description: event.detail.event_type,
+                        users_id: current_user.id,
+                        cloud_house_projects_id: event.model_id
+                    }
+                    ::Courier::House::Project.create_activity(activity_params)
+            end
+        end
     end
 end
