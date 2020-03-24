@@ -89,6 +89,13 @@ module CloudDriver
             redirect_to events_url, notice: 'Event was successfully destroyed.'
         end
 
+        def event_options
+            options = {
+                task_types: Event.event_types.map {|k, _| {value: k, text: k}},
+                users: Courier::Core::Users.list
+            }
+        end
+
         private
 
         # Use callbacks to share common setup or constraints between actions.
@@ -101,7 +108,15 @@ module CloudDriver
             params.require(:event).permit(
                 :id,
                 detail_attributes: [
-                    :title, :description, :time_start, :time_end, :location, :url
+                    :title, 
+                    :description, 
+                    :time_start, 
+                    :time_end, 
+                    :location, 
+                    :url, 
+                    :event_type,
+                    :address,
+                    :public
                 ]
             )
         end

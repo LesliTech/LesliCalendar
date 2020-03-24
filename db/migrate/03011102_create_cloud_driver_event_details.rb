@@ -7,6 +7,10 @@ class CreateCloudDriverEventDetails < ActiveRecord::Migration[6.0]
             t.datetime  :time_end
             t.string    :location
             t.string    :url
+            t.string    :address
+            t.string    :event_type
+            t.boolean   :public
+
             t.timestamps
         end
         add_reference :cloud_driver_event_details, :cloud_driver_events, foreign_key: true
