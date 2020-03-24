@@ -37,7 +37,7 @@ module CloudDriver
             data = Event
             .joins(:detail)
             .select(:title, :description, :time_start, :time_end, :location, :url, :event_type, :public)
-            .where("cloud_focus_tasks.id = #{id}")
+            .where("cloud_driver_events.id = #{id}")
             .first
 
             {
