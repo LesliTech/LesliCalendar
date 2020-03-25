@@ -1,5 +1,32 @@
+=begin
+
+Lesli
+
+Copyright (c) 2020, Lesli Technologies, S. A.
+
+All the information provided by this website is protected by laws of Guatemala related 
+to industrial property, intellectual property, copyright and relative international laws. 
+Lesli Technologies, S. A. is the exclusive owner of all intellectual or industrial property
+rights of the code, texts, trade mark, design, pictures and any other information.
+Without the written permission of Lesli Technologies, S. A., any replication, modification,
+transmission, publication is strictly forbidden.
+For more information read the license file including with this software.
+
+Lesli - Your Smart Business Assistant
+
+Powered by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@license  Propietary - all rights reserved.
+@version  0.1.0-alpha
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+
+=end
 module CloudDriver
     class Calendar < ApplicationRecord
+
         belongs_to :account, foreign_key: "cloud_driver_accounts_id"
 
         has_one :detail, foreign_key: "cloud_driver_calendars_id", dependent: :delete, inverse_of: :calendar, autosave: true
@@ -15,7 +42,7 @@ module CloudDriver
             today = Time.now.strftime("%Y%m%d")
 
             # tasks from CloudFocus
-            focus_tasks = Courier::Focus::Task.with_deadline_date(current_user, today).map do |task|
+            focus_tasks = Courier::Focus::Task.with_deadline_date(current_user, today, @query).map do |task|
                 {
                     id: task[:id],
                     title: task[:title],
