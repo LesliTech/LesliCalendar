@@ -34,6 +34,7 @@ import componentCloudObjectFileForm from 'LesliCoreVue/cloud_objects/files/form.
 // · 
 export default {
     components: {
+        'component-cloud-object-file-list': componentCloudObjectFileList,
         'component-cloud-object-file-form': componentCloudObjectFileForm
     },
     data() {
@@ -54,11 +55,10 @@ export default {
     },
     mounted() {
         this.addListeners()
-        console.log("works")
     },
     methods: {
         addListeners() {
-            this.bus.subscribe("/driver/component/event-quickview#show", (event_id) => {
+            this.bus.subscribe("show:/driver/component/event-quickview", (event_id) => {
                 this.event_id = event_id
                 this.getEvent()
                 this.show = true
