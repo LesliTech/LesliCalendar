@@ -4,7 +4,7 @@ module CloudDriver
 
         has_many :calendars, foreign_key: "cloud_driver_accounts_id"
         has_many :events, foreign_key: "cloud_driver_accounts_id"
-
+        
         after_create :check_account
 
         def check_account

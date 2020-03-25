@@ -6,7 +6,7 @@ class CreateCloudDriverEvents < ActiveRecord::Migration[6.0]
         end
         add_reference :cloud_driver_events, :users, foreign_key: true, index: { name: "house_events_users" }
         add_reference :cloud_driver_events, :cloud_driver_calendars, foreign_key: true
-        add_reference :cloud_driver_events, :accounts, foreign_key: true
+        add_reference :cloud_driver_events, :cloud_driver_accounts, foreign_key: true
         add_reference :cloud_driver_events, :model, polymorphic: true
         add_reference :cloud_driver_events, :organizer
     end
