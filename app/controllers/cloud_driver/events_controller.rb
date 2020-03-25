@@ -28,7 +28,7 @@ require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
     class EventsController < ApplicationController
-        before_action :set_event, only: [:update, :destroy]
+        before_action :set_event, only: [:update, :destroy, :show]
 
         # GET /events
         def index
@@ -40,9 +40,7 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do 
-                    set_event
                     return responseWithNotFound unless @event
-                    
                     responseWithSuccessful(@event.show)
                 end
             end
@@ -110,10 +108,7 @@ module CloudDriver
 
         # Use callbacks to share common setup or constraints between actions.
         def set_event
-            @event = Event.find_by(
-                accounts_id: current_user.account.id,
-                id: params[:id]
-            )
+            @event = current_user.account.driver.events.find(params[:id])
         end
 
         # Only allow a trusted parameter "white list" through.
