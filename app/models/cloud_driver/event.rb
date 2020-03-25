@@ -3,7 +3,7 @@ module CloudDriver
         belongs_to :account,    foreign_key: "cloud_driver_accounts_id"
         belongs_to :calendar,   foreign_key: "cloud_driver_calendars_id"
         belongs_to :user,       foreign_key: "users_id", class_name: '::User', optional: true
-        belongs_to :model,      polymorphic: true
+        belongs_to :model,      polymorphic: true, optional: true
         belongs_to :organizer,  class_name: '::User'
 
         has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id", dependent: :destroy
