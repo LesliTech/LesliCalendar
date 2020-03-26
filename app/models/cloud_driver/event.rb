@@ -9,6 +9,7 @@ module CloudDriver
         has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id", dependent: :destroy
         accepts_nested_attributes_for :detail, update_only: true
 
+        has_many :attendants, foreign_key: "cloud_driver_events_id"
         has_many :files, foreign_key: "cloud_driver_events_id"
         has_many :activities, foreign_key: "cloud_driver_events_id"
 
@@ -47,6 +48,19 @@ module CloudDriver
                 users_id: users_id,
                 detail_attributes: data   
             }
+        end
+
+        # @todo Add role once CloudLock is working
+        def attendant_list
+            attendants.map do |attendant|
+                user = attendant.user
+                {
+                    name: user.name,
+                    email: user.email,
+                    users_id: user.id,
+                    id: attendant.id
+                }
+            end
         end
 
         def self.log_activities_after_creation(current_user, event)

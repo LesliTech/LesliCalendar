@@ -21,12 +21,15 @@ CloudDriver::Engine.routes.draw do
             resources :attachments
             resources :details
             resources :files
+
+            resources :attendants
         end
     end
 
     scope :options do
         scope :event, module: :event do
-            get "files",                        to: "files#file_options"
+            get "/attendants",                  to: "attendants#attendant_options"
+            get "/files",                       to: "files#file_options"
             get "/:cloud_object_id/files/zip",  to: "files#zip_download_options"
         end
     end

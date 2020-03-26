@@ -29,17 +29,20 @@ Building a better future, one line of code at a time.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 import componentCloudObjectFile from 'LesliCoreVue/cloud_objects/file.vue'
 import componentCloudObjectDiscussionSimple from 'LesliCoreVue/cloud_objects/discussion-simple.vue'
+import componentAttendants from './attendants.vue'
 
 // · 
 export default {
     components: {
         'component-cloud-object-file': componentCloudObjectFile,
-        'component-cloud-object-discussion-simple': componentCloudObjectDiscussionSimple
+        'component-cloud-object-discussion-simple': componentCloudObjectDiscussionSimple,
+        'component-attendants': componentAttendants
     },
     data() {
         return {
             show: false,
             event_id:null,
+            active_tab: 0,
             event: {
                 detail_attributes: {
                     title: null,
@@ -61,9 +64,23 @@ export default {
                 this.event_id = event_id
                 this.getEvent()
                 this.show = true
+                this.active_tab = 0
             })
         },
-        toggleView() {
+        toggleView(new_event) {
+            if(new_event){
+                this.event_id = null
+                this.event =  {
+                    detail_attributes: {
+                        title: null,
+                        description: "",
+                        time_start: new Date(),
+                        time_end: new Date(),
+                        location: "",
+                        url: ""
+                    }
+                }
+            }
             this.show = !this.show
         },
         getEvent() {
@@ -76,6 +93,7 @@ export default {
         postEvent(e) {
             if (e) { e.preventDefault() }
             this.http.post("/driver/events", {event: this.event}).then(result => {
+                this.event_id = event.id
                 this.alert("Event succesfully created")
             }).catch(error => {
                 console.log(error)
@@ -110,7 +128,7 @@ export default {
             <span class="delete" @click="show = false"></span>
         </header>
         <div class="quickview-body">
-            <b-tabs expanded>
+            <b-tabs expanded v-model="active_tab">
                 <b-tab-item label="Information">
                     <form @submit.prevent="submitEvent()">
                         <div class="field">
@@ -178,6 +196,7 @@ export default {
                     </form>
                 </b-tab-item>
                 <b-tab-item label="Employees">
+                    <component-attendants v-if="event_id" :event-id="event_id" />
                 </b-tab-item>
                 <b-tab-item label="Comments">
                     <component-cloud-object-discussion-simple v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" />
