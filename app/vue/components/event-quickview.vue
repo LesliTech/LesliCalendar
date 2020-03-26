@@ -27,15 +27,14 @@ Building a better future, one line of code at a time.
 
 // · Import core components
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import componentCloudObjectFileList from 'LesliCoreVue/cloud_objects/files/list.vue'
-import componentCloudObjectFileForm from 'LesliCoreVue/cloud_objects/files/form.vue'
-
+import componentCloudObjectFile from 'LesliCoreVue/cloud_objects/file.vue'
+import componentCloudObjectDiscussionSimple from 'LesliCoreVue/cloud_objects/discussion-simple.vue'
 
 // · 
 export default {
     components: {
-        'component-cloud-object-file-list': componentCloudObjectFileList,
-        'component-cloud-object-file-form': componentCloudObjectFileForm
+        'component-cloud-object-file': componentCloudObjectFile,
+        'component-cloud-object-discussion-simple': componentCloudObjectDiscussionSimple
     },
     data() {
         return {
@@ -111,7 +110,7 @@ export default {
             <span class="delete" @click="show = false"></span>
         </header>
         <div class="quickview-body">
-            <b-tabs>
+            <b-tabs expanded>
                 <b-tab-item label="Information">
                     <form @submit.prevent="submitEvent()">
                         <div class="field">
@@ -181,10 +180,10 @@ export default {
                 <b-tab-item label="Employees">
                 </b-tab-item>
                 <b-tab-item label="Comments">
+                    <component-cloud-object-discussion-simple v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" />
                 </b-tab-item>
-                <b-tab-item label="Files">
-                    <component-cloud-object-file-form cloud-module="driver/event" :cloud-id="this.event_id" />
-                    <component-cloud-object-file-list cloud-module="driver/event" :cloud-id="this.event_id" />
+                <b-tab-item label="Documents">
+                    <component-cloud-object-file v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" />
                 </b-tab-item>
             </b-tabs>
 
