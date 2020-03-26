@@ -156,7 +156,19 @@ export default {
                             </b-timepicker>
  -->
                         </b-field>
-                        <div class="buttons">
+                        <div class="buttons is-right">
+                            <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_id}`">
+                                <span class="icon">
+                                    <i class="fas fa-link"></i>
+                                </span>
+                                <span>Go to project</span>
+                            </a>
+                            <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
+                                <span class="icon">
+                                    <i class="fas fa-link"></i>
+                                </span>
+                                <span>Go to company</span>
+                            </a>
                             <button class="button is-primary">
                                 <span class="icon">
                                     <i class="far fa-save"></i>
