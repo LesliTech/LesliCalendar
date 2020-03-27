@@ -19,11 +19,7 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-
-                    filter = params[:filter] || nil
-
                     responseWithSuccessful(Calendar.events_from_all_modules(current_user, @query))
-
                 end
             end
         end

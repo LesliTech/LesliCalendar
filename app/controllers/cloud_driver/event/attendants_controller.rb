@@ -76,6 +76,15 @@ Building a better future, one line of code at a time.
 
             if attendant.save
                 responseWithSuccessful(attendant)
+
+                ::Courier::Bell::Notification::Web.new(
+                    current_user, 
+                    "added_to_event",
+                    {
+                        body: attendant.event.detail.description,
+                        href: "/crm/calendar?event_id=#{attendant.event.id}"
+                    }
+                )
             else
                 responseWithError(attendant.errors.full_messages.to_sentence)
             end

@@ -33,6 +33,11 @@ import dayjs from "dayjs"
 // · 
 export default {
     props: {
+        date: {
+            default: ()=>{
+                return new Date()
+            }
+        },
         driverEvents: {
             default() {
                 return []
@@ -64,6 +69,7 @@ export default {
             )
         },
         validateEvents() {
+            this.sortDriverEvents()
             this.driverEvents.forEach(event => {
                 let start = new Date(event.start) 
                 this.events.push({
@@ -73,6 +79,7 @@ export default {
                     classNames: event.classNames
                 })
             })
+
             this.focusTasks.forEach(task => {
                 let start = new Date(task.start) 
                 this.events.push({
@@ -82,6 +89,14 @@ export default {
                     classNames: task.classNames
                 })
             })
+        },
+        sortDriverEvents(){
+            this.driverEvents.sort((a, b)=>{
+                return a.start > b.start
+            })
+        },
+        emitShowEvent(event){
+            this.bus.publish('show:/driver/component/event-quickview', event.id)
         }
     },
     watch: {
@@ -95,9 +110,14 @@ export default {
     <section class="component-driver-calendar-today">
         <article class="panel">
             <p class="panel-heading">
-                Today
+                <span v-if="isToday(date)">
+                    Today
+                </span>
+                <span v-else>
+                    {{date.toLocaleString('default', { month: 'long' }) + " - " + date.getDate() }}
+                </span>
             </p>
-            <a  class="panel-block" v-for="(event, index) in events" :key="index">
+            <a  class="panel-block" v-for="(event, index) in events" :key="index" role="button" @click="emitShowEvent(event)">
                 <span class="icon">
                     <span :class="event.classNames"></span>
                 </span>

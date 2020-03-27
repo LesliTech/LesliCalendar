@@ -50,7 +50,7 @@ export default {
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.alert(result.error.message, 'danger')
                 }
             }).catch(error => {
                 console.log(error)

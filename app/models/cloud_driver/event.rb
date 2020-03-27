@@ -46,6 +46,7 @@ module CloudDriver
                 model_id: model_id,
                 model_type: model_type,
                 users_id: users_id,
+                organizer_name: organizer.name,
                 detail_attributes: data   
             }
         end
