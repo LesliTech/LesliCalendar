@@ -80,11 +80,18 @@ export default {
                         url: ""
                     }
                 }
+                this.active_tab = 0
             }
             this.show = !this.show
         },
         getEvent() {
             this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
+                if(result.data.detail_attributes.time_start){
+                    result.data.detail_attributes.time_start = new Date(result.data.detail_attributes.time_start)
+                }
+                if(result.data.detail_attributes.time_start){
+                    result.data.detail_attributes.time_end = new Date(result.data.detail_attributes.time_end)
+                }
                 this.event = result.data
             }).catch(error => {
                 console.log(error)
@@ -93,8 +100,10 @@ export default {
         postEvent(e) {
             if (e) { e.preventDefault() }
             this.http.post("/driver/events", {event: this.event}).then(result => {
-                this.event_id = event.id
-                this.alert("Event succesfully created")
+                this.event_id = result.data.id
+                this.organizer_name = result.data.organizer_name
+                this.active_tab = 1
+                this.alert("Event succesfully created", 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -102,7 +111,7 @@ export default {
         putEvent(e) {
             if (e) { e.preventDefault() }
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
-                this.alert("Event succesfully updated")
+                this.alert("Event succesfully updated", 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -131,47 +140,49 @@ export default {
             <b-tabs expanded v-model="active_tab">
                 <b-tab-item label="Information">
                     <form @submit.prevent="submitEvent()">
-                        <div class="field">
-                            <label class="label">Name</label>
+                        <div class="field" v-if="event_id">
+                            <label class="label">Organizer</label>
                                 <div class="control">
-                                <input class="input" type="text" v-model="event.detail_attributes.title" placeholder="Title">
+                                <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Title<sup class="has-text-danger">*</sup></label>
+                            <div class="control">
+                                <input class="input" type="text" v-model="event.detail_attributes.title" placeholder="Title" required>
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Description</label>
-                                <div class="control">
+                            <div class="control">
                                 <textarea class="textarea" v-model="event.detail_attributes.description"></textarea>
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Address</label>
-                                <div class="control">
+                            <div class="control">
                                 <input class="input" type="text" v-model="event.detail_attributes.location" placeholder="Address">
                             </div>
                         </div>
                         <div class="field">
                             <label class="checkbox">
-                                <input type="checkbox">
+                                <input type="checkbox" v-model="event.detail_attributes.public">
                                 Mark to make this event public
                             </label>
                         </div>
                         <b-field label="Start at">
-                           <!-- 
                             <b-timepicker
                                 placeholder="Select time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_start">
                             </b-timepicker>
- -->
                         </b-field>
                         <b-field label="End at">
-                            <!-- 
                             <b-timepicker
                                 placeholder="Select time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_end">
                             </b-timepicker>
- -->
                         </b-field>
                         <div class="buttons is-right">
                             <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_id}`">
