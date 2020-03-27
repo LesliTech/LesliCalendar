@@ -65,6 +65,7 @@ module CloudDriver
             
             if event.save
                 Event.log_activities_after_creation(current_user, event)
+                event.attendants.create(users_id: current_user.id)
                 
                 responseWithSuccessful(event)
             else
