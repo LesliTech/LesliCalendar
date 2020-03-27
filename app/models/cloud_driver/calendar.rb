@@ -36,13 +36,13 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
-        def self.today_events_from_all_modules(current_user)
+        def self.events_from_all_modules(current_user, query)
 
             calendar = self.default
             today = Time.now.strftime("%Y%m%d")
 
             # tasks from CloudFocus
-            focus_tasks = Courier::Focus::Task.with_deadline_date(current_user, today, @query).map do |task|
+            focus_tasks = Courier::Focus::Task.with_deadline(current_user, query).map do |task|
                 {
                     id: task[:id],
                     title: task[:title],
@@ -78,7 +78,8 @@ module CloudDriver
                 focus_tasks: focus_tasks
             }
         end
-    
+
+=begin
         def self.events_from_all_modules(current_user)
 
             calendar = self.default
@@ -119,6 +120,7 @@ module CloudDriver
                 focus_tasks: focus_tasks
             }
         end
+=end
 
     end
 end

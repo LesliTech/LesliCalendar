@@ -22,8 +22,7 @@ module CloudDriver
 
                     filter = params[:filter] || nil
 
-                    responseWithSuccessful(Calendar.events_from_all_modules(current_user)) if filter.blank?
-                    responseWithSuccessful(Calendar.today_events_from_all_modules(current_user)) if filter == "today"
+                    responseWithSuccessful(Calendar.events_from_all_modules(current_user, @query))
 
                 end
             end
