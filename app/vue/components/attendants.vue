@@ -143,7 +143,12 @@ export default {
         },
 
         deleteAttendant(attendant){
-            let attendant_id = attendant.id
+            // If it is clicked from the main tab, the attendant object received will have the id in the 'attendant_id' field
+            let attendant_id = attendant.attendant_id
+            // However, if it is not clicked from the main tab, the object received will have the id in the 'id' field
+            if(! attendant_id){
+                attendant_id = attendant.id
+            }
             let url = `${this.main_route}/${this.eventId}/attendants/${attendant_id}`
 
             this.http.delete(url).then(result => {
@@ -177,7 +182,6 @@ export default {
     computed: {
         filteredUsers(){
             let search_field = this.search.toLowerCase()
-            this.pagination.current_page = 1
             return this.attendant_options.users.filter((user)=>{
                 return user.email.toLowerCase().includes(search_field) ||
                     (
@@ -210,6 +214,10 @@ export default {
             this.loaded.attendants = false
             this.clearOptions()
             this.getAttendants()
+        },
+
+        search(){
+            this.pagination.current_page = 1
         }
     }
 }
