@@ -36,62 +36,112 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
-        def self.today_events_from_all_modules(current_user)
-
+        def self.events_from_all_modules(current_user, query)
             calendar = self.default
-            today = Time.now.strftime("%Y%m%d")
+            calendar_data = {
+                id: calendar.id,
+                name: calendar.name,
+                driver_events: [],
+                focus_tasks: [],
+                help_tickets: []
+            }
 
-            # tasks from CloudFocus
-            focus_tasks = Courier::Focus::Task.with_deadline_date(current_user, today, @query).map do |task|
-                {
-                    id: task[:id],
-                    title: task[:title],
-                    description: task[:description],
-                    start: task[:deadline],
-                    end: task[:deadline],
-                    classNames: ["cloud_focus_task"]
-                }
+            # events from CloudDriver
+            today = Time.now
+            filter_year = query[:filters][:year] || today.strftime("%Y")
+            filter_month = query[:filters][:month] || today.strftime("%m")
+            filter_day = query[:filters][:day]
+            all_events = {}
+
+            # selection all my events in one query
+            own_driver_events = calendar.events.joins(:detail)
+            .joins(
+                "inner join cloud_driver_event_attendants CDEA on 
+                    CDEA.cloud_driver_events_id = cloud_driver_events.id and
+                    (
+                        CDEA.users_id = #{current_user.id} or
+                        cloud_driver_events.organizer_id = #{current_user.id}
+                    )
+                "
+            ).select(
+                :id, 
+                :title, 
+                :description, 
+                "time_start as start", 
+                "time_end as end", 
+                :location,
+                :model_type,
+                :url,
+                "true as \"is_attendant\"",
+                "CONCAT('cloud_driver_event',' ', LOWER(REPLACE(cloud_driver_events.model_type, '::', '_')))  as \"classNames\""
+            )
+            .where("extract('year' from cloud_driver_event_details.time_start) = ?", filter_year)
+            .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
+            own_driver_events = own_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
+            own_driver_events.each do |event|
+                all_events[event.id] = event
             end
 
-            # tasks from CloudFocus
-            help_tickets = Courier::Help::Ticket.with_deadline(current_user)
-
-            # tasks from default calendar
-            driver_events = calendar.events.joins(:detail)
-            .where("cloud_driver_event_details.time_start = '#{today}'")
+            # selection all other public events in another query
+            public_driver_events = calendar.events.joins(:detail)
             .select(
                 :id, 
                 :title, 
                 :description, 
                 "time_start as start", 
                 "time_end as end", 
-                :location, 
+                :location,
+                :model_type,
                 :url,
-                "'cloud_driver_event' as \"classNames\""
+                "false as \"is_attendant\"",
+                "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
+            .where("cloud_driver_event_details.public = true")
+            .where("extract('year' from cloud_driver_event_details.time_start) = ?", filter_year)
+            .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
+            public_driver_events = public_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
+            public_driver_events.each do |event|
+                all_events[event.id] = event
+            end
 
-            {
-                id: calendar.id,
-                name: calendar.name,
-                driver_events: driver_events,
-                help_tickets: help_tickets,
-                focus_tasks: focus_tasks
-            }
+            calendar_data[:driver_events] = all_events.values
+            
+            # tasks from CloudFocus
+            if query[:filters][:include] && query[:filters][:include][:focus_tasks]
+                calendar_data[:driver_events]  = Courier::Focus::Task.with_deadline(current_user, query).map do |task|
+                    {
+                        id: task[:id],
+                        title: task[:title],
+                        description: task[:description],
+                        start: task[:deadline],
+                        end: task[:deadline],
+                        classNames: ["cloud_driver_event"]
+                    }
+                end
+            end
+
+            # tasks from CloudFocus
+            if query[:filters][:include] && query[:filters][:include][:help_tickets]
+                calendar_data[:help_tickets]  = Courier::Help::Ticket.with_deadline(current_user)
+            end
+
+            calendar_data
         end
-    
+
+=begin
         def self.events_from_all_modules(current_user)
 
             calendar = self.default
 
             # tasks from CloudFocus
-            focus_tasks = Courier::Focus::Task.with_deadline(current_user).map do |task|
+            driver_events = Courier::Focus::Task.with_deadline(current_user).map do |task|
                 {
                     id: task[:id],
                     title: task[:title],
                     description: task[:description],
                     start: task[:deadline],
                     end: task[:deadline],
-                    classNames: ["cloud_focus_task"]
+                    classNames: ["cloud_driver_event"]
                 }
             end
 
@@ -116,9 +166,10 @@ module CloudDriver
                 name: calendar.name,
                 driver_events: driver_events,
                 help_tickets: help_tickets,
-                focus_tasks: focus_tasks
+                driver_events: driver_events
             }
         end
+=end
 
     end
 end
