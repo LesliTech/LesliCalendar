@@ -1,7 +1,7 @@
 class CreateCloudDriverEvents < ActiveRecord::Migration[6.0]
     def change
         create_table :cloud_driver_events do |t|
-
+            t.datetime  :deleted_at
             t.timestamps
         end
         add_reference :cloud_driver_events, :users, foreign_key: true, index: { name: "house_events_users" }

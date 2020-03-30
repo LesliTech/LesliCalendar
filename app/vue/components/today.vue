@@ -69,7 +69,7 @@ export default {
             )
         },
         validateEvents() {
-            this.sortDriverEvents()
+            this.events = []
             this.driverEvents.forEach(event => {
                 let start = new Date(event.start) 
                 this.events.push({
@@ -90,17 +90,12 @@ export default {
                 })
             })
         },
-        sortDriverEvents(){
-            this.driverEvents.sort((a, b)=>{
-                return a.start > b.start
-            })
-        },
         emitShowEvent(event){
             this.bus.publish('show:/driver/component/event-quickview', event.id)
         }
     },
     watch: {
-        todayEvents() {
+        driverEvents() {
             this.validateEvents()
         }
     }

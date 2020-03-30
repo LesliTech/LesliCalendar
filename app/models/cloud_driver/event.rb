@@ -1,12 +1,15 @@
 module CloudDriver
     class Event < ApplicationRecord
+
+        acts_as_paranoid
+
         belongs_to :account,    foreign_key: "cloud_driver_accounts_id"
         belongs_to :calendar,   foreign_key: "cloud_driver_calendars_id"
         belongs_to :user,       foreign_key: "users_id", class_name: '::User', optional: true
         belongs_to :model,      polymorphic: true, optional: true
         belongs_to :organizer,  class_name: '::User'
 
-        has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id", dependent: :destroy
+        has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
         has_many :attendants, foreign_key: "cloud_driver_events_id"
@@ -38,7 +41,7 @@ module CloudDriver
             data = Event
             .joins(:detail)
             .select(:title, :description, :time_start, :time_end, :location, :url, :event_type, :public)
-            .where("cloud_driver_events.id = #{id}")
+            .where("cloud_driver_events.id = ?", id)
             .first
 
             {
