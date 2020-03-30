@@ -67,7 +67,7 @@ module CloudDriver
                 Event.log_activities_after_creation(current_user, event)
                 event.attendants.create(users_id: current_user.id)
                 
-                responseWithSuccessful(event)
+                responseWithSuccessful(event.show)
             else
                 responseWithError('Error creationg event', event.errors.full_messages)
             end
@@ -85,8 +85,12 @@ module CloudDriver
 
         # DELETE /events/1
         def destroy
-            @event.destroy
-            redirect_to events_url, notice: 'Event was successfully destroyed.'
+            return responseWithNotFound unless @event
+            if @event.destroy
+                return responseWithSuccessful
+            else
+                return responseWithError("Error deleting event", @event.errors.full_messages)
+            end
         end
 
         def event_options

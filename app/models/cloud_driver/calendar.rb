@@ -55,15 +55,8 @@ module CloudDriver
 
             # selection all my events in one query
             own_driver_events = calendar.events.joins(:detail)
-            .joins(
-                "inner join cloud_driver_event_attendants CDEA on 
-                    CDEA.cloud_driver_events_id = cloud_driver_events.id and
-                    (
-                        CDEA.users_id = #{current_user.id} or
-                        cloud_driver_events.organizer_id = #{current_user.id}
-                    )
-                "
-            ).select(
+            .joins("inner join cloud_driver_event_attendants CDEA on CDEA.cloud_driver_events_id = cloud_driver_events.id")
+            .select(
                 :id, 
                 :title, 
                 :description, 
@@ -75,6 +68,7 @@ module CloudDriver
                 "true as \"is_attendant\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(REPLACE(cloud_driver_events.model_type, '::', '_')))  as \"classNames\""
             )
+            .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ?", current_user.id, current_user.id)
             .where("extract('year' from cloud_driver_event_details.time_start) = ?", filter_year)
             .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
             own_driver_events = own_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
@@ -101,10 +95,10 @@ module CloudDriver
             .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
             public_driver_events = public_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
             public_driver_events.each do |event|
-                all_events[event.id] = event
+                all_events[event.id] = event unless all_events[event.id]
             end
 
-            calendar_data[:driver_events] = all_events.values
+            calendar_data[:driver_events] = all_events.values.sort_by(&:start)
             
             # tasks from CloudFocus
             if query[:filters][:include] && query[:filters][:include][:focus_tasks]

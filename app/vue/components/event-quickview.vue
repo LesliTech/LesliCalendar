@@ -99,11 +99,13 @@ export default {
         },
         postEvent(e) {
             if (e) { e.preventDefault() }
-            this.http.post("/driver/events", {event: this.event}).then(result => {
+            this.http.post('/driver/events', {event: this.event}).then(result => {
+                this.event.id = result.data.id
                 this.event_id = result.data.id
                 this.organizer_name = result.data.organizer_name
                 this.active_tab = 1
-                this.alert("Event succesfully created", 'success')
+                this.$emit('post-event', result.data)
+                this.alert('Event succesfully created', 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -125,6 +127,18 @@ export default {
                 this.postEvent()
                 return
             }
+        },
+        deleteEvent(e){
+            if (e) { e.preventDefault() }
+            let url = `/driver/events/${this.event_id}`
+
+            this.http.delete(url).then(result => {
+                this.show = false
+                this.$emit('delete-event', this.event)
+                this.alert('Event succesfully deleted', 'success')
+            }).catch(error => {
+                console.log(error)
+            })
         }
     }
 
@@ -184,26 +198,41 @@ export default {
                                 v-model="event.detail_attributes.time_end">
                             </b-timepicker>
                         </b-field>
-                        <div class="buttons is-right">
-                            <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_id}`">
-                                <span class="icon">
-                                    <i class="fas fa-link"></i>
-                                </span>
-                                <span>Go to project</span>
-                            </a>
-                            <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
-                                <span class="icon">
-                                    <i class="fas fa-link"></i>
-                                </span>
-                                <span>Go to company</span>
-                            </a>
-                            <button class="button is-primary">
-                                <span class="icon">
-                                    <i class="far fa-save"></i>
-                                </span>
-                                <span>Save</span>
-                            </button>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="buttons">
+                                    <button v-if="event_id" class="button is-danger" type="button" @click="deleteEvent">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="buttons is-right">
+                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_id}`">
+                                        <span class="icon">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <span>Go to project</span>
+                                    </a>
+                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
+                                        <span class="icon">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <span>Go to company</span>
+                                    </a>
+                                    <button class="button is-primary">
+                                        <span class="icon">
+                                            <i class="far fa-save"></i>
+                                        </span>
+                                        <span>Save</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        
                     </form>
                 </b-tab-item>
                 <b-tab-item label="Employees">
