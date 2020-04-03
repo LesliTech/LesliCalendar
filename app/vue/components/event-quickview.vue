@@ -105,7 +105,7 @@ export default {
                 this.organizer_name = result.data.organizer_name
                 this.active_tab = 1
                 this.$emit('post-event', result.data)
-                this.alert('Event succesfully created', 'success')
+                this.notification.alert('Event succesfully created', 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -113,7 +113,7 @@ export default {
         putEvent(e) {
             if (e) { e.preventDefault() }
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
-                this.alert("Event succesfully updated", 'success')
+                this.notification.alert("Event succesfully updated", 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -135,7 +135,7 @@ export default {
             this.http.delete(url).then(result => {
                 this.show = false
                 this.$emit('delete-event', this.event)
-                this.alert('Event succesfully deleted', 'success')
+                this.notification.alert('Event succesfully deleted', 'success')
             }).catch(error => {
                 console.log(error)
             })
