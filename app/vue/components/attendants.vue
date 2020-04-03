@@ -50,7 +50,7 @@ export default {
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.notification.alert(result.error.message, 'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -68,7 +68,7 @@ export default {
                     this.loaded.attendants = true
                     this.syncLists()
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.notification.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -133,9 +133,9 @@ export default {
                         role: user.role,
                         users_id: user.id
                     })
-                    this.alert('Attendant added successfully', 'success')
+                    this.notification.alert('Attendant added successfully', 'success')
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.notification.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -153,7 +153,7 @@ export default {
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
-                    this.alert('Attendant deleted successfully', 'success')
+                    this.notification.alert('Attendant deleted successfully', 'success')
                     
                     this.attendants = this.attendants.filter((attendant)=>{
                         return attendant.id != attendant_id
@@ -165,7 +165,7 @@ export default {
                     user.attendant_id = null
                     user.checked = false
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.notification.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
