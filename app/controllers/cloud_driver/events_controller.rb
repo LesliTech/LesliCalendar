@@ -64,9 +64,8 @@ module CloudDriver
             event.calendar = current_user.account.driver.calendars.default
             
             if event.save
-                Event.log_activities_after_creation(current_user, event)
+                Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: current_user.id)
-                
                 responseWithSuccessful(event.show)
             else
                 responseWithError('Error creationg event', event.errors.full_messages)

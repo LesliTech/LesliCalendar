@@ -67,10 +67,14 @@ module CloudDriver
             end
         end
 
-        def self.log_activities_after_creation(current_user, event)
+        #############################
+        # Activities log methods
+        #############################
+
+        def self.log_activity_create(current_user, event)
             # Add an activity for the newly created event
             event.activities.create(
-                users_id: current_user.id,
+                user: current_user,
                 category: "action_create"
             )
 
@@ -87,5 +91,69 @@ module CloudDriver
                     ::Courier::House::Project.create_activity(activity_params)
             end
         end
+        
+
+        def self.log_activity_create_attendant(current_user, event, attendant)
+            event.activities.create(
+                user: current_user,
+                category: "action_create_attendant",
+                description: attendant.user.name,
+                value_to: attendant.user.name
+            )
+        end
+
+        #############################
+        # Email methods
+        #############################
+
+        # sends an email to the assigned user when the attendant is created
+        def self.send_email_create_attendant(attendant)
+            receipt = attendant.user.email
+            event = attendant.event
+            organizer = event.organizer
+            event_detail = event.detail
+
+            data = {
+                name: attendant.user.name,
+                title: event.detail.title,
+                organizer_name: organizer.name,
+                organizer_email: organizer.email,
+                time_start: event_detail.time_start,
+                time_end: event_detail.time_end,
+                title: event_detail.title,
+                location: event_detail.location,
+                description: event_detail.description,
+                href: "/crm/calendar?event_id=#{attendant.event.id}"
+            }
+
+            ::DriverMailer.event_attendant_new(receipt, "You have been invited a an event", data).deliver_now
+        end
+
+        #############################
+        # Notification methods
+        #############################
+
+        # sends an web to the assigned user when the attendant is created
+        def self.send_notification_create_attendant(attendant)
+            receipt = attendant.user.email
+            event = attendant.event
+
+            data = {
+                name: attendant.user.name,
+                title: event.detail.title,
+                href: "/crm/calendar?event_id=#{attendant.event.id}"
+            }
+
+            ::Courier::Bell::Notification::Web.new(
+                attendant.user,
+                "event_attendant_created",
+                {
+                    body: attendant.event.detail.description,
+                    href: "/crm/calendar?event_id=#{attendant.event.id}"
+                }
+            )
+        end
+
+
     end
 end
