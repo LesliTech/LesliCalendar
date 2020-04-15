@@ -1,5 +1,6 @@
 module CloudDriver
-    class Event < ApplicationRecord
+    #class Company < CloudObject::Base
+    class Event < CloudObject::Base
 
         acts_as_paranoid
 
