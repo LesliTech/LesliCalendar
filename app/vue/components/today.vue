@@ -54,7 +54,10 @@ export default {
     data() {
         return {
             today: new Date(),
-            events: []
+            events: [],
+            translations: {
+                core: I18n.t('core.shared')
+            }
         }
     },
     mounted() {
@@ -106,7 +109,7 @@ export default {
         <article class="panel">
             <p class="panel-heading">
                 <span v-if="isToday(date)">
-                    Today
+                    {{translations.core.text_today}}
                 </span>
                 <span v-else>
                     {{date.toLocaleString('default', { month: 'long' }) + " - " + date.getDate() }}

@@ -38,19 +38,35 @@ export default {
         'component-cloud-object-discussion-simple': componentCloudObjectDiscussionSimple,
         'component-attendants': componentAttendants
     },
+    props: {
+        discussionsTranslationsPath: {
+            type: String,
+            default : 'core.shared'
+        },
+
+        filesTranslationsPath: {
+            type: String,
+            default: 'core.shared'
+        }
+    },
+
     data() {
         return {
             show: false,
             event_id:null,
             active_tab: 0,
+            translations: {
+                main: I18n.t('driver.events'),
+                core: I18n.t('core.shared')
+            },
             event: {
                 detail_attributes: {
                     title: null,
-                    description: "",
+                    description: '',
                     time_start: new Date(),
                     time_end: new Date(),
-                    location: "",
-                    url: ""
+                    location: '',
+                    url: ''
                 }
             }
         }
@@ -73,11 +89,11 @@ export default {
                 this.event =  {
                     detail_attributes: {
                         title: null,
-                        description: "",
+                        description: '',
                         time_start: new Date(),
                         time_end: new Date(),
-                        location: "",
-                        url: ""
+                        location: '',
+                        url: ''
                     }
                 }
                 this.active_tab = 0
@@ -105,7 +121,7 @@ export default {
                 this.organizer_name = result.data.organizer_name
                 this.active_tab = 1
                 this.$emit('post-event', result.data)
-                this.notification.alert('Event succesfully created', 'success')
+                this.notification.alert(this.translations.main.notification_event_created, 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -113,7 +129,7 @@ export default {
         putEvent(e) {
             if (e) { e.preventDefault() }
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
-                this.notification.alert("Event succesfully updated", 'success')
+                this.notification.alert(this.translations.main.notification_event_updated, 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -135,7 +151,7 @@ export default {
             this.http.delete(url).then(result => {
                 this.show = false
                 this.$emit('delete-event', this.event)
-                this.notification.alert('Event succesfully deleted', 'success')
+                this.notification.alert(this.translations.main.notification_event_deleted, 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -147,53 +163,53 @@ export default {
 <template>
     <div :class="[{ 'is-active': show }, 'quickview', 'is-size-large']">
         <header class="quickview-header">
-            <h4 class="title">{{ (this.event.detail_attributes.title ? this.event.detail_attributes.title : 'Create new event') }}</h4>
+            <h4 class="title">{{ (this.event.detail_attributes.title ? this.event.detail_attributes.title : this.translations.main.form_title_new) }}</h4>
             <span class="delete" @click="show = false"></span>
         </header>
         <div class="quickview-body">
             <b-tabs expanded v-model="active_tab">
-                <b-tab-item label="Information">
+                <b-tab-item :label="translations.core.text_information">
                     <form @submit.prevent="submitEvent()">
                         <div class="field" v-if="event_id">
-                            <label class="label">Organizer</label>
+                            <label class="label">{{translations.core.text_organizer}}</label>
                                 <div class="control">
                                 <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label">Title<sup class="has-text-danger">*</sup></label>
+                            <label class="label">{{translations.core.text_title}}<sup class="has-text-danger">*</sup></label>
                             <div class="control">
-                                <input class="input" type="text" v-model="event.detail_attributes.title" placeholder="Title" required>
+                                <input class="input" type="text" v-model="event.detail_attributes.title" required>
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label">Description</label>
+                            <label class="label">{{translations.core.text_description}}</label>
                             <div class="control">
                                 <textarea class="textarea" v-model="event.detail_attributes.description"></textarea>
                             </div>
                         </div>
                         <div class="field">
-                            <label class="label">Address</label>
+                            <label class="label">{{translations.core.text_address}}</label>
                             <div class="control">
-                                <input class="input" type="text" v-model="event.detail_attributes.location" placeholder="Address">
+                                <input class="input" type="text" v-model="event.detail_attributes.location">
                             </div>
                         </div>
                         <div class="field">
                             <label class="checkbox">
                                 <input type="checkbox" v-model="event.detail_attributes.public">
-                                Mark to make this event public
+                                {{translations.main.form_input_mark_event_as_public_title}}
                             </label>
                         </div>
-                        <b-field label="Start at">
+                        <b-field :label="translations.core.text_start_at">
                             <b-timepicker
-                                placeholder="Select time"
+                                :placeholder="translations.core.text_select_time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_start">
                             </b-timepicker>
                         </b-field>
-                        <b-field label="End at">
+                        <b-field :label="translations.core.text_end_at">
                             <b-timepicker
-                                placeholder="Select time"
+                                :placeholder="translations.core.text_select_time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_end">
                             </b-timepicker>
@@ -205,7 +221,7 @@ export default {
                                         <span class="icon">
                                             <i class="fas fa-trash"></i>
                                         </span>
-                                        <span>Delete</span>
+                                        <span>{{translations.main.form_btn_delete}}</span>
                                     </button>
                                 </div>
                             </div>
@@ -215,19 +231,19 @@ export default {
                                         <span class="icon">
                                             <i class="fas fa-link"></i>
                                         </span>
-                                        <span>Go to project</span>
+                                        <span>{{translations.main.form_anchor_go_to_project}}</span>
                                     </a>
                                     <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
                                         <span class="icon">
                                             <i class="fas fa-link"></i>
                                         </span>
-                                        <span>Go to company</span>
+                                        <span>{{translations.main.form_anchor_go_to_company}}</span>
                                     </a>
                                     <button class="button is-primary">
                                         <span class="icon">
                                             <i class="far fa-save"></i>
                                         </span>
-                                        <span>Save</span>
+                                        <span>{{translations.core.btn_save}}</span>
                                     </button>
                                 </div>
                             </div>
@@ -235,14 +251,20 @@ export default {
                         
                     </form>
                 </b-tab-item>
-                <b-tab-item label="Employees">
+                <b-tab-item :label="translations.core.text_employees">
                     <component-attendants v-if="event_id" :event-id="event_id" />
                 </b-tab-item>
-                <b-tab-item label="Comments">
-                    <component-cloud-object-discussion-simple v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" />
+                <b-tab-item :label="translations.core.text_comments">
+                    <component-cloud-object-discussion-simple v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" :translations-path="discussionsTranslationsPath" />
                 </b-tab-item>
-                <b-tab-item label="Documents">
-                    <component-cloud-object-file v-if="event_id" cloud-module="driver/event" :cloud-id="event_id" />
+                <b-tab-item :label="translations.core.text_files">
+                    <component-cloud-object-file
+                        v-if="event_id"
+                        cloud-module="driver/event"
+                        :cloud-id="event_id"
+                        :translations-path="filesTranslationsPath"
+                        translations-file-types-path="driver.events"
+                    />
                 </b-tab-item>
             </b-tabs>
 

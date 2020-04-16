@@ -61,6 +61,7 @@ module CloudDriver
                 user = attendant.user
                 {
                     name: user.name,
+                    role: user.role,
                     email: user.email,
                     users_id: user.id,
                     id: attendant.id
