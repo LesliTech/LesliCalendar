@@ -11,6 +11,11 @@ export default {
             active_tab: 0,
             main_route: '/driver/events',
             options_route: '/driver/options/event/attendants',
+            translations: {
+                main: I18n.t('driver.events'),
+                core: I18n.t('core.shared'),
+                users: I18n.t('core.users')
+            },
             loading: {
                 attendants: false,
                 options: false
@@ -133,7 +138,7 @@ export default {
                         role: user.role,
                         users_id: user.id
                     })
-                    this.notification.alert('Attendant added successfully', 'success')
+                    this.notification.alert(this.translations.main.notification_attendant_created, 'success')
                 }else{
                     this.notification.alert(result.error.message,'danger')
                 }
@@ -153,7 +158,7 @@ export default {
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
-                    this.notification.alert('Attendant deleted successfully', 'success')
+                    this.notification.alert(this.translations.main.notification_attendant_deleted, 'success')
                     
                     this.attendants = this.attendants.filter((attendant)=>{
                         return attendant.id != attendant_id
@@ -176,6 +181,15 @@ export default {
             this.attendant_options.users.forEach((user)=>{
                 this.$set(user, 'checked', false)
             })
+        },
+
+        translateUserRole(role){
+            let new_role = this.translations.users[`enum_role_${role}`]
+            if(new_role){
+                return new_role
+            }
+
+            return role
         }
     },
 
@@ -224,9 +238,9 @@ export default {
 </script>
 <template>
     <b-tabs expanded v-model="active_tab">
-        <b-tab-item label="Add an attendant">
+        <b-tab-item :label="translations.main.form_attendants_tab_new">
             <b-field>
-                <b-input placeholder="Filter by name, email or role"
+                <b-input :placeholder="translations.main.form_attendants_filter_placeholder"
                     v-model="search"
                     type="text"
                     icon="search"
@@ -239,16 +253,16 @@ export default {
             <component-data-empty v-if="!loading.options && attendant_options.users.length == 0" />
             <b-table :data="currentUserPage">
                 <template slot-scope="props">
-                    <b-table-column field="name" label="Name">
+                    <b-table-column field="name" :label="translations.core.text_name">
                         {{ props.row.name }}
                     </b-table-column>
-                    <b-table-column field="email" label="E-mail">
+                    <b-table-column field="email" :label="translations.core.text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role" label="Role">
-                        {{ props.row.role }}
+                    <b-table-column field="role" :label="translations.core.text_role">
+                        {{ translateUserRole(props.row.role) }}
                     </b-table-column>
-                    <b-table-column field="actions" label="Add">
+                    <b-table-column field="actions" label="">
                         <b-checkbox size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
                     </b-table-column>
                 </template>
@@ -271,19 +285,19 @@ export default {
             >
             </b-pagination>
         </b-tab-item>
-        <b-tab-item label="Attendants">
+        <b-tab-item :label="translations.main.form_attendants_tab_list">
             <component-data-loading v-if="loading.attendants" />
             <component-data-empty v-if="!loading.attendants && attendants.length == 0" />
             <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants">
                 <template slot-scope="props">
-                    <b-table-column field="name" label="Name">
+                    <b-table-column field="name" :label="translations.core.text_name">
                         {{ props.row.name }}
                     </b-table-column>
-                    <b-table-column field="email" label="E-mail">
+                    <b-table-column field="email" :label="translations.core.text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role" label="Role">
-                        {{ props.row.role }}
+                    <b-table-column field="role" :label="translations.core.text_role">
+                        {{ translateUserRole(props.row.role) }}
                     </b-table-column>
                     <b-table-column field="actions" label="">
                         <a class="delete" role="button" @click="deleteAttendant(props.row)"></a>
