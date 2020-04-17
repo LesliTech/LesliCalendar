@@ -128,7 +128,7 @@ module CloudDriver
                 href: "/crm/calendar?event_id=#{attendant.event.id}"
             }
 
-            ::DriverMailer.event_attendant_new(receipt, "You have been invited a an event", data).deliver_now
+            ::DriverMailer.event_attendant_new(receipt, I18n.t("driver.events.email_new_attendant_subject"), data).deliver_now
         end
 
         #############################
