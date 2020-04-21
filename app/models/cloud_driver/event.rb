@@ -69,6 +69,12 @@ module CloudDriver
             end
         end
 
+        def download(format)
+            puts "/////////////////////////////////////////////"
+            puts "TODO", format
+            puts "/////////////////////////////////////////////"
+        end
+
         #############################
         # Activities log methods
         #############################

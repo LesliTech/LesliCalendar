@@ -28,7 +28,7 @@ require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
     class EventsController < ApplicationController
-        before_action :set_event, only: [:update, :destroy, :show]
+        before_action :set_event, only: [:update, :destroy, :show, :download]
 
         # GET /events
         def index
@@ -90,6 +90,12 @@ module CloudDriver
             else
                 return responseWithError("Error deleting event", @event.errors.full_messages)
             end
+        end
+
+        # /events/1/download?format=csv
+        def download
+            format = params[:format]
+            @event.download(format)
         end
 
         def event_options

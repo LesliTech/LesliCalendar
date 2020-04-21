@@ -24,6 +24,10 @@ CloudDriver::Engine.routes.draw do
 
             resources :attendants
         end
+
+        member do
+            get "download"
+        end
     end
 
     scope :options do
