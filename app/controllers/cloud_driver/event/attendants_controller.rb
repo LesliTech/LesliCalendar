@@ -115,7 +115,7 @@ Building a better future, one line of code at a time.
     # Executing this controller's action from javascript's frontend
     this.http.get(`127.0.0.1/driver/options/events/attendants`);
 =end
-        def attendant_options
+        def attendant_options2
             responseWithSuccessful(Event::Attendant.attendant_options)
         end
 

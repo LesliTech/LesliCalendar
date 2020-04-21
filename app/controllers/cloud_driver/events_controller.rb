@@ -92,20 +92,21 @@ module CloudDriver
             end
         end
 
-        def event_options
-            options = {
-                current_employee_id: current_user.id,
-                event_types: Event.event_types.map {|k, _| {value: k, text: k}},
-                users: Courier::Core::Users.list
-            }
-
-            responseWithSuccessful(options)
-        end
-
         def event_by_model_options
             events = Courier::Driver::Event.by_model(params[:model_type], params[:model_id], current_user, @query)
-            
             responseWithSuccessful(events)
+        end
+
+        def options
+            parse query string here to include or exclude options
+            responseWithSuccessful({
+                event_types: Event.event_types.map {|k, _| {value: k, text: k}},
+                users: Courier::Core::Users.list
+            })
+        end
+
+        def attendant_options
+            responseWithSuccessful(Event::Attendant.attendant_options)
         end
 
         private

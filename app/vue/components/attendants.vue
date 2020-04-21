@@ -10,7 +10,7 @@ export default {
         return {
             active_tab: 0,
             main_route: '/driver/events',
-            options_route: '/driver/options/event/attendants',
+            options_route: '/driver/events/options/attendant',
             translations: {
                 main: I18n.t('driver.events'),
                 core: I18n.t('core.shared'),

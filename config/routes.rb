@@ -1,6 +1,6 @@
 CloudDriver::Engine.routes.draw do
 
-    root to: 'calendars#default'
+    root to: "calendars#default"
 
     resources :calendars do
         scope module: :calendar do
@@ -10,6 +10,7 @@ CloudDriver::Engine.routes.draw do
             resources :attachments
             resources :details
         end
+
     end
 
     resources :events do
@@ -24,14 +25,17 @@ CloudDriver::Engine.routes.draw do
 
             resources :attendants
         end
-    end
 
-    scope :options do
-        scope :event, module: :event do
-            get "/attendants",                  to: "attendants#attendant_options"
-            get "/files",                       to: "files#file_options"
-            get "/:cloud_object_id/files/zip",  to: "files#zip_download_options"
+        member do
+            get "files.zip" => "files#zip_download_options"
         end
-    end
 
+        collection do
+            get "search"
+            get "options" 
+            get "options/file", to: "event/files#file_options"
+            get "options/attendant" => "events#attendant_options"
+        end
+
+    end
 end

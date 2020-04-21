@@ -9,7 +9,11 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    responseWithSuccessful(current_user.account.driver.calendars.joins(:detail).select(:id, :name, :color))
+                    responseWithSuccessful(
+                        current_user.account.driver
+                        .calendars.joins(:detail)
+                        .select(:id, :name, :color)
+                    )
                 end
             end
         end
@@ -56,6 +60,10 @@ module CloudDriver
         def destroy
             @calendar.destroy
             redirect_to calendars_url, notice: 'Calendar was successfully destroyed.'
+        end
+
+        def options
+            
         end
 
         private
