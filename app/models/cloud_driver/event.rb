@@ -69,7 +69,7 @@ module CloudDriver
             end
         end
 
-        def download(format)
+        def download()
             data = Event
             .joins(:detail)
             .where("cloud_driver_events.id = ?", id)
@@ -90,10 +90,7 @@ module CloudDriver
             .sub("{{uid}}", Time.now.getutc.to_s)
             .sub("{{url}}", URI.escape(href) )
 
-            puts "/////////////////////////////////////////////"
-            puts "TODO", format
-            puts event_template
-            puts "/////////////////////////////////////////////"
+            event_template
         end
 
         #############################
