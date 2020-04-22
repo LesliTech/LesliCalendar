@@ -69,6 +69,30 @@ module CloudDriver
             end
         end
 
+        def download()
+            data = Event
+            .joins(:detail)
+            .where("cloud_driver_events.id = ?", id)
+            .first
+
+            href = "/crm/calendar?event_id=#{id}"
+            event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
+
+            event_template = event_template
+            .sub("{{organizer_name}}", data.organizer.name.strip )
+            .sub("{{organizer_email}}", data.organizer.email.strip )
+            .sub("{{dtstamp}}", data.detail.time_start.strftime("%Y%m%dT%H%M%S").strip )
+            .sub("{{description}}",( data.detail.description || "").strip )
+            .sub("{{summary}}", ( data.detail.title || "").strip )
+            .sub("{{location}}", ( data.detail.location || "").strip )
+            .sub("{{dtstart}}", ( data.detail.time_start.strftime("%Y%m%dT%H%M%S")).strip )
+            .sub("{{dtend}}", ( data.detail.time_end.strftime("%Y%m%dT%H%M%S")).strip )
+            .sub("{{uid}}", Time.now.getutc.to_s)
+            .sub("{{url}}", URI.escape(href) )
+
+            event_template
+        end
+
         #############################
         # Activities log methods
         #############################

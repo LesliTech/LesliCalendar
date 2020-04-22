@@ -239,6 +239,12 @@ export default {
                                         </span>
                                         <span>{{translations.main.form_anchor_go_to_company}}</span>
                                     </a>
+                                    <a class="button is-outlined" :href="`/driver/events/${event.model_id}.ics`">
+                                        <span class="icon">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <span>{{ translations.core.btn_download }}</span>
+                                    </a>
                                     <button class="button is-primary">
                                         <span class="icon">
                                             <i class="far fa-save"></i>
