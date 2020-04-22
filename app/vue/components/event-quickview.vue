@@ -241,7 +241,7 @@ export default {
                                     </a>
                                     <a class="button is-outlined" :href="`/driver/events/${event.model_id}.ics`">
                                         <span class="icon">
-                                            <i class="fas fa-link"></i>
+                                            <i class="fas fa-download"></i>
                                         </span>
                                         <span>{{ translations.core.btn_download }}</span>
                                     </a>
