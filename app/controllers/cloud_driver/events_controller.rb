@@ -43,6 +43,10 @@ module CloudDriver
                     return responseWithNotFound unless @event
                     responseWithSuccessful(@event.show)
                 end
+                format.ics do
+                    return responseWithNotFound unless @event
+                    responseWithSuccessful(@event.download)
+                end
             end
         end
 
