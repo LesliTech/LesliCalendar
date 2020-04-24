@@ -14,6 +14,17 @@ CloudDriver::Engine.routes.draw do
     end
 
     resources :events do
+        member do
+            get "files/zip" => "event/files#zip_download"
+        end
+
+        collection do
+            get "search"
+            get "options" 
+            get "options/file", to: "event/files#file_options"
+            get "options/attendant" => "events#attendant_options"
+        end
+
         scope module: :event do
             resources :actions
             resources :discussions
@@ -24,17 +35,6 @@ CloudDriver::Engine.routes.draw do
             resources :files
 
             resources :attendants
-        end
-
-        member do
-            get "files.zip" => "files#zip_download_options"
-        end
-
-        collection do
-            get "search"
-            get "options" 
-            get "options/file", to: "event/files#file_options"
-            get "options/attendant" => "events#attendant_options"
         end
 
     end
