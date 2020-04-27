@@ -23,6 +23,7 @@ CloudDriver::Engine.routes.draw do
             get "options" 
             get "options/file", to: "event/files#file_options"
             get "options/attendant" => "events#attendant_options"
+            get ":model_type/:model_id" => "events#events_by_model"
         end
 
         scope module: :event do

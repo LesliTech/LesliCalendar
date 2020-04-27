@@ -96,15 +96,15 @@ module CloudDriver
             end
         end
 
-        def event_by_model_options
+        def events_by_model
             events = Courier::Driver::Event.by_model(params[:model_type], params[:model_id], current_user, @query)
             responseWithSuccessful(events)
         end
 
         def options
-            parse query string here to include or exclude options
+            # parse query string here to include or exclude options
             responseWithSuccessful({
-                event_types: Event.event_types.map {|k, _| {value: k, text: k}},
+                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}},
                 users: Courier::Core::Users.list
             })
         end
