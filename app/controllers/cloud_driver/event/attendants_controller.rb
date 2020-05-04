@@ -107,18 +107,6 @@ Building a better future, one line of code at a time.
             end
         end
 
-=begin
-@return [Json] Json that contains a list of importan information required to create an attendant. At this
-    moment it only returns a list of users
-@description Uses the courier to retrieve a list of users and return it to the frontend
-@example
-    # Executing this controller's action from javascript's frontend
-    this.http.get(`127.0.0.1/driver/options/events/attendants`);
-=end
-        def attendant_options2
-            responseWithSuccessful(Event::Attendant.attendant_options)
-        end
-
         private
         
 =begin
