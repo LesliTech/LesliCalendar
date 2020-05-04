@@ -3,9 +3,9 @@ module CloudDriver
         belongs_to :event, foreign_key: "cloud_driver_events_id"
         belongs_to :user, foreign_key: "users_id"
 
-        def self.attendant_options
+        def self.attendant_options(current_user)
             {
-                users: Courier::Core::Users.list
+                users: current_user.account.users.all
             }
         end
     end
