@@ -11,7 +11,9 @@ module CloudDriver
             action_update:              "action_update",
             action_destroy:             "action_destroy",
             action_status:              "action_status",
-            action_create_attendant:    "action_create_attendant"
+            action_create_attendant:    "action_create_attendant",
+            action_create_file:             "action_create_file",
+            action_destroy_file:            "action_destroy_file"
         }
 
     end
