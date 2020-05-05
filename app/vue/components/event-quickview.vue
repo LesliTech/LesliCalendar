@@ -269,7 +269,7 @@ export default {
                         cloud-module="driver/event"
                         :cloud-id="event_id"
                         :translations-path="filesTranslationsPath"
-                        translations-file-types-path="driver.events"
+                        translations-file-types-path="driver.event/files"
                     />
                 </b-tab-item>
             </b-tabs>
