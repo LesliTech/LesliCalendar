@@ -134,7 +134,7 @@ module CloudDriver
                 is_creator = false
                 is_organizer = false
                 is_creator = current_user == @event.user if @event.user
-                is_organizer = current_user.id == @event.organizer_id if @event.organizer
+                is_organizer = current_user.id == @event.organizer_id
                 return responseWithUnauthorized if !is_creator && !is_organizer
             end
         end
