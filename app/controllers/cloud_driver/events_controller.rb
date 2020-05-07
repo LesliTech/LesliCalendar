@@ -29,6 +29,7 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class EventsController < ApplicationController
         before_action :set_event, only: [:update, :destroy, :show]
+        before_action :check_has_authorization, only: [:update, :edit]
 
         # GET /events
         def index
@@ -126,6 +127,16 @@ module CloudDriver
         # Use callbacks to share common setup or constraints between actions.
         def set_event
             @event = current_user.account.driver.events.find(params[:id])
+        end
+
+        def check_has_authorization
+            if !is_admin()
+                is_creator = false
+                is_organizer = false
+                is_creator = current_user == @event.user if @event.user
+                is_organizer = current_user.id == @event.organizer_id if @event.organizer
+                return responseWithUnauthorized if !is_creator && !is_organizer
+            end
         end
 
         # Only allow a trusted parameter "white list" through.
