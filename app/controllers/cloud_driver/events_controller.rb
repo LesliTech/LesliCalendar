@@ -64,12 +64,17 @@ module CloudDriver
             # event = current_user.account.driver.calendars.default().events.create(event_params)
             event = Event.new(event_params)            
             event.account = current_user.account
-            event.organizer = current_user
+            event.user = current_user # event creator
+            if params[:organizer_id]
+                event.organizer = current_user.account.users.find_by(id: params[:organizer_id])
+            else
+                event.organizer = current_user
+            end
             event.calendar = current_user.account.driver.calendars.default
             
             if event.save
                 Event.log_activity_create(current_user, event)
-                event.attendants.create(users_id: current_user.id)
+                event.attendants.create(users_id: event.organizer.id)
                 responseWithSuccessful(event.show)
             else
                 responseWithError('Error creationg event', event.errors.full_messages)
@@ -104,8 +109,7 @@ module CloudDriver
         def options
             # parse query string here to include or exclude options
             responseWithSuccessful({
-                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}},
-                users: Courier::Core::Users.list
+                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}}
             })
         end
 
@@ -133,7 +137,6 @@ module CloudDriver
             params.require(:event).permit(
                 :model_id,
                 :model_type,
-                :users_id,
                 detail_attributes: [
                     :title, 
                     :description, 
