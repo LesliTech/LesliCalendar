@@ -10,7 +10,7 @@ export default {
         return {
             active_tab: 0,
             main_route: '/driver/events',
-            options_route: '/driver/events/options/attendant',
+            users_route: '/users.json?role=kop&type=exclude',
             translations: {
                 main: I18n.t('driver.events'),
                 core: I18n.t('core.shared'),
@@ -40,18 +40,18 @@ export default {
     },
 
     mounted(){
-        this.getAttendantsOptions()
+        this.getUsers()
         this.getAttendants()
     },
 
     methods: {
-        getAttendantsOptions(){
+        getUsers(){
             this.loading.options = true
 
-            this.http.get(this.options_route).then(result => {
+            this.http.get(this.users_route).then(result => {
                 this.loading.options = false
                 if (result.successful) {
-                    this.attendant_options = result.data
+                    this.$set(this.attendant_options, 'users', result.data)
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
