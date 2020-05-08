@@ -130,12 +130,12 @@ module CloudDriver
         end
 
         def check_has_authorization
-            if !is_admin()
-                is_creator = false
+            if !is_admin?()
+                is_assigned_user = false
                 is_organizer = false
-                is_creator = current_user == @event.user if @event.user
+                is_assigned_user = current_user == @event.user if @event.user
                 is_organizer = current_user.id == @event.organizer_id
-                return responseWithUnauthorized if !is_creator && !is_organizer
+                return responseWithUnauthorized if !is_assigned_user && !is_organizer
             end
         end
 
