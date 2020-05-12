@@ -137,7 +137,6 @@ module CloudDriver
 
             data = {
                 name: attendant.user.name,
-                title: event.detail.title,
                 organizer_name: organizer.name,
                 organizer_email: organizer.email,
                 time_start: event_detail.time_start,
