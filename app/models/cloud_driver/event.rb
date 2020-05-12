@@ -45,11 +45,14 @@ module CloudDriver
             .where("cloud_driver_events.id = ?", id)
             .first
 
+            model_global_identifier = nil
+            model_global_identifier = model.global_identifier if model
+
             {
                 id: id,
                 model_id: model_id,
                 model_type: model_type,
-                model_global_identifier: model.global_identifier, # If the model is projects, this will be used in the url
+                model_global_identifier: model_global_identifier, # If the model is projects, this will be used in the url
                 users_id: users_id,
                 organizer_name: organizer.name,
                 detail_attributes: data   
