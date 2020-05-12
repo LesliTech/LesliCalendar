@@ -47,10 +47,6 @@ module CloudDriver
             }
 
             # events from CloudDriver
-            today = Time.now
-            filter_year = query[:filters][:year] || today.strftime("%Y")
-            filter_month = query[:filters][:month] || today.strftime("%m")
-            filter_day = query[:filters][:day]
             all_events = {}
 
             # selection all my events in one query
@@ -68,10 +64,8 @@ module CloudDriver
                 "true as \"is_attendant\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(REPLACE(cloud_driver_events.model_type, '::', '_')))  as \"classNames\""
             )
-            .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ?", current_user.id, current_user.id)
-            .where("extract('year' from cloud_driver_event_details.time_start) = ?", filter_year)
-            .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
-            own_driver_events = own_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
+            .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
+            .where("cloud_driver_event_details.time_start >= ? and cloud_driver_event_details.time_start <= ?", query[:filters][:start], query[:filters][:end])
             own_driver_events.each do |event|
                 all_events[event.id] = event
             end
@@ -91,9 +85,7 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("cloud_driver_event_details.public = true")
-            .where("extract('year' from cloud_driver_event_details.time_start) = ?", filter_year)
-            .where("extract('month' from cloud_driver_event_details.time_start) = ?", filter_month)
-            public_driver_events = public_driver_events.where("extract('day' from cloud_driver_event_details.time_start) = ?", filter_day) if filter_day
+            .where("cloud_driver_event_details.time_start >= ? and cloud_driver_event_details.time_start <= ?", query[:filters][:start], query[:filters][:end])
             public_driver_events.each do |event|
                 all_events[event.id] = event unless all_events[event.id]
             end
