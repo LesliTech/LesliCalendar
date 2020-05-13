@@ -227,7 +227,7 @@ export default {
                             </div>
                             <div class="column">
                                 <div class="buttons is-right">
-                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_id}`">
+                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_global_identifier}`">
                                         <span class="icon">
                                             <i class="fas fa-link"></i>
                                         </span>
@@ -239,7 +239,7 @@ export default {
                                         </span>
                                         <span>{{translations.main.form_anchor_go_to_company}}</span>
                                     </a>
-                                    <a class="button is-outlined" :href="`/driver/events/${event.model_id}.ics`">
+                                    <a class="button is-outlined" :href="`/driver/events/${event.id}.ics`">
                                         <span class="icon">
                                             <i class="fas fa-download"></i>
                                         </span>
