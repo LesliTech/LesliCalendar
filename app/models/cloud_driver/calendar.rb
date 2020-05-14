@@ -61,6 +61,7 @@ module CloudDriver
                 :location,
                 :model_type,
                 :url,
+                :event_type,
                 "true as \"is_attendant\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(REPLACE(cloud_driver_events.model_type, '::', '_')))  as \"classNames\""
             )
@@ -81,6 +82,7 @@ module CloudDriver
                 :location,
                 :model_type,
                 :url,
+                :event_type,
                 "false as \"is_attendant\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
