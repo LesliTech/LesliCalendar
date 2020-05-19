@@ -65,10 +65,8 @@ module CloudDriver
             event = Event.new(event_params)            
             event.account = current_user.account
             event.user = current_user # event creator
-            if params[:organizer_id]
-                event.organizer = current_user.account.users.find_by(id: params[:organizer_id])
-            else
-                event.organizer = current_user
+            unless params[:organizer_id]
+                event.organizer = current_user                
             end
             event.calendar = current_user.account.driver.calendars.default
             
@@ -125,6 +123,7 @@ module CloudDriver
             params.require(:event).permit(
                 :model_id,
                 :model_type,
+                :organizer_id,
                 detail_attributes: [
                     :title, 
                     :description, 

@@ -34,7 +34,7 @@ module CloudDriver
             sales_jf: 'sales_jf',
             phone_jf: 'phone_jf',
             meeting_intern: 'meeting_intern',
-            intern_telephone_conference: 'meeting_intern',
+            intern_telephone_conference: 'intern_telephone_conference',
             notary_appointment: 'notary_appointment'
         }
 
