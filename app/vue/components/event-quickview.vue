@@ -63,8 +63,8 @@ export default {
                 detail_attributes: {
                     title: null,
                     description: '',
-                    time_start: new Date(this.event_date),
-                    time_end: new Date(this.event_date),
+                    time_start: new Date(),
+                    time_end: new Date(),
                     location: '',
                     url: ''
                 }
@@ -121,9 +121,6 @@ export default {
             })
         },
         postEvent(e) {
-            this.event.detail_attributes.time_start = this.parseDate(this.start);
-            this.event.detail_attributes.time_end = this.parseDate(this.end);
-            
             if (e) { e.preventDefault() }
             this.http.post('/driver/events', {event: this.event}).then(result => {
                 this.event.id = result.data.id
@@ -178,26 +175,39 @@ export default {
             }) 
         },
         parseDate(values) {
-            const date = new Date(this.event_date)
-            date.setHours(values.getHours())
-            date.setMinutes(values.getMinutes())
-            return date
+            const date = new Date(this.event_date);
+            date.setHours(values.getHours());
+            date.setMinutes(0);
+            return date;
         },
+        isDefaultPublic() {
+            switch (this.event.detail_attributes.event_type) {
+                case 'notary_appointment':
+                case 'fair_with_kop':
+                case 'fair_dlgag':
+                    return true;
+                default:
+                    return false;
+            }
+        }
     },
 
     watch: {
         'event.detail_attributes.event_type'(event_type) {
             switch (event_type) {
                 case 'notary_appointment':
-                case 'kop_customer_appointment':
                 case 'fair_with_kop':
                 case 'fair_dlgag':
-                    this.event.detail_attributes.public = true
-                    break
+                    this.event.detail_attributes.public = true;
+                    break;
                 default:
-                    this.event.detail_attributes.public = false
-                    break
+                    this.event.detail_attributes.public = false;
+                    break;
             }
+        },
+        'event_date'(date) {
+            this.event.detail_attributes.time_start = this.parseDate(this.start);
+            this.event.detail_attributes.time_end = this.parseDate(this.end);
         },
     }
 
@@ -255,7 +265,7 @@ export default {
                         </div> 
                         <div class="field">
                             <label class="checkbox">
-                                <input type="checkbox" v-model="event.detail_attributes.public">
+                                <input type="checkbox" v-model="event.detail_attributes.public" :disabled='isDefaultPublic()'>
                                 {{ translations.main.form_input_mark_event_as_public_title }}
                             </label>
                         </div>
