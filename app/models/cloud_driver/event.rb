@@ -172,7 +172,6 @@ module CloudDriver
                 attendant.user,
                 "event_attendant_created",
                 {
-                    body: attendant.event.detail.description,
                     href: "/crm/calendar?event_id=#{attendant.event.id}"
                 }
             )
