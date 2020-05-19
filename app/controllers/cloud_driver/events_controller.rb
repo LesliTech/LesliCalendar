@@ -65,7 +65,8 @@ module CloudDriver
             event = Event.new(event_params)            
             event.account = current_user.account
             event.user = current_user # event creator
-            unless params[:organizer_id]
+
+            unless event_params[:organizer_id]
                 event.organizer = current_user                
             end
             event.calendar = current_user.account.driver.calendars.default
