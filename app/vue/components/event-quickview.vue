@@ -68,11 +68,18 @@ export default {
                     location: '',
                     url: ''
                 }
+            },
+            event_date: new Date(),
+            start: new Date(),
+            end: new Date(),
+            options: {
+                event_types: []
             }
         }
     },
     mounted() {
-        this.addListeners()
+        this.addListeners();
+        this.getOptions();
     },
     methods: {
         addListeners() {
@@ -155,7 +162,53 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
+        },
+        getOptions() {
+            this.http.get(`/driver/events/options.json`).then(result => {
+                if (result.successful) {
+                    for(let key in result.data){
+                        this.$set(this.options, key, result.data[key])
+                    }
+                }
+            }).catch(error => {
+                console.log(error)
+            }) 
+        },
+        parseDate(values) {
+            const date = new Date(this.event_date);
+            date.setHours(values.getHours());
+            date.setMinutes(0);
+            return date;
+        },
+        isDefaultPublic() {
+            switch (this.event.detail_attributes.event_type) {
+                case 'notary_appointment':
+                case 'fair_with_kop':
+                case 'fair_dlgag':
+                    return true;
+                default:
+                    return false;
+            }
         }
+    },
+
+    watch: {
+        'event.detail_attributes.event_type'(event_type) {
+            switch (event_type) {
+                case 'notary_appointment':
+                case 'fair_with_kop':
+                case 'fair_dlgag':
+                    this.event.detail_attributes.public = true;
+                    break;
+                default:
+                    this.event.detail_attributes.public = false;
+                    break;
+            }
+        },
+        'event_date'(date) {
+            this.event.detail_attributes.time_start = this.parseDate(this.start);
+            this.event.detail_attributes.time_end = this.parseDate(this.end);
+        },
     }
 
 }
@@ -195,10 +248,42 @@ export default {
                             </div>
                         </div>
                         <div class="field">
+                            <label class="label">{{ translations.main.form_label_type_of_event }}</label>
+                            <b-select
+                                v-model="event.detail_attributes.event_type"
+                                expanded
+                                :placeholder="translations.core.text_select_option"
+                            >
+                                <option
+                                    v-for="event_type in options.event_types"
+                                    :value="event_type.value"
+                                    :key="event_type.value"
+                                >
+                                    {{ event_type.text }}
+                                </option>
+                            </b-select> 
+                        </div> 
+                        <div class="field">
                             <label class="checkbox">
-                                <input type="checkbox" v-model="event.detail_attributes.public">
-                                {{translations.main.form_input_mark_event_as_public_title}}
+                                <input type="checkbox" v-model="event.detail_attributes.public" :disabled='isDefaultPublic()'>
+                                {{ translations.main.form_input_mark_event_as_public_title }}
                             </label>
+                        </div>
+                        <div class="field">
+                            <label class="label">{{ translations.main.form_label_date }}</label>
+                            <div class="control">
+                                <b-datepicker
+                                    editable
+                                    :date-parser="date.parse"
+                                    :date-formatter="date.toString"
+                                    :first-day-of-week="date.firstDayOfWeek()"
+                                    :placeholder="translations.core.text_select_date"
+                                    v-model="event_date"
+                                    icon="calendar"
+                                    required
+                                >
+                                </b-datepicker>
+                            </div>
                         </div>
                         <b-field :label="translations.core.text_start_at">
                             <b-timepicker
