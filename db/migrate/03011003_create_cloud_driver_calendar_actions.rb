@@ -8,6 +8,10 @@ class CreateCloudDriverCalendarActions < ActiveRecord::Migration[6.0]
                     column["name"].parameterize.underscore.to_sym
                 )
             end
+            
+            # acts_as_paranoid
+            t.datetime :deleted_at, index: true
+
             t.timestamps
         end
         add_reference :cloud_driver_calendar_actions, :cloud_driver_calendars, foreign_key: true, index: { name: "calendar_actions_calendars" }
