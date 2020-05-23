@@ -357,6 +357,8 @@ export default {
                         translations-file-types-path="driver.event/files"
                     />
                 </b-tab-item>
+                <slot name="extra-tab-item" :event_id="event_id">
+                </slot>
             </b-tabs>
 
             <div class="quickview-block">
