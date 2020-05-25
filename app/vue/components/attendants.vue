@@ -10,7 +10,7 @@ export default {
         return {
             active_tab: 0,
             main_route: '/driver/events',
-            users_route: '/users.json?role=kop&type=exclude',
+            users_route: '/users.json?role=kop,callcenter&type=exclude',
             translations: {
                 main: I18n.t('driver.events'),
                 core: I18n.t('core.shared'),
