@@ -75,7 +75,9 @@ module CloudDriver
         end
 
         def download()
-            href = "/crm/calendar?event_id=#{id}"
+
+
+            href = "#{Rails.configuration.default_url}/crm/calendar?event_id=#{id}"
             event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
 
             event_template = event_template
