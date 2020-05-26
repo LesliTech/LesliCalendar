@@ -66,6 +66,7 @@ module CloudDriver
             event = Event.new(event_params)            
             event.account = current_user.account
             event.user = current_user # event creator
+            event.set_workflow
 
             unless event_params[:organizer_id]
                 event.organizer = current_user                
