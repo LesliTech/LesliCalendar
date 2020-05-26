@@ -1,7 +1,22 @@
 CloudDriver::Engine.routes.draw do
-
     root to: "calendars#default"
 
+    resources :workflows do
+        member do
+            get "options/action", to: "workflow/actions#action_options"
+        end
+
+        scope module: :workflow do
+            resources :associations
+            resources :actions
+        end
+
+        collection do
+            post "list" => "workflows#index"
+            get "options/association",  to: "workflow/associations#association_options"
+        end
+    end
+    
     resources :calendars do
         scope module: :calendar do
             resources :actions
@@ -10,7 +25,6 @@ CloudDriver::Engine.routes.draw do
             resources :attachments
             resources :details
         end
-
     end
 
     resources :events do

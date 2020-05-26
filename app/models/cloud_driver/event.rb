@@ -1,5 +1,4 @@
 module CloudDriver
-    #class Company < CloudObject::Base
     class Event < CloudObject::Base
 
         acts_as_paranoid
@@ -9,6 +8,7 @@ module CloudDriver
         belongs_to :user,       foreign_key: "users_id", class_name: '::User', optional: true
         belongs_to :model,      polymorphic: true, optional: true
         belongs_to :organizer,  class_name: '::User'
+        belongs_to :status,     foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
         has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
