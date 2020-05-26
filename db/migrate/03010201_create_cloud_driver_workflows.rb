@@ -8,9 +8,6 @@ class CreateCloudDriverWorkflows < ActiveRecord::Migration[6.0]
                     column["name"].parameterize.underscore.to_sym
                 )
             end
-
-            # acts_as_paranoid
-            t.datetime :deleted_at, index: true
             
             t.timestamps
         end

@@ -12,9 +12,6 @@ class CreateCloudDriverWorkflowAssociations < ActiveRecord::Migration[6.0]
             # Specific fields to which you can associate a workflow with
             t.bigint :project_type
 
-            # acts_as_paranoid
-            t.datetime :deleted_at, index: true
-
             t.timestamps
         end
 

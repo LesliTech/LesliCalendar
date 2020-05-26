@@ -9,9 +9,6 @@ class CreateCloudDriverWorkflowActions < ActiveRecord::Migration[6.0]
                 )
             end
 
-            # acts_as_paranoid
-            t.datetime :deleted_at, index: true
-
             t.timestamps
         end
         
