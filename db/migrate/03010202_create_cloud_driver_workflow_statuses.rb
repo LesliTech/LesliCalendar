@@ -12,9 +12,5 @@ class CreateCloudDriverWorkflowStatuses < ActiveRecord::Migration[6.0]
             t.timestamps
         end
         add_reference :cloud_driver_workflow_statuses, :cloud_driver_workflows, foreign_key: true, index: { name: "driver_workflow_statuses_workflows" }
-        
-        change_column_default(:cloud_driver_workflow_statuses, :final, false)
-        change_column_default(:cloud_driver_workflow_statuses, :initial, false)
-        change_column_default(:cloud_driver_workflow_statuses, :inactive, false)
     end
 end
