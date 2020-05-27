@@ -8,10 +8,6 @@ class CreateCloudDriverEventSubscribers < ActiveRecord::Migration[6.0]
                     column["name"].parameterize.underscore.to_sym
                 )
             end
-            
-            # acts_as_paranoid
-            t.datetime :deleted_at, index: true
-
             t.timestamps
         end
         add_reference :cloud_driver_event_subscribers, :users, foreign_key: true, index: { name: 'driver_event_subscribers_users' }
