@@ -62,23 +62,21 @@ module CloudDriver
 
         # POST /events
         def create
-            # event = current_user.account.driver.calendars.default().events.create(event_params)
-            event = Event.new(event_params)            
+            event = current_user.account.driver.calendars.default.events.new(event_params)            
             event.account = current_user.account
-            event.user = current_user # event creator
+            event.user = current_user
             event.set_workflow
 
             unless event_params[:organizer_id]
                 event.organizer = current_user                
             end
-            event.calendar = current_user.account.driver.calendars.default
-            
+
             if event.save
                 Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: event.organizer.id)
                 responseWithSuccessful(event.show)
             else
-                responseWithError('Error creationg event', event.errors.full_messages)
+                responseWithError(event.errors.full_messages.to_sentence)
             end
         end
 
@@ -98,7 +96,7 @@ module CloudDriver
             if @event.destroy
                 return responseWithSuccessful
             else
-                return responseWithError("Error deleting event", @event.errors.full_messages)
+                return responseWithError(@event.errors.full_messages.to_sentence)
             end
         end
 
