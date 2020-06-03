@@ -48,7 +48,7 @@ export default {
             default() {
                 return []
             },
-            required: true
+            required: false
         }
     },
     data() {
@@ -116,9 +116,14 @@ export default {
                 </span>
             </p>
             <a  class="panel-block" v-for="(event, index) in events" :key="index" role="button" @click="emitShowEvent(event)">
+                
                 <span class="icon">
+                    <!--
                     <span :class="event.classNames"></span>
+                    -->
+                    <i class="fas fa-phone-alt"></i>
                 </span>
+
                 <b>
                     {{ ('0' + event.start.getHours()).slice(-2) }}:{{ ('0' + event.start.getMinutes()).slice(-2) }}
                 </b>
