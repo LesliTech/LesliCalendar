@@ -43,5 +43,9 @@ module CloudDriver
             annuity_calculations: "annuity_calculations",
             variant: "variant"
         }
+
+        def self.allowed_file_extensions
+            ["jpg","jpeg","png","pdf","doc","docx","tif","xls","xlsx","csv","html","eml","msg","emlx","oft","ost"]
+        end
     end
 end

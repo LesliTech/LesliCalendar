@@ -277,6 +277,8 @@ export default {
                                     :date-parser="date.parse"
                                     :date-formatter="date.toString"
                                     :first-day-of-week="date.firstDayOfWeek()"
+                                    :month-names="date.getMonthNames()"
+                                    :day-names="date.getDayNames()"
                                     :placeholder="translations.core.text_select_date"
                                     v-model="event_date"
                                     icon="calendar"

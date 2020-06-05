@@ -10,5 +10,6 @@ class CreateCloudDriverEvents < ActiveRecord::Migration[6.0]
         add_reference :cloud_driver_events, :cloud_driver_accounts, foreign_key: true
         add_reference :cloud_driver_events, :model, polymorphic: true
         add_reference :cloud_driver_events, :organizer
+        add_index :cloud_driver_events, :deleted_at
     end
 end
