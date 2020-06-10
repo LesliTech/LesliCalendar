@@ -10,6 +10,7 @@ class CreateCloudDriverEventFiles < ActiveRecord::Migration[6.0]
             end
             t.timestamps
         end
+        add_reference :cloud_driver_event_files, :users, foreign_key: true
         add_reference :cloud_driver_event_files, :cloud_driver_events, foreign_key: true
     end
 end

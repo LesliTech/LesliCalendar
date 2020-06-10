@@ -10,6 +10,7 @@ class CreateCloudDriverCalendarFiles < ActiveRecord::Migration[6.0]
             end
             t.timestamps
         end
+        add_reference :cloud_driver_calendar_files, :users, foreign_key: true
         add_reference :cloud_driver_calendar_files, :cloud_driver_calendars, foreign_key: true
     end
 end
