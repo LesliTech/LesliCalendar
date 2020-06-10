@@ -8,7 +8,6 @@ class CreateCloudDriverWorkflowStatuses < ActiveRecord::Migration[6.0]
                     column["name"].parameterize.underscore.to_sym
                 )
             end
-
             t.timestamps
         end
         add_reference :cloud_driver_workflow_statuses, :cloud_driver_workflows, foreign_key: true, index: { name: "driver_workflow_statuses_workflows" }
