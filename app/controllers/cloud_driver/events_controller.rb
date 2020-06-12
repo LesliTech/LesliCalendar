@@ -108,8 +108,7 @@ module CloudDriver
         def options
             # parse query string here to include or exclude options
             responseWithSuccessful({
-                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}},
-                current_user: current_user
+                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}}
             })
         end
 
