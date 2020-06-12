@@ -289,6 +289,7 @@ export default {
                         </div>
                         <b-field :label="translations.core.text_start_at">
                             <b-timepicker
+                                editable
                                 :placeholder="translations.core.text_select_time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_start">
@@ -296,6 +297,7 @@ export default {
                         </b-field>
                         <b-field :label="translations.core.text_end_at">
                             <b-timepicker
+                                editable
                                 :placeholder="translations.core.text_select_time"
                                 icon="clock"
                                 v-model="event.detail_attributes.time_end">
