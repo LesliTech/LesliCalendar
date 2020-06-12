@@ -104,6 +104,7 @@ export default {
                     }
                 }
                 this.active_tab = 0
+                this.syncEventDateTime()
             }
             this.show = !this.show
         },
@@ -111,8 +112,9 @@ export default {
             this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
                 if(result.data.detail_attributes.time_start){
                     result.data.detail_attributes.time_start = new Date(result.data.detail_attributes.time_start)
+                    this.event_date = new Date(result.data.detail_attributes.time_start)
                 }
-                if(result.data.detail_attributes.time_start){
+                if(result.data.detail_attributes.time_end){
                     result.data.detail_attributes.time_end = new Date(result.data.detail_attributes.time_end)
                 }
                 this.event = result.data
@@ -189,6 +191,10 @@ export default {
                 default:
                     return false;
             }
+        },
+        syncEventDateTime(){
+            this.event.detail_attributes.time_start = this.parseDate(this.start);
+            this.event.detail_attributes.time_end = this.parseDate(this.end);
         }
     },
 
@@ -206,8 +212,7 @@ export default {
             }
         },
         'event_date'(date) {
-            this.event.detail_attributes.time_start = this.parseDate(this.start);
-            this.event.detail_attributes.time_end = this.parseDate(this.end);
+            this.syncEventDateTime()
         },
     }
 
@@ -328,7 +333,7 @@ export default {
                                         </span>
                                         <span>{{translations.main.form_anchor_go_to_company}}</span>
                                     </a>
-                                    <a class="button is-outlined" :href="`/driver/events/${event.id}.ics`">
+                                    <a class="button is-outlined" :href="`/driver/events/${event.id}.ics`" v-if="event_id">
                                         <span class="icon">
                                             <i class="fas fa-download"></i>
                                         </span>
