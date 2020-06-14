@@ -64,7 +64,7 @@ module CloudDriver
                 :url,
                 :event_type,
                 "true as \"is_attendant\"",
-                "CONCAT('cloud_driver_event',' ', LOWER(REPLACE(cloud_driver_events.model_type, '::', '_')))  as \"classNames\""
+                "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
             .where("cloud_driver_event_details.time_start >= ? and cloud_driver_event_details.time_start <= ?", query[:filters][:start], query[:filters][:end])

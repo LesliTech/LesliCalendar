@@ -1,8 +1,5 @@
 module CloudDriver
     class Event < CloudObject::Base
-
-        acts_as_paranoid
-
         belongs_to :account,    foreign_key: "cloud_driver_accounts_id"
         belongs_to :calendar,   foreign_key: "cloud_driver_calendars_id"
         belongs_to :user,       foreign_key: "users_id", class_name: '::User', optional: true
