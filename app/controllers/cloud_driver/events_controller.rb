@@ -135,10 +135,9 @@ module CloudDriver
         end
 
         def check_has_access
-            puts "-----------------------------"
             if !is_admin?()
                 puts !(@event.attendants.include? current_user)
-                return responseWithUnauthorized if !is_creator_or_assigned?()
+                return responseWithUnauthorized if !is_creator_or_assigned?() && !(@event.attendants.include? current_user)
             end
         end
 
