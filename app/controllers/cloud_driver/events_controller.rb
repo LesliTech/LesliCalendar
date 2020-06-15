@@ -30,7 +30,6 @@ module CloudDriver
     class EventsController < ApplicationLesliController
         before_action :set_event, only: [:update, :destroy, :show]
         before_action :check_has_authorization, only: [:update, :destroy]
-        before_action :check_has_access, only: [:show]
 
         # GET /events
         def index
@@ -131,13 +130,6 @@ module CloudDriver
         def check_has_authorization
             if !is_admin?()
                 return responseWithUnauthorized if !is_creator_or_assigned?()
-            end
-        end
-
-        def check_has_access
-            if !is_admin?()
-                puts !(@event.attendants.include? current_user)
-                return responseWithUnauthorized if !is_creator_or_assigned?() && !(@event.attendants.include? current_user)
             end
         end
 
