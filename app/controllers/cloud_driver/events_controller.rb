@@ -27,9 +27,10 @@ Building a better future, one line of code at a time.
 require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
-    class EventsController < ApplicationController
+    class EventsController < ApplicationLesliController
         before_action :set_event, only: [:update, :destroy, :show]
-        before_action :check_has_authorization, only: [:update, :edit]
+        before_action :check_has_authorization, only: [:update, :destroy]
+        before_action :check_has_access, only: [:show]
 
         # GET /events
         def index
@@ -118,14 +119,26 @@ module CloudDriver
         def set_event
             @event = current_user.account.driver.events.find(params[:id])
         end
+        
+        def is_creator_or_assigned?()
+            is_assigned_user = false
+            is_organizer = false
+            is_assigned_user = current_user == @event.user if @event.user
+            is_organizer = current_user.id == @event.organizer_id
+            return is_assigned_user || is_organizer
+        end
 
         def check_has_authorization
             if !is_admin?()
-                is_assigned_user = false
-                is_organizer = false
-                is_assigned_user = current_user == @event.user if @event.user
-                is_organizer = current_user.id == @event.organizer_id
-                return responseWithUnauthorized if !is_assigned_user && !is_organizer
+                return responseWithUnauthorized if !is_creator_or_assigned?()
+            end
+        end
+
+        def check_has_access
+            puts "-----------------------------"
+            if !is_admin?()
+                puts !(@event.attendants.include? current_user)
+                return responseWithUnauthorized if !is_creator_or_assigned?()
             end
         end
 
