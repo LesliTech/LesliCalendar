@@ -23,6 +23,7 @@ Building a better future, one line of code at a time.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 */
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 
 // · Import core components
@@ -36,7 +37,8 @@ export default {
     components: {
         'component-cloud-object-file': componentCloudObjectFile,
         'component-cloud-object-discussion-simple': componentCloudObjectDiscussionSimple,
-        'component-attendants': componentAttendants
+        'component-attendants': componentAttendants,
+        'vc-date-picker': DatePicker
     },
     props: {
         discussionsTranslationsPath: {
@@ -112,10 +114,12 @@ export default {
             this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
                 if(result.data.detail_attributes.time_start){
                     result.data.detail_attributes.time_start = new Date(result.data.detail_attributes.time_start)
+                    this.start = new Date(result.data.detail_attributes.time_start)
                     this.event_date = new Date(result.data.detail_attributes.time_start)
                 }
                 if(result.data.detail_attributes.time_end){
                     result.data.detail_attributes.time_end = new Date(result.data.detail_attributes.time_end)
+                    this.end = new Date(result.data.detail_attributes.time_end)
                 }
                 this.event = result.data
             }).catch(error => {
@@ -277,19 +281,14 @@ export default {
                         <div class="field">
                             <label class="label">{{ translations.main.form_label_date }}</label>
                             <div class="control">
-                                <b-datepicker
-                                    editable
-                                    :date-parser="date.parse"
-                                    :date-formatter="date.toString"
-                                    :first-day-of-week="date.firstDayOfWeek()"
-                                    :month-names="date.getMonthNames()"
-                                    :day-names="date.getDayNames()"
-                                    :placeholder="translations.core.text_select_date"
+                                <vc-date-picker
                                     v-model="event_date"
-                                    icon="calendar"
-                                    required
+                                    :locale="date.vcDatepickerConfig()"
+                                    :input-props="{
+                                        placeholder: translations.core.text_select_date
+                                    }"
                                 >
-                                </b-datepicker>
+                                </vc-date-picker>
                             </div>
                         </div>
                         <b-field :label="translations.core.text_start_at">
