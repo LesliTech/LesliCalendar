@@ -65,6 +65,7 @@ export default {
                 detail_attributes: {
                     title: null,
                     description: '',
+                    event_date: new Date(),
                     time_start: new Date(),
                     time_end: new Date(),
                     location: '',
@@ -234,7 +235,7 @@ export default {
                     <form @submit.prevent="submitEvent()">
                         <div class="field" v-if="event_id">
                             <label class="label">{{translations.core.text_organizer}}</label>
-                                <div class="control">
+                            <div class="control">
                                 <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
                             </div>
                         </div>
@@ -282,7 +283,7 @@ export default {
                             <label class="label">{{ translations.main.form_label_date }}</label>
                             <div class="control">
                                 <vc-date-picker
-                                    v-model="event_date"
+                                    v-model="event.detail_attributes.event_date"
                                     :locale="date.vcDatepickerConfig()"
                                     :input-props="{
                                         placeholder: translations.core.text_select_date
