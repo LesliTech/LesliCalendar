@@ -57,6 +57,7 @@ module CloudDriver
                 :id, 
                 :title, 
                 :description, 
+                "event_date as date",
                 "time_start as start", 
                 "time_end as end", 
                 :location,
@@ -67,7 +68,7 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
-            .where("cloud_driver_event_details.time_start >= ? and cloud_driver_event_details.time_start <= ?", query[:filters][:start], query[:filters][:end])
+            .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             own_driver_events.each do |event|
                 all_events[event.id] = event
             end
@@ -78,6 +79,7 @@ module CloudDriver
                 :id, 
                 :title, 
                 :description, 
+                "event_date as date",
                 "time_start as start", 
                 "time_end as end", 
                 :location,
@@ -88,12 +90,12 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("cloud_driver_event_details.public = true")
-            .where("cloud_driver_event_details.time_start >= ? and cloud_driver_event_details.time_start <= ?", query[:filters][:start], query[:filters][:end])
+            .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             public_driver_events.each do |event|
                 all_events[event.id] = event unless all_events[event.id]
             end
 
-            calendar_data[:driver_events] = all_events.values.sort_by(&:start)
+            calendar_data[:driver_events] = all_events.values.sort_by(&:date)
             
             # tasks from CloudFocus
             if query[:filters][:include] && query[:filters][:include][:focus_tasks]
@@ -102,6 +104,7 @@ module CloudDriver
                         id: task[:id],
                         title: task[:title],
                         description: task[:description],
+                        date: task[:deadline],
                         start: task[:deadline],
                         end: task[:deadline],
                         classNames: ["cloud_driver_event"]

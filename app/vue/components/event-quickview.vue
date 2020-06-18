@@ -65,16 +65,13 @@ export default {
                 detail_attributes: {
                     title: null,
                     description: '',
-                    event_date: new Date(),
-                    time_start: new Date(),
-                    time_end: new Date(),
+                    event_date: null,
+                    time_start: null,
+                    time_end: null,
                     location: '',
                     url: ''
                 }
             },
-            event_date: new Date(),
-            start: new Date(),
-            end: new Date(),
             options: {
                 event_types: []
             }
@@ -100,27 +97,26 @@ export default {
                     detail_attributes: {
                         title: null,
                         description: '',
-                        time_start: new Date(),
-                        time_end: new Date(),
+                        event_date: this.newDate(),
+                        time_start: null,
+                        time_end: null,
                         location: '',
                         url: ''
                     }
                 }
                 this.active_tab = 0
-                this.syncEventDateTime()
+                // this.syncEventDateTime()
             }
             this.show = !this.show
         },
         getEvent() {
             this.http.get(`/driver/events/${this.event_id}.json`).then(result => {
+                result.data.detail_attributes.event_date = new Date(result.data.detail_attributes.event_date)
                 if(result.data.detail_attributes.time_start){
                     result.data.detail_attributes.time_start = new Date(result.data.detail_attributes.time_start)
-                    this.start = new Date(result.data.detail_attributes.time_start)
-                    this.event_date = new Date(result.data.detail_attributes.time_start)
                 }
                 if(result.data.detail_attributes.time_end){
                     result.data.detail_attributes.time_end = new Date(result.data.detail_attributes.time_end)
-                    this.end = new Date(result.data.detail_attributes.time_end)
                 }
                 this.event = result.data
             }).catch(error => {
@@ -149,6 +145,7 @@ export default {
             })
         },
         submitEvent(e) {
+            this.syncEventDateTime()
             if (e) { e.preventDefault() }
             if (this.event_id) {
                 this.putEvent()
@@ -181,10 +178,10 @@ export default {
                 console.log(error)
             }) 
         },
-        parseDate(values) {
-            const date = new Date(this.event_date);
-            date.setHours(values.getHours());
-            date.setMinutes(0);
+        parseDate(time) {
+            const date = new Date(this.event.detail_attributes.event_date);
+            date.setHours(time.getHours());
+            date.setMinutes(time.getMinutes());
             return date;
         },
         isDefaultPublic() {
@@ -198,8 +195,14 @@ export default {
             }
         },
         syncEventDateTime(){
-            this.event.detail_attributes.time_start = this.parseDate(this.start);
-            this.event.detail_attributes.time_end = this.parseDate(this.end);
+            const event = { ...this.event, ...this.event.detail_attributes }
+            if (event.time_start) {
+                this.event.detail_attributes.time_start = this.parseDate(event.time_start);
+                this.event.detail_attributes.time_end = this.parseDate(event.time_end || event.time_start);
+            }
+        },
+        newDate() {
+            return new Date(new Date().setHours(0,0,0,0))
         }
     },
 
@@ -216,7 +219,7 @@ export default {
                     break;
             }
         },
-        'event_date'(date) {
+        'event.detail_attributes.event_date'(event_date) {
             this.syncEventDateTime()
         },
     }
