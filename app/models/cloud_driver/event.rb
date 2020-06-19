@@ -13,6 +13,7 @@ module CloudDriver
         has_many :attendants, foreign_key: "cloud_driver_events_id"
         has_many :files, foreign_key: "cloud_driver_events_id"
         has_many :activities, foreign_key: "cloud_driver_events_id"
+        has_many :discussions, foreign_key: "cloud_driver_events_id"
 
         enum event_type: {
             kuv_with_kop: 'kuv_with_kop',
@@ -38,7 +39,7 @@ module CloudDriver
         def show
             data = Event
             .joins(:detail)
-            .select(:title, :description, :time_start, :time_end, :location, :url, :event_type, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :event_type, :public)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -52,7 +53,7 @@ module CloudDriver
                 model_global_identifier: model_global_identifier, # If the model is projects, this will be used in the url
                 users_id: users_id,
                 organizer_id: organizer_id,
-                organizer_name: organizer.name,
+                organizer_name: organizer.full_name,
                 detail_attributes: data   
             }
         end
@@ -62,7 +63,7 @@ module CloudDriver
             attendants.map do |attendant|
                 user = attendant.user
                 {
-                    name: user.name,
+                    name: user.full_name,
                     role: user.role,
                     email: user.email,
                     users_id: user.id,
