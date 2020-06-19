@@ -13,6 +13,7 @@ module CloudDriver
         has_many :attendants, foreign_key: "cloud_driver_events_id"
         has_many :files, foreign_key: "cloud_driver_events_id"
         has_many :activities, foreign_key: "cloud_driver_events_id"
+        has_many :discussions, foreign_key: "cloud_driver_events_id"
 
         enum event_type: {
             kuv_with_kop: 'kuv_with_kop',
