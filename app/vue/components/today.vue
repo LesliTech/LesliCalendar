@@ -95,7 +95,10 @@ export default {
         },
         emitShowEvent(event){
             this.bus.publish('show:/driver/component/event-quickview', event.id)
-        }
+        },
+        getDateTitle(date) {
+            return this.translations.core[`text_month_${dayjs(this.date).format('MMMM').toLowerCase()}`]
+        },
     },
     watch: {
         driverEvents() {
@@ -109,10 +112,10 @@ export default {
         <article class="panel">
             <p class="panel-heading">
                 <span v-if="isToday(date)">
-                    {{translations.core.text_today}}
+                    {{ translations.core.text_today }}
                 </span>
                 <span v-else>
-                    {{date.toLocaleString('default', { month: 'long' }) + " - " + date.getDate() }}
+                    {{ getDateTitle(date) + " - " + date.getDate() }}
                 </span>
             </p>
             <a  class="panel-block" v-for="(event, index) in events" :key="index" role="button" @click="emitShowEvent(event)">
