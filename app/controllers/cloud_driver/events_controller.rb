@@ -142,6 +142,7 @@ module CloudDriver
                 detail_attributes: [
                     :title, 
                     :description, 
+                    :event_date,
                     :time_start, 
                     :time_end, 
                     :location, 

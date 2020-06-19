@@ -3,6 +3,7 @@ class CreateCloudDriverEventDetails < ActiveRecord::Migration[6.0]
         create_table :cloud_driver_event_details do |t|
             t.string    :title, required: true
             t.text      :description
+            t.datetime  :event_date
             t.datetime  :time_start
             t.datetime  :time_end
             t.string    :location
