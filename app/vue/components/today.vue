@@ -97,7 +97,7 @@ export default {
             this.bus.publish('show:/driver/component/event-quickview', event.id)
         },
         getDateTitle(date) {
-            return this.translations.core[`text_month_${date.toLocaleString('default', { month: 'long' }).toLowerCase()}`]
+            return this.translations.core[`text_month_${dayjs(this.date).format('MMMM').toLowerCase()}`]
         },
     },
     watch: {
