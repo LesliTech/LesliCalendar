@@ -291,6 +291,7 @@ export default {
                                     :input-props="{
                                         placeholder: translations.core.text_select_date
                                     }"
+                                    :min-date="new Date()"
                                 >
                                 </vc-date-picker>
                             </div>
