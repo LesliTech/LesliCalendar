@@ -128,7 +128,7 @@ module CloudDriver
         end
 
         def check_has_authorization
-            if !is_admin?()
+            unless current_user.is_role?("owner", "admin")
                 return responseWithUnauthorized if !is_creator_or_assigned?()
             end
         end
