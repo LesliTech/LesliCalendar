@@ -77,14 +77,14 @@ module CloudDriver
             event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
 
             event_template = event_template
-            .sub("{{organizer_name}}", ( self.organizer.name || "").strip )
+            .sub("{{organizer_name}}", ( self.organizer.full_name || "").strip )
             .sub("{{organizer_email}}", ( self.organizer.email || "").strip )
-            .sub("{{dtstamp}}", ( self.detail.time_start.strftime("%Y%m%dT%H%M%S") ).strip )
+            .sub("{{dtstamp}}", ( self.detail.event_date.strftime("%Y%m%d") ).strip )
             .sub("{{description}}",( self.detail.description || "").strip )
             .sub("{{summary}}", ( self.detail.title || "").strip )
             .sub("{{location}}", ( self.detail.location || "").strip )
-            .sub("{{dtstart}}", ( self.detail.time_start.strftime("%Y%m%dT%H%M%S") ).strip )
-            .sub("{{dtend}}", ( self.detail.time_end.strftime("%Y%m%dT%H%M%S") ).strip )
+            .sub("{{dtstart}}", ( self.detail.time_start.strftime("%Y%m%dT%H%M%S") || self.detail.event_date.strftime("%Y%m%d") ).strip )
+            .sub("{{dtend}}", ( self.detail.time_end.strftime("%Y%m%dT%H%M%S") || "").strip )
             .sub("{{uid}}", Time.now.getutc.to_s)
             .sub("{{url}}", URI.escape(url) )
 
@@ -121,8 +121,8 @@ module CloudDriver
             event.activities.create(
                 user: current_user,
                 category: "action_create_attendant",
-                description: attendant.user.name,
-                value_to: attendant.user.name
+                description: attendant.user.full_name,
+                value_to: attendant.user.full_name
             )
         end
 
@@ -138,9 +138,10 @@ module CloudDriver
             event_detail = event.detail
 
             data = {
-                name: attendant.user.name,
-                organizer_name: organizer.name,
+                name: attendant.user.full_name,
+                organizer_name: organizer.full_name,
                 organizer_email: organizer.email,
+                event_date: event_detail.event_date,
                 time_start: event_detail.time_start,
                 time_end: event_detail.time_end,
                 title: event_detail.title,
@@ -162,7 +163,7 @@ module CloudDriver
             event = attendant.event
 
             data = {
-                name: attendant.user.name,
+                name: attendant.user.full_name,
                 title: event.detail.title,
                 href: "/crm/calendar?event_id=#{attendant.event.id}"
             }
