@@ -131,6 +131,7 @@ export default {
                 this.organizer_name = result.data.organizer_name
                 this.active_tab = 1
                 this.$emit('post-event', result.data)
+                this.bus.publish("post:/haus/app/show")
                 this.notification.alert(this.translations.main.notification_event_created, 'success')
             }).catch(error => {
                 console.log(error)
