@@ -289,6 +289,7 @@ export default {
                                 <vc-date-picker
                                     v-model="event.detail_attributes.event_date"
                                     :locale="date.vcDatepickerConfig()"
+                                    :popover="{ visibility: 'focus' }"
                                     :input-props="{
                                         placeholder: translations.core.text_select_date
                                     }"
