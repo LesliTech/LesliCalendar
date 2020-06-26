@@ -74,7 +74,7 @@ export default {
         validateEvents() {
             this.events = []
             this.driverEvents.forEach(event => {
-                let start = new Date(event.start) 
+                const start = event.start ? new Date(event.start) : null
                 this.events.push({
                     id: event.id,
                     title: event.title,
@@ -84,7 +84,7 @@ export default {
             })
 
             this.focusTasks.forEach(task => {
-                let start = new Date(task.start) 
+                const start = event.start ? new Date(event.start) : null
                 this.events.push({
                     id: task.id,
                     title: task.title,
@@ -128,7 +128,7 @@ export default {
                 </span>
 
                 <b>
-                    {{ ('0' + event.start.getHours()).slice(-2) }}:{{ ('0' + event.start.getMinutes()).slice(-2) }}
+                    {{ event.start && ('0' + event.start.getHours()).slice(-2) + ':' + ('0' + event.start.getMinutes()).slice(-2) }}
                 </b>
                 {{ event.title }}
             </a>
