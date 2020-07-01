@@ -140,8 +140,12 @@ export default {
         putEvent(e) {
             if (e) { e.preventDefault() }
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
-                this.bus.publish("put:/driver/event")
-                this.notification.alert(this.translations.main.notification_event_updated, 'success')
+                if (result.successful) {
+                    this.bus.publish("put:/driver/event")
+                    this.notification.alert(this.translations.main.notification_event_updated, 'success')
+                } else {
+                    this.notification.alert(result.error.message, 'danger')
+                }
             }).catch(error => {
                 console.log(error)
             })
