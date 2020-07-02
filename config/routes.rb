@@ -3,17 +3,15 @@ CloudDriver::Engine.routes.draw do
 
     resources :workflows do
         member do
-            get "options/action", to: "workflow/actions#action_options"
+            get "actions/options",          to: "workflow/actions#options"
         end
-
+        collection do
+            post "list" => :index
+            get  "associations/options",    to: "workflow/associations#options"
+        end
         scope module: :workflow do
             resources :associations
             resources :actions
-        end
-
-        collection do
-            post "list" => "workflows#index"
-            get "options/association",  to: "workflow/associations#association_options"
         end
     end
     
@@ -29,9 +27,14 @@ CloudDriver::Engine.routes.draw do
 
     resources :events do
         member do
-            get "files/zip" => "event/files#zip_download"
+            get "/custom/files-zip-download",   to:  "event/files#zip_download"
         end
-
+        collection do
+            get :search
+            get :options 
+            get "/files/options",               to: "event/files#options"
+            get "/custom/events-by-model/:model_type/:model_id" =>  :events_by_model
+        end
         scope module: :event do
             resources :actions
             resources :discussions
@@ -42,13 +45,6 @@ CloudDriver::Engine.routes.draw do
             resources :files
 
             resources :attendants
-        end
-
-        collection do
-            get "search"
-            get "options" 
-            get "options/file", to: "event/files#file_options"
-            get ":model_type/:model_id" => "events#events_by_model"
         end
 
     end
