@@ -4,7 +4,7 @@ module CloudDriver
         belongs_to :calendar,   foreign_key: "cloud_driver_calendars_id"
         belongs_to :user,       foreign_key: "users_id", class_name: '::User', optional: true
         belongs_to :model,      polymorphic: true, optional: true
-        belongs_to :organizer,  class_name: '::User'
+        belongs_to :organizer,  foreign_key: "organizer_id", class_name: '::User'
         belongs_to :status,     foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
         has_one :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
@@ -36,7 +36,21 @@ module CloudDriver
             notary_appointment: 'notary_appointment'
         }
 
-        def show
+        # @return [Array] An array of users, the relevant user for a task
+        # @description Returns the relevant users for the task. In this case, the creator and the
+        #   assigned users. This list is ordered, the first one is always the most important and will be
+        #   the only one used for object level permission verification based on the role_detail.object_level_permission field value
+        # @example
+        #   creator_user = User.find(1)
+        #   assigned_user = User.find(2)
+        #   account = Account.find(1)
+        #   task = account.focus.tasks.create!(creator: creator_user, user: assigned_user, detail_attributes(....))
+        #   task.relevant_users    # Will return an array with both users as the relevant users
+        def relevant_users
+            return [organizer, user]
+        end
+
+        def show(current_user = nil)
             data = Event
             .joins(:detail)
             .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :event_type, :public)
@@ -50,6 +64,7 @@ module CloudDriver
                 id: id,
                 model_id: model_id,
                 model_type: model_type,
+                editable: self.is_editable_by?(current_user),
                 model_global_identifier: model_global_identifier, # If the model is projects, this will be used in the url
                 users_id: users_id,
                 organizer_id: organizer_id,
@@ -64,7 +79,7 @@ module CloudDriver
                 user = attendant.user
                 {
                     name: user.full_name,
-                    role: user.role,
+                    role: user.role.detail.name,
                     email: user.email,
                     users_id: user.id,
                     id: attendant.id
@@ -142,8 +157,8 @@ module CloudDriver
                 organizer_name: organizer.full_name,
                 organizer_email: organizer.email,
                 event_date: event_detail.event_date,
-                time_start: event_detail.time_start,
-                time_end: event_detail.time_end,
+                time_start: event_detail.time_start || event_detail.event_date,
+                time_end: event_detail.time_end || event_detail.event_date + 1.days,
                 title: event_detail.title,
                 location: event_detail.location,
                 description: event_detail.description,

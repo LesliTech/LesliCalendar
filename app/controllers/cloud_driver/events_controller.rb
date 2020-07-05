@@ -42,7 +42,7 @@ module CloudDriver
                 format.html { }
                 format.json do 
                     return responseWithNotFound unless @event
-                    responseWithSuccessful(@event.show)
+                    responseWithSuccessful(@event.show(current_user))
                 end
                 format.ics do
                     return responseWithNotFound unless @event
@@ -74,7 +74,7 @@ module CloudDriver
             if event.save
                 Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: event.organizer.id)
-                responseWithSuccessful(event.show)
+                responseWithSuccessful(event.show(current_user))
             else
                 responseWithError(event.errors.full_messages.to_sentence)
             end

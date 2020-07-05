@@ -54,6 +54,8 @@ module CloudDriver
             own_driver_events = calendar.events.joins(:detail)
             .joins("inner join cloud_driver_event_attendants CDEA on CDEA.cloud_driver_events_id = cloud_driver_events.id")
             .select(
+                :users_id,
+                :organizer_id,
                 :id, 
                 :title, 
                 :description, 
@@ -65,18 +67,22 @@ module CloudDriver
                 :url,
                 :event_type,
                 "true as \"is_attendant\"",
+                "false as \"editable\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
             .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             own_driver_events.each do |event|
+                event[:editable] = event.is_editable_by?(current_user)
                 all_events[event.id] = event
             end
 
             # selection all other public events in another query
             public_driver_events = calendar.events.joins(:detail)
             .select(
-                :id, 
+                :id,
+                :users_id,
+                :organizer_id,
                 :title, 
                 :description, 
                 "event_date as date",
@@ -87,12 +93,16 @@ module CloudDriver
                 :url,
                 :event_type,
                 "false as \"is_attendant\"",
+                "false as \"editable\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("cloud_driver_event_details.public = true")
             .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             public_driver_events.each do |event|
-                all_events[event.id] = event unless all_events[event.id]
+                unless all_events[event.id]
+                    event[:editable] = event.is_editable_by?(current_user)
+                    all_events[event.id] = event
+                end
             end
 
             calendar_data[:driver_events] = all_events.values.sort_by(&:date)
@@ -112,56 +122,13 @@ module CloudDriver
                 end
             end
 
-            # tasks from CloudFocus
+            # tickets from CloudHelp
             if query[:filters][:include] && query[:filters][:include][:help_tickets]
                 calendar_data[:help_tickets]  = Courier::Help::Ticket.with_deadline(current_user)
             end
 
             calendar_data
         end
-
-=begin
-        def self.events_from_all_modules(current_user)
-
-            calendar = self.default
-
-            # tasks from CloudFocus
-            driver_events = Courier::Focus::Task.with_deadline(current_user).map do |task|
-                {
-                    id: task[:id],
-                    title: task[:title],
-                    description: task[:description],
-                    start: task[:deadline],
-                    end: task[:deadline],
-                    classNames: ["cloud_driver_event"]
-                }
-            end
-
-            # tasks from CloudFocus
-            help_tickets = Courier::Help::Ticket.with_deadline(current_user)
-
-            # tasks from default calendar
-            driver_events = calendar.events.joins(:detail)
-            .select(
-                :id, 
-                :title, 
-                :description, 
-                "time_start as start", 
-                "time_end as end", 
-                :location, 
-                :url,
-                "'cloud_driver_event' as \"classNames\""
-            )
-
-            {
-                id: calendar.id,
-                name: calendar.name,
-                driver_events: driver_events,
-                help_tickets: help_tickets,
-                driver_events: driver_events
-            }
-        end
-=end
 
     end
 end
