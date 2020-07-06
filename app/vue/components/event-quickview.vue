@@ -170,14 +170,10 @@ export default {
                 if (result.successful) {
                 this.show = false
                 this.$emit('delete-event', this.event)
-<<<<<<< HEAD
                 this.alert(this.translations.main.notification_event_deleted, 'success')
-=======
-                this.notification.alert(this.translations.main.notification_event_deleted, 'success')
                 } else {
-                    this.notification.alert(result.error.message, 'danger')
+                    this.alert(result.error.message, 'danger')
                 }
->>>>>>> 9414ba038f2bc9cf183d52faf6e0f1e7f0bb8872
             }).catch(error => {
                 console.log(error)
             })
