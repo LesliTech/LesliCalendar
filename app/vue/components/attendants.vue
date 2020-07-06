@@ -3,12 +3,16 @@ export default {
     props: {
         eventId: {
             required: true
+        },
+        eventEditable: {
+            type: Boolean,
+            default: true
         }
     },
 
     data(){
         return {
-            active_tab: 0,
+            active_tab: 1,
             main_route: '/driver/events',
             users_route: '/users.json?role=kop,callcenter&type=exclude',
             translations: {
@@ -135,7 +139,7 @@ export default {
                         id: result.data.id,
                         name: user.name || user.email,
                         email: user.email,
-                        role: user.role,
+                        role: user.role_name,
                         users_id: user.id
                     })
                     this.notification.alert(this.translations.main.notification_attendant_created, 'success')
@@ -230,6 +234,12 @@ export default {
             this.getAttendants()
         },
 
+        eventEditable(){
+            if(! this.eventEditable){
+                this.active_tab = 1
+            }
+        },
+
         search(){
             this.pagination.current_page = 1
         }
@@ -238,7 +248,7 @@ export default {
 </script>
 <template>
     <b-tabs expanded v-model="active_tab">
-        <b-tab-item :label="translations.main.form_attendants_tab_new">
+        <b-tab-item :label="translations.main.form_attendants_tab_new" :visible="eventEditable">
             <b-field>
                 <b-input :placeholder="translations.main.form_attendants_filter_placeholder"
                     v-model="search"
@@ -259,8 +269,8 @@ export default {
                     <b-table-column field="email" :label="translations.core.text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role" :label="translations.core.text_role">
-                        {{ translateUserRole(props.row.role) }}
+                    <b-table-column field="role_name" :label="translations.core.text_role">
+                        {{ translateUserRole(props.row.role_name) }}
                     </b-table-column>
                     <b-table-column field="actions" label="">
                         <b-checkbox size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
@@ -300,7 +310,7 @@ export default {
                         {{ translateUserRole(props.row.role) }}
                     </b-table-column>
                     <b-table-column field="actions" label="">
-                        <a class="delete" role="button" @click="deleteAttendant(props.row)"></a>
+                        <a v-if="eventEditable" class="delete" role="button" @click="deleteAttendant(props.row)"></a>
                     </b-table-column>
                 </template>
             </b-table>
