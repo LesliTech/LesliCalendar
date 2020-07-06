@@ -132,7 +132,7 @@ export default {
                 this.active_tab = 1
                 this.$emit('post-event', result.data)
                 this.bus.publish("post:/driver/event")
-                this.notification.alert(this.translations.main.notification_event_created, 'success')
+                this.alert(this.translations.main.notification_event_created, 'success')
             }).catch(error => {
                 console.log(error)
             })
@@ -142,9 +142,9 @@ export default {
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
                 if (result.successful) {
                     this.bus.publish("put:/driver/event")
-                    this.notification.alert(this.translations.main.notification_event_updated, 'success')
+                    this.alert(this.translations.main.notification_event_updated, 'success')
                 } else {
-                    this.notification.alert(result.error.message, 'danger')
+                    this.alert(result.error.message, 'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -168,7 +168,7 @@ export default {
             this.http.delete(url).then(result => {
                 this.show = false
                 this.$emit('delete-event', this.event)
-                this.notification.alert(this.translations.main.notification_event_deleted, 'success')
+                this.alert(this.translations.main.notification_event_deleted, 'success')
             }).catch(error => {
                 console.log(error)
             })

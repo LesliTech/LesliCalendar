@@ -55,7 +55,7 @@ export default {
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
-                    this.notification.alert(result.error.message, 'danger')
+                    this.alert(result.error.message, 'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -73,7 +73,7 @@ export default {
                     this.loaded.attendants = true
                     this.syncLists()
                 }else{
-                    this.notification.alert(result.error.message,'danger')
+                    this.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -138,9 +138,9 @@ export default {
                         role: user.role,
                         users_id: user.id
                     })
-                    this.notification.alert(this.translations.main.notification_attendant_created, 'success')
+                    this.alert(this.translations.main.notification_attendant_created, 'success')
                 }else{
-                    this.notification.alert(result.error.message,'danger')
+                    this.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
@@ -158,7 +158,7 @@ export default {
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
-                    this.notification.alert(this.translations.main.notification_attendant_deleted, 'success')
+                    this.alert(this.translations.main.notification_attendant_deleted, 'success')
                     
                     this.attendants = this.attendants.filter((attendant)=>{
                         return attendant.id != attendant_id
@@ -170,7 +170,7 @@ export default {
                     user.attendant_id = null
                     user.checked = false
                 }else{
-                    this.notification.alert(result.error.message,'danger')
+                    this.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
