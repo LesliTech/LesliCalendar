@@ -128,9 +128,9 @@ module CloudDriver
         end
 
         def check_has_authorization
-            unless current_user.is_role?("owner", "admin")
-                return responseWithUnauthorized if !is_creator_or_assigned?()
-            end
+            return true if current_user.is_role?("owner", "admin")
+            return true if is_creator_or_assigned?()
+            return responseWithUnauthorized
         end
 
         # Only allow a trusted parameter "white list" through.

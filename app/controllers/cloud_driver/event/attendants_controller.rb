@@ -28,6 +28,7 @@ Building a better future, one line of code at a time.
 =end
     class Event::AttendantsController < ApplicationController
         before_action :set_event, only: [:create, :destroy]
+        before_action :check_has_authorization, only: [:create, :destroy]
 
 =begin
 @return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of 
@@ -108,6 +109,20 @@ Building a better future, one line of code at a time.
         end
 
         private
+
+        def is_creator_or_assigned?()
+            is_assigned_user = false
+            is_organizer = false
+            is_assigned_user = current_user == @event.user if @event.user
+            is_organizer = current_user.id == @event.organizer_id
+            return is_assigned_user || is_organizer
+        end
+
+        def check_has_authorization
+            return true if current_user.is_role?("owner", "admin")
+            return true if is_creator_or_assigned?()
+            return responseWithUnauthorized
+        end
         
 =begin
 @return [void]
