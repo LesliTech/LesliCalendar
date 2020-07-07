@@ -28,7 +28,6 @@ Building a better future, one line of code at a time.
 =end
     class Event::AttendantsController < ApplicationController
         before_action :set_event, only: [:create, :destroy]
-        before_action :check_has_authorization, only: [:create, :destroy]
 
 =begin
 @return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of 
@@ -70,7 +69,8 @@ Building a better future, one line of code at a time.
     this.http.post(`127.0.0.1/driver/events/${this.event_id}/attendants`, data);
 =end
         def create
-            return responseWithNotFound unless @event
+            return respond_with_not_found unless @event
+            return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
             attendant = Event::Attendant.new(event_attendant_params)
             attendant.event = @event
@@ -97,7 +97,9 @@ Building a better future, one line of code at a time.
     this.http.delete(`127.0.0.1/driver/events/${event_id}/attendants/${attendant_id}`);
 =end
         def destroy
-            return responseWithNotFound unless @event
+            return respond_with_not_found unless @event
+            return respond_with_unauthorized unless @event.is_editable_by?(current_user)
+
             attendant = @event.attendants.find_by(id: params[:id])
             return responseWithNotFound unless attendant
 
@@ -109,20 +111,6 @@ Building a better future, one line of code at a time.
         end
 
         private
-
-        def is_creator_or_assigned?()
-            is_assigned_user = false
-            is_organizer = false
-            is_assigned_user = current_user == @event.user if @event.user
-            is_organizer = current_user.id == @event.organizer_id
-            return is_assigned_user || is_organizer
-        end
-
-        def check_has_authorization
-            return true if current_user.is_role?("owner", "admin")
-            return true if is_creator_or_assigned?()
-            return responseWithUnauthorized
-        end
         
 =begin
 @return [void]
