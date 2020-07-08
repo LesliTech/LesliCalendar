@@ -11,7 +11,7 @@ class CreateCloudDriverEventDiscussions < ActiveRecord::Migration[6.0]
             t.timestamps
         end
         add_reference :cloud_driver_event_discussions, :users, foreign_key: true
-        add_reference :cloud_driver_event_discussions, :cloud_driver_event_discussions, foreign_key: true, index: { name: "event_discussions" }
-        add_reference :cloud_driver_event_discussions, :cloud_driver_events, foreign_key: true, index: { name: "driver_event_discussions" }
+        add_reference :cloud_driver_event_discussions, :cloud_driver_event_discussions, foreign_key: true, index: { name: "driver_event_discussions_event_discussions" }
+        add_reference :cloud_driver_event_discussions, :cloud_driver_events, foreign_key: true, index: { name: "driver_event_discussions_events" }
     end
 end
