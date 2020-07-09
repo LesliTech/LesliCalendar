@@ -29,7 +29,6 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class EventsController < ApplicationLesliController
         before_action :set_event, only: [:update, :destroy, :show]
-        before_action :check_has_authorization, only: [:update, :destroy]
 
         # GET /events
         def index
@@ -82,7 +81,9 @@ module CloudDriver
 
         # PATCH/PUT /events/1
         def update
-            #@event.detail.title = event_params[:]
+            return responseWithNotFound unless @event
+            return responseWithUnauthorized unless @event.is_editable_by?(current_user)
+
             if @event.update(event_params)
                 responseWithSuccessful(@event)
             else
@@ -93,6 +94,8 @@ module CloudDriver
         # DELETE /events/1
         def destroy
             return responseWithNotFound unless @event
+            return responseWithUnauthorized unless @event.is_editable_by?(current_user)
+
             if @event.destroy
                 return responseWithSuccessful
             else
@@ -125,12 +128,6 @@ module CloudDriver
             is_assigned_user = current_user == @event.user if @event.user
             is_organizer = current_user.id == @event.organizer_id
             return is_assigned_user || is_organizer
-        end
-
-        def check_has_authorization
-            return true if current_user.is_role?("owner", "admin")
-            return true if is_creator_or_assigned?()
-            return responseWithUnauthorized
         end
 
         # Only allow a trusted parameter "white list" through.
