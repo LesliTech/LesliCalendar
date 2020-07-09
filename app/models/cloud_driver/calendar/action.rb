@@ -1,4 +1,4 @@
 module CloudDriver
-  class Calendar::Action < ApplicationRecord
-  end
+    class Calendar::Action < CloudObject::Action
+    end
 end
