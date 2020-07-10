@@ -1,7 +1,6 @@
 module CloudDriver
     class Event::Activity < CloudObject::Activity
         belongs_to :event, class_name: "Event", foreign_key: "cloud_driver_events_id"
-        belongs_to :user, class_name: "::User", foreign_key: "users_id", optional: true
 
         # This enum overrides the one from CloudObject::Activity
         enum category: {

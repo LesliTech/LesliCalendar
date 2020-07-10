@@ -56,7 +56,7 @@ module CloudDriver
             .joins("inner join cloud_driver_event_attendants CDEA on CDEA.cloud_driver_events_id = cloud_driver_events.id")
             .select(
                 :users_id,
-                :organizer_id,
+                :users_main_id,
                 :id, 
                 :title, 
                 :description, 
@@ -71,7 +71,7 @@ module CloudDriver
                 "false as \"editable\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
-            .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
+            .where("CDEA.users_id = ? or cloud_driver_events.users_main_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
             .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             own_driver_events.each do |event|
                 event[:editable] = event.is_editable_by?(current_user)
@@ -83,7 +83,7 @@ module CloudDriver
             .select(
                 :id,
                 :users_id,
-                :organizer_id,
+                :users_main_id,
                 :title, 
                 :description, 
                 "event_date as date",

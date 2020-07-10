@@ -27,7 +27,6 @@ Building a better future, one line of code at a time.
     class Event::Discussion < CloudObject::Discussion
         belongs_to  :cloud_object, class_name: "Event", foreign_key: "cloud_driver_events_id"
         belongs_to  :parent, class_name: "Discussion", optional: true
-        belongs_to  :user, class_name: "::User", foreign_key: "users_id"
         has_many    :children, class_name: "Discussion", foreign_key: "parent_id"
     end
 end
