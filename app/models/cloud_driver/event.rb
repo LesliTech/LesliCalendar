@@ -78,8 +78,9 @@ module CloudDriver
             event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
 
             event_template = event_template
-            .sub("{{organizer_name}}", ( self.organizer.full_name || "").strip )
-            .sub("{{organizer_email}}", ( self.organizer.email || "").strip )
+            organizer = self.user_mail
+            .sub("{{organizer_name}}", ( organizer.full_name || "").strip )
+            .sub("{{organizer_email}}", ( organizer.email || "").strip )
             .sub("{{dtstamp}}", ( self.detail.event_date.strftime("%Y%m%d") ).strip )
             .sub("{{description}}",( self.detail.description || "").strip )
             .sub("{{summary}}", ( self.detail.title || "").strip )
@@ -135,7 +136,7 @@ module CloudDriver
         def self.send_email_create_attendant(attendant)
             receipt = attendant.user.email
             event = attendant.event
-            organizer = event.organizer
+            organizer = event.user_main
             event_detail = event.detail
 
             data = {
