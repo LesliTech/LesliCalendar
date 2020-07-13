@@ -53,14 +53,13 @@ module CloudDriver
                 model_type: model_type,
                 editable: self.is_editable_by?(current_user),
                 model_global_identifier: model_global_identifier, # If the model is projects, this will be used in the url
-                users_id: users_id,
-                organizer_id: organizer_id,
-                organizer_name: organizer.full_name,
+                creator_id: users_id,
+                organizer_id: user_main_id,
+                organizer_name: user_main.full_name,
                 detail_attributes: data   
             }
         end
 
-        # @todo Add role once CloudLock is working
         def attendant_list
             attendants.map do |attendant|
                 user = attendant.user
@@ -100,7 +99,7 @@ module CloudDriver
         def self.log_activity_create(current_user, event)
             # Add an activity for the newly created event
             event.activities.create(
-                user: current_user,
+                user_creator: current_user,
                 category: "action_create"
             )
 
@@ -121,7 +120,7 @@ module CloudDriver
 
         def self.log_activity_create_attendant(current_user, event, attendant)
             event.activities.create(
-                user: current_user,
+                user_creator: current_user,
                 category: "action_create_attendant",
                 description: attendant.user.full_name,
                 value_to: attendant.user.full_name
