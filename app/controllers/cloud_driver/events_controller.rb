@@ -66,7 +66,7 @@ module CloudDriver
             event.user_main = current_user
             event.set_workflow
 
-            unless event_params[:users_main_id]
+            unless event_params[:user_main_id]
                 event.user_main = current_user                
             end
 
@@ -127,7 +127,7 @@ module CloudDriver
             params.require(:event).permit(
                 :model_id,
                 :model_type,
-                :users_main_id,
+                :user_main_id,
                 detail_attributes: [
                     :title, 
                     :description, 
