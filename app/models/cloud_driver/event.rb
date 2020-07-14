@@ -76,17 +76,17 @@ module CloudDriver
         def download
             url = "#{Rails.configuration.default_url}/crm/calendar?event_id=#{id}"
             event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
+            organizer = self.user_main
 
             event_template = event_template
-            organizer = self.user_mail
             .sub("{{organizer_name}}", ( organizer.full_name || "").strip )
             .sub("{{organizer_email}}", ( organizer.email || "").strip )
-            .sub("{{dtstamp}}", ( self.detail.event_date.strftime("%Y%m%d") ).strip )
+            .sub("{{dtstamp}}", (self.detail.event_date.strftime("%Y%m%d")))
             .sub("{{description}}",( self.detail.description || "").strip )
             .sub("{{summary}}", ( self.detail.title || "").strip )
             .sub("{{location}}", ( self.detail.location || "").strip )
-            .sub("{{dtstart}}", ( self.detail.time_start.strftime("%Y%m%dT%H%M%S") || self.detail.event_date.strftime("%Y%m%d") ).strip )
-            .sub("{{dtend}}", ( self.detail.time_end.strftime("%Y%m%dT%H%M%S") || "").strip )
+            .sub("{{dtstart}}", ( (self.detail.time_start || self.detail.event_date).strftime("%Y%m%dT%H%M%S")))
+            .sub("{{dtend}}", ( (self.detail.time_end || self.detail.event_date).strftime("%Y%m%dT%H%M%S")))
             .sub("{{uid}}", Time.now.getutc.to_s)
             .sub("{{url}}", URI.escape(url) )
 
