@@ -8,7 +8,7 @@ CloudDriver::Engine.routes.draw do
         collection do
             post "list" => :index
             get  "associations/options",    to: "workflow/associations#options"
-            get "/resource/transition-options/:cloud_object_name/:cloud_object_id", to: "workflows#transition_options"
+            get "/resources/transition-options/:cloud_object_name/:cloud_object_id", to: "workflows#transition_options"
         end
         scope module: :workflow do
             resources :associations
@@ -34,7 +34,7 @@ CloudDriver::Engine.routes.draw do
             get :search
             get :options 
             get "/files/options",                   to: "event/files#options"
-            get "/resource/events-by-model/:model_type/:model_id" =>  :events_by_model
+            get "/resources/events-by-model/:model_type/:model_id" =>  :events_by_model
         end
         scope module: :event do
             resources :actions
