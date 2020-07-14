@@ -52,9 +52,9 @@ module CloudDriver
                 model_id: model_id,
                 model_type: model_type,
                 editable: self.is_editable_by?(current_user),
-                model_global_identifier: model_global_identifier, # If the model is projects, this will be used in the url
-                creator_id: users_id,
-                organizer_id: user_main_id,
+                model_global_identifier: model_global_identifier,
+                users_id: users_id,
+                user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
                 detail_attributes: data   
             }
