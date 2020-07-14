@@ -11,7 +11,7 @@ class CreateCloudDriverCalendarDiscussions < ActiveRecord::Migration[6.0]
             t.timestamps
         end
         add_reference :cloud_driver_calendar_discussions, :users, foreign_key: true
-        add_reference :cloud_driver_calendar_discussions, :cloud_driver_calendar_discussions, foreign_key: true, index: { name: "calendar_discussions" }
-        add_reference :cloud_driver_calendar_discussions, :cloud_driver_calendars, foreign_key: true, index: { name: "driver_calendar_discussions" }
+        add_reference :cloud_driver_calendar_discussions, :cloud_driver_calendar_discussions, foreign_key: true, index: { name: "driver_calendar_discussions_calendar_discussions" }
+        add_reference :cloud_driver_calendar_discussions, :cloud_driver_calendars, foreign_key: true, index: { name: "driver_calendar_discussions_calendars" }
     end
 end

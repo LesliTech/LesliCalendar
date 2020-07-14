@@ -1,4 +1,4 @@
 module CloudDriver
-  class Event::Action < ApplicationRecord
-  end
+    class Event::Action < CloudObject::Action
+    end
 end

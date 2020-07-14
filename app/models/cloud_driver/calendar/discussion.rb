@@ -1,4 +1,4 @@
 module CloudDriver
-  class Calendar::Discussion < ApplicationRecord
-  end
+    class Calendar::Discussion < CloudObject::Discussion
+    end
 end

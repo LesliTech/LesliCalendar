@@ -63,16 +63,16 @@ module CloudDriver
         def create
             event = current_user.account.driver.calendars.default.events.new(event_params)            
             event.account = current_user.account
-            event.user = current_user
+            event.user_creator = current_user
             event.set_workflow
 
-            unless event_params[:organizer_id]
-                event.organizer = current_user                
+            unless event_params[:user_main_id]
+                event.user_main = current_user                
             end
 
             if event.save
                 Event.log_activity_create(current_user, event)
-                event.attendants.create(users_id: event.organizer.id)
+                event.attendants.create(users_id: event.user_main.id)
                 responseWithSuccessful(event.show(current_user))
             else
                 responseWithError(event.errors.full_messages.to_sentence)
@@ -121,21 +121,13 @@ module CloudDriver
         def set_event
             @event = current_user.account.driver.events.find(params[:id])
         end
-        
-        def is_creator_or_assigned?()
-            is_assigned_user = false
-            is_organizer = false
-            is_assigned_user = current_user == @event.user if @event.user
-            is_organizer = current_user.id == @event.organizer_id
-            return is_assigned_user || is_organizer
-        end
 
         # Only allow a trusted parameter "white list" through.
         def event_params
             params.require(:event).permit(
                 :model_id,
                 :model_type,
-                :organizer_id,
+                :user_main_id,
                 detail_attributes: [
                     :title, 
                     :description, 

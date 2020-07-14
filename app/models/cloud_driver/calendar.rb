@@ -26,11 +26,12 @@ Building a better future, one line of code at a time.
 =end
 module CloudDriver
     class Calendar < CloudObject::Base
+        belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
+        belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
+        belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User", optional: true
+        belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
-        belongs_to :account, foreign_key: "cloud_driver_accounts_id"
-        belongs_to :status,     foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
-
-        has_one :detail, foreign_key: "cloud_driver_calendars_id", dependent: :delete, inverse_of: :calendar, autosave: true
+        has_one     :detail, foreign_key: "cloud_driver_calendars_id", dependent: :delete, inverse_of: :calendar, autosave: true
         accepts_nested_attributes_for :detail
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
@@ -55,7 +56,7 @@ module CloudDriver
             .joins("inner join cloud_driver_event_attendants CDEA on CDEA.cloud_driver_events_id = cloud_driver_events.id")
             .select(
                 :users_id,
-                :organizer_id,
+                :user_main_id,
                 :id, 
                 :title, 
                 :description, 
@@ -70,7 +71,7 @@ module CloudDriver
                 "false as \"editable\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
-            .where("CDEA.users_id = ? or cloud_driver_events.organizer_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
+            .where("CDEA.users_id = ? or cloud_driver_events.user_main_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
             .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
             own_driver_events.each do |event|
                 event[:editable] = event.is_editable_by?(current_user)
@@ -82,7 +83,7 @@ module CloudDriver
             .select(
                 :id,
                 :users_id,
-                :organizer_id,
+                :user_main_id,
                 :title, 
                 :description, 
                 "event_date as date",
