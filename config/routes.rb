@@ -28,7 +28,7 @@ CloudDriver::Engine.routes.draw do
 
     resources :events do
         member do
-            get "/resource/files-zip-download",    to:  "event/files#zip_download"
+            get "/resources/files-zip-download",    to:  "event/files#zip_download"
         end
         collection do
             get :search
