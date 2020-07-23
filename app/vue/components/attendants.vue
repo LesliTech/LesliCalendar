@@ -131,8 +131,10 @@ export default {
                     users_id: user.id
                 }
             }
+            this.$set(user, 'submitting', true)
 
             this.http.post(url, data).then(result => {
+                this.$set(user, 'submitting', false)
                 if (result.successful) {
                     this.$set(user, 'attendant_id', result.data.id)
                     this.attendants.push({
@@ -159,8 +161,10 @@ export default {
                 attendant_id = attendant.id
             }
             let url = `${this.main_route}/${this.eventId}/attendants/${attendant_id}`
+            this.$set(attendant, 'submitting', true)
 
             this.http.delete(url).then(result => {
+                this.$set(attendant, 'submitting', false)
                 if (result.successful) {
                     this.alert(this.translations.main.notification_attendant_deleted, 'success')
                     
@@ -273,7 +277,7 @@ export default {
                         {{ translateUserRole(props.row.role_name) }}
                     </b-table-column>
                     <b-table-column field="actions" label="">
-                        <b-checkbox size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
+                        <b-checkbox :disabled="props.row.submitting" size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
                     </b-table-column>
                 </template>
             </b-table>

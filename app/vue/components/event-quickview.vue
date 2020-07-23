@@ -61,6 +61,7 @@ export default {
                 main: I18n.t('driver.events'),
                 core: I18n.t('core.shared')
             },
+            submitting_form: false,
             event: {
                 detail_attributes: {
                     title: null,
@@ -125,7 +126,10 @@ export default {
         },
         postEvent(e) {
             if (e) { e.preventDefault() }
+            this.submitting_form = true
+
             this.http.post('/driver/events', {event: this.event}).then(result => {
+                this.submitting_form = true
                 this.event_id = result.data.id
                 this.$set(this.event, 'id', result.data.id)
                 this.$set(this.event, 'editable', true)
@@ -140,7 +144,10 @@ export default {
         },
         putEvent(e) {
             if (e) { e.preventDefault() }
+            this.submitting_form = true
+
             this.http.put(`/driver/events/${this.event_id}.json`, {event: this.event}).then(result => {
+                this.submitting_form = false
                 if (result.successful) {
                     this.bus.publish("put:/driver/event")
                     this.alert(this.translations.main.notification_event_updated, 'success')
@@ -253,136 +260,143 @@ export default {
             <b-tabs expanded v-model="active_tab">
                 <b-tab-item :label="translations.core.text_information">
                     <form @submit.prevent="submitEvent()">
-                        <div class="field" v-if="event_id">
-                            <label class="label">{{translations.core.text_organizer}}</label>
-                            <div class="control">
-                                <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">{{translations.core.text_title}}<sup class="has-text-danger">*</sup></label>
-                            <div class="control">
-                                <input class="input" type="text" v-model="event.detail_attributes.title" required :readonly="!eventEditable">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">{{translations.core.text_description}}</label>
-                            <div class="control">
-                                <textarea class="textarea" v-model="event.detail_attributes.description" :readonly="!eventEditable"></textarea>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">{{translations.core.text_address}}</label>
-                            <div class="control">
-                                <input class="input" type="text" v-model="event.detail_attributes.location" :readonly="!eventEditable">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">{{ translations.main.form_label_type_of_event }}</label>
-                            <b-select
-                                v-model="event.detail_attributes.event_type"
-                                :disabled="! eventEditable"
-                                expanded
-                                :placeholder="translations.core.text_select_option"
-                            >
-                                <option
-                                    v-for="event_type in options.event_types"
-                                    :value="event_type.value"
-                                    :key="event_type.value"
-                                >
-                                    {{ event_type.text }}
-                                </option>
-                            </b-select> 
-                        </div> 
-                        <div class="field">
-                            <label class="checkbox">
-                                <input type="checkbox" v-model="event.detail_attributes.public" :disabled='isDefaultPublic() || !eventEditable'>
-                                {{ translations.main.form_input_mark_event_as_public_title }}
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="label">{{ translations.main.form_label_date }}</label>
-                            <div class="control">
-                                <vc-date-picker
-                                    v-model="event.detail_attributes.event_date"
-                                    :locale="date.vcDatepickerConfig()"
-                                    :popover="{ visibility: 'focus' }"
-                                    :input-props="{
-                                        disabled: ! eventEditable,
-                                        placeholder: translations.core.text_select_date
-                                    }"
-                                    :min-date="new Date()"
-                                >
-                                </vc-date-picker>
-                            </div>
-                        </div>
-                        <b-field :label="translations.core.text_start_at">
-                            <b-timepicker
-                                v-if="eventEditable"
-                                editable
-                                :placeholder="translations.core.text_select_time"
-                                icon="clock"
-                                v-model="event.detail_attributes.time_start">
-                            </b-timepicker>
-                            <div v-else class="control has-icons-left is-clearfix">
-                                <input type="text" autocomplete="off" class="input" readonly :value="date.toStringTime(event.detail_attributes.time_start)">
-                                <span class="icon is-left"><i class="fas fa-clock fa-lg"></i></span>
-                            </div>
-                        </b-field>
-                        <b-field :label="translations.core.text_end_at">
-                            <b-timepicker
-                                v-if="eventEditable"
-                                editable
-                                :placeholder="translations.core.text_select_time"
-                                icon="clock"
-                                v-model="event.detail_attributes.time_end">
-                            </b-timepicker>
-                            <div v-else class="control has-icons-left is-clearfix">
-                                <input type="text" autocomplete="off" class="input" readonly :value="date.toStringTime(event.detail_attributes.time_start)">
-                                <span class="icon is-left"><i class="fas fa-clock fa-lg"></i></span>
-                            </div>
-                        </b-field>
-                        <div class="columns">
-                            <div class="column">
-                                <div class="buttons">
-                                    <button v-if="event_id && event.editable" class="button is-danger" type="button" @click="deleteEvent">
-                                        <span class="icon">
-                                            <i class="fas fa-trash"></i>
-                                        </span>
-                                        <span>{{translations.main.form_btn_delete}}</span>
-                                    </button>
+                        <fieldset :disabled="submitting_form">
+                            <div class="field" v-if="event_id">
+                                <label class="label">{{translations.core.text_organizer}}</label>
+                                <div class="control">
+                                    <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
                                 </div>
                             </div>
-                            <div class="column">
-                                <div class="buttons is-right">
-                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_global_identifier}`">
-                                        <span class="icon">
-                                            <i class="fas fa-link"></i>
-                                        </span>
-                                        <span>{{translations.main.form_anchor_go_to_project}}</span>
-                                    </a>
-                                    <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
-                                        <span class="icon">
-                                            <i class="fas fa-link"></i>
-                                        </span>
-                                        <span>{{translations.main.form_anchor_go_to_company}}</span>
-                                    </a>
-                                    <a class="button is-outlined" :href="`/driver/events/${event.id}.ics`" v-if="event_id">
-                                        <span class="icon">
-                                            <i class="fas fa-download"></i>
-                                        </span>
-                                        <span>{{ translations.core.btn_download }}</span>
-                                    </a>
-                                    <button v-if="eventEditable" class="button is-primary">
-                                        <span class="icon">
-                                            <i class="far fa-save"></i>
-                                        </span>
-                                        <span>{{translations.core.btn_save}}</span>
-                                    </button>
+                            <div class="field">
+                                <label class="label">{{translations.core.text_title}}<sup class="has-text-danger">*</sup></label>
+                                <div class="control">
+                                    <input class="input" type="text" v-model="event.detail_attributes.title" required :readonly="!eventEditable">
                                 </div>
                             </div>
-                        </div>
-                        
+                            <div class="field">
+                                <label class="label">{{translations.core.text_description}}</label>
+                                <div class="control">
+                                    <textarea class="textarea" v-model="event.detail_attributes.description" :readonly="!eventEditable"></textarea>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">{{translations.core.text_address}}</label>
+                                <div class="control">
+                                    <input class="input" type="text" v-model="event.detail_attributes.location" :readonly="!eventEditable">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">{{ translations.main.form_label_type_of_event }}</label>
+                                <b-select
+                                    v-model="event.detail_attributes.event_type"
+                                    :disabled="! eventEditable"
+                                    expanded
+                                    :placeholder="translations.core.text_select_option"
+                                >
+                                    <option
+                                        v-for="event_type in options.event_types"
+                                        :value="event_type.value"
+                                        :key="event_type.value"
+                                    >
+                                        {{ event_type.text }}
+                                    </option>
+                                </b-select> 
+                            </div> 
+                            <div class="field">
+                                <label class="checkbox">
+                                    <input type="checkbox" v-model="event.detail_attributes.public" :disabled='isDefaultPublic() || !eventEditable'>
+                                    {{ translations.main.form_input_mark_event_as_public_title }}
+                                </label>
+                            </div>
+                            <div class="field">
+                                <label class="label">{{ translations.main.form_label_date }}</label>
+                                <div class="control">
+                                    <vc-date-picker
+                                        v-model="event.detail_attributes.event_date"
+                                        :locale="date.vcDatepickerConfig()"
+                                        :popover="{ visibility: 'focus' }"
+                                        :input-props="{
+                                            disabled: ! eventEditable,
+                                            placeholder: translations.core.text_select_date
+                                        }"
+                                        :min-date="new Date()"
+                                    >
+                                    </vc-date-picker>
+                                </div>
+                            </div>
+                            <b-field :label="translations.core.text_start_at">
+                                <b-timepicker
+                                    v-if="eventEditable"
+                                    editable
+                                    :placeholder="translations.core.text_select_time"
+                                    icon="clock"
+                                    v-model="event.detail_attributes.time_start">
+                                </b-timepicker>
+                                <div v-else class="control has-icons-left is-clearfix">
+                                    <input type="text" autocomplete="off" class="input" readonly :value="date.toStringTime(event.detail_attributes.time_start)">
+                                    <span class="icon is-left"><i class="fas fa-clock fa-lg"></i></span>
+                                </div>
+                            </b-field>
+                            <b-field :label="translations.core.text_end_at">
+                                <b-timepicker
+                                    v-if="eventEditable"
+                                    editable
+                                    :placeholder="translations.core.text_select_time"
+                                    icon="clock"
+                                    v-model="event.detail_attributes.time_end">
+                                </b-timepicker>
+                                <div v-else class="control has-icons-left is-clearfix">
+                                    <input type="text" autocomplete="off" class="input" readonly :value="date.toStringTime(event.detail_attributes.time_start)">
+                                    <span class="icon is-left"><i class="fas fa-clock fa-lg"></i></span>
+                                </div>
+                            </b-field>
+                            <div class="columns">
+                                <div class="column">
+                                    <div class="buttons">
+                                        <button v-if="event_id && event.editable" class="button is-danger" type="button" @click="deleteEvent">
+                                            <span class="icon">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                            <span>{{translations.main.form_btn_delete}}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="buttons is-right">
+                                        <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Project'" :href="`/crm/projects/${event.model_global_identifier}`">
+                                            <span class="icon">
+                                                <i class="fas fa-link"></i>
+                                            </span>
+                                            <span>{{translations.main.form_anchor_go_to_project}}</span>
+                                        </a>
+                                        <a class="button is-outlined" v-if="event.model_type == 'CloudHouse::Company'" :href="`/crm/companies/${event.model_id}`">
+                                            <span class="icon">
+                                                <i class="fas fa-link"></i>
+                                            </span>
+                                            <span>{{translations.main.form_anchor_go_to_company}}</span>
+                                        </a>
+                                        <a class="button is-outlined" :href="`/driver/events/${event.id}.ics`" v-if="event_id">
+                                            <span class="icon">
+                                                <i class="fas fa-download"></i>
+                                            </span>
+                                            <span>{{ translations.core.btn_download }}</span>
+                                        </a>
+                                        <button v-if="eventEditable" class="button is-primary" type="submit">
+                                            <span v-if="submitting_form">
+                                                <b-icon icon="circle-notch" custom-class="fa-spin" size="is-small" />
+                                                &nbsp;
+                                                {{translations.core.btn_saving}}
+                                            </span>
+                                            <span v-else>
+                                                <b-icon icon="save" size="is-small" />
+                                                &nbsp;
+                                                {{translations.core.btn_save}}
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </form>
                 </b-tab-item>
                 <b-tab-item :label="translations.core.text_employees">
