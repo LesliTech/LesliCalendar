@@ -32,7 +32,7 @@ module CloudDriver
 
         # GET /events
         def index
-            responseWithSuccessful()
+            respond_with_successful()
         end
 
         # GET /events/1
@@ -41,7 +41,7 @@ module CloudDriver
                 format.html { }
                 format.json do 
                     return responseWithNotFound unless @event
-                    responseWithSuccessful(@event.show(current_user))
+                    respond_with_successful(@event.show(current_user))
                 end
                 format.ics do
                     return responseWithNotFound unless @event
@@ -73,9 +73,9 @@ module CloudDriver
             if event.save
                 Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: event.user_main.id)
-                responseWithSuccessful(event.show(current_user))
+                respond_with_successful(event.show(current_user))
             else
-                responseWithError(event.errors.full_messages.to_sentence)
+                respond_with_error(event.errors.full_messages.to_sentence)
             end
         end
 
@@ -85,9 +85,9 @@ module CloudDriver
             return responseWithUnauthorized unless @event.is_editable_by?(current_user)
 
             if @event.update(event_params)
-                responseWithSuccessful(@event)
+                respond_with_successful(@event)
             else
-                responseWithError(@event.errors)
+                respond_with_error(@event.errors)
             end
         end
 
@@ -97,20 +97,20 @@ module CloudDriver
             return responseWithUnauthorized unless @event.is_editable_by?(current_user)
 
             if @event.destroy
-                return responseWithSuccessful
+                return respond_with_successful
             else
-                return responseWithError(@event.errors.full_messages.to_sentence)
+                return respond_with_error(@event.errors.full_messages.to_sentence)
             end
         end
 
         def events_by_model
             events = Courier::Driver::Event.by_model(params[:model_type], params[:model_id], current_user, @query)
-            responseWithSuccessful(events)
+            respond_with_successful(events)
         end
 
         def options
             # parse query string here to include or exclude options
-            responseWithSuccessful({
+            respond_with_successful({
                 event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("driver.events.enum_event_type_#{k}")}}
             })
         end
