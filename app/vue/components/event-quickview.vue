@@ -129,7 +129,7 @@ export default {
             this.submitting_form = true
 
             this.http.post('/driver/events', {event: this.event}).then(result => {
-                this.submitting_form = true
+                this.submitting_form = false
                 this.event_id = result.data.id
                 this.$set(this.event, 'id', result.data.id)
                 this.$set(this.event, 'editable', true)
@@ -286,12 +286,16 @@ export default {
                                 </div>
                             </div>
                             <div class="field">
-                                <label class="label">{{ translations.main.form_label_type_of_event }}</label>
+                                <label class="label">
+                                    {{ translations.main.form_label_type_of_event }}
+                                    <sup class="has-text-danger">*</sup>
+                                </label>
                                 <b-select
                                     v-model="event.detail_attributes.event_type"
                                     :disabled="! eventEditable"
                                     expanded
                                     :placeholder="translations.core.text_select_option"
+                                    required
                                 >
                                     <option
                                         v-for="event_type in options.event_types"
@@ -309,7 +313,10 @@ export default {
                                 </label>
                             </div>
                             <div class="field">
-                                <label class="label">{{ translations.main.form_label_date }}</label>
+                                <label class="label">
+                                    {{ translations.main.form_label_date }}
+                                    <sup class="has-text-danger">*</sup>
+                                </label>
                                 <div class="control">
                                     <vc-date-picker
                                         v-model="event.detail_attributes.event_date"
@@ -317,7 +324,8 @@ export default {
                                         :popover="{ visibility: 'focus' }"
                                         :input-props="{
                                             disabled: ! eventEditable,
-                                            placeholder: translations.core.text_select_date
+                                            placeholder: translations.core.text_select_date,
+                                            required: true
                                         }"
                                         :min-date="new Date()"
                                     >

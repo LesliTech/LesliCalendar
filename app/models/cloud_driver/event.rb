@@ -16,6 +16,8 @@ module CloudDriver
         has_many :activities, foreign_key: "cloud_driver_events_id"
         has_many :discussions, foreign_key: "cloud_driver_events_id"
 
+        after_create :verify_date
+
         enum event_type: {
             kuv_with_kop: "kuv_with_kop",
             kuv_dlgag: "kuv_dlgag", 
@@ -179,6 +181,17 @@ module CloudDriver
             )
         end
 
+        protected
+
+        # @return [void]
+        # @description Sets the default event date if the date was not set during creation
+        # @example 
+        #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
+        #     puts new_event.detail.event_date
+        #     # This will display the creation time of the event
+        def verify_date
+            detail.update(event_date: self.created_at) unless detail.event_date
+        end
 
     end
 end
