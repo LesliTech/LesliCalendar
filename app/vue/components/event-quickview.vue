@@ -327,7 +327,6 @@ export default {
                                             placeholder: translations.core.text_select_date,
                                             required: true
                                         }"
-                                        :min-date="new Date()"
                                     >
                                     </vc-date-picker>
                                 </div>
