@@ -93,6 +93,7 @@ module CloudDriver
                 :model_type,
                 :url,
                 :event_type,
+                :public,
                 "false as \"is_attendant\"",
                 "false as \"editable\"",
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
