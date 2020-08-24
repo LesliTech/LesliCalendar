@@ -13,6 +13,7 @@ CloudDriver::Engine.routes.draw do
         scope module: :workflow do
             resources :associations
             resources :actions
+            resources :statuses
         end
     end
     

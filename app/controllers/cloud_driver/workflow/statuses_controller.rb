@@ -27,6 +27,6 @@ Building a better future, one line of code at a time.
     and it's not ment to be used. Insted, you should modify the statuses through 
     the CloudDriver::Workflow class using the method *accepts_nested_attributes_for*
 =end
-    class Workflow::StatusesController < ApplicationController
+    class Workflow::StatusesController < CloudObject::Workflow::StatusesController
     end
 end
