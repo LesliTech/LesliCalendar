@@ -12,8 +12,14 @@ CloudDriver::Engine.routes.draw do
         end
         scope module: :workflow do
             resources :associations
-            resources :actions
             resources :statuses
+            resources :actions do
+                collection do 
+                    scope :resources do
+                        get :options_cloud_object_clone
+                    end
+                end
+            end
         end
     end
     
