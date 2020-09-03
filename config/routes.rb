@@ -17,6 +17,7 @@ CloudDriver::Engine.routes.draw do
                 collection do 
                     scope :resources do
                         get :options_create_cloud_object_file
+                        get :options_cloud_object_clone
                     end
                 end
             end
