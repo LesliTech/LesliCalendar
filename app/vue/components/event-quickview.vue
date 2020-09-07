@@ -43,12 +43,12 @@ export default {
     props: {
         discussionsTranslationsPath: {
             type: String,
-            default : 'core.shared'
+            default : 'deutscheleibrenten.shared'
         },
 
         filesTranslationsPath: {
             type: String,
-            default: 'core.shared'
+            default: 'deutscheleibrenten.shared'
         }
     },
 
@@ -58,8 +58,8 @@ export default {
             event_id:null,
             active_tab: 0,
             translations: {
-                main: I18n.t('driver.events'),
-                core: I18n.t('core.shared')
+                main: I18n.t('deutscheleibrenten.events'),
+                core: I18n.t('deutscheleibrenten.shared')
             },
             submitting_form: false,
             event: {
