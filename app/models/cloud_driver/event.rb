@@ -154,7 +154,7 @@ module CloudDriver
                 href: "/crm/calendar?event_id=#{attendant.event.id}"
             }
 
-            ::DriverMailer.event_attendant_new(receipt, I18n.t("driver.events.email_new_attendant_subject"), data).deliver_now
+            ::DriverMailer.event_attendant_new(receipt, I18n.t("driver.events.mailer_new_event_attendant_subject"), data).deliver_now
         end
 
         #############################
