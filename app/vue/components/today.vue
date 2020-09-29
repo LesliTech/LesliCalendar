@@ -56,7 +56,7 @@ export default {
             today: new Date(),
             events: [],
             translations: {
-                core: I18n.t('core.shared')
+                core: I18n.t('deutscheleibrenten.shared')
             }
         }
     },

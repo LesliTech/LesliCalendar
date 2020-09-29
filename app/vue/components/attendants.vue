@@ -14,11 +14,11 @@ export default {
         return {
             active_tab: 1,
             main_route: '/driver/events',
-            users_route: '/users.json?role=kop,callcenter,api&type=exclude',
+            users_route: '/lock/users.json?role=kop,callcenter,api&type=exclude',
             translations: {
-                main: I18n.t('driver.events'),
-                core: I18n.t('core.shared'),
-                users: I18n.t('core.users')
+                main: I18n.t('deutscheleibrenten.events'),
+                core: I18n.t('deutscheleibrenten.shared'),
+                users: I18n.t('deutscheleibrenten.users')
             },
             loading: {
                 attendants: false,
