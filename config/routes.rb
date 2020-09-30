@@ -23,6 +23,8 @@ CloudDriver::Engine.routes.draw do
             end
         end
     end
+
+    resources :dashboards
     
     resources :calendars do
         scope module: :calendar do
