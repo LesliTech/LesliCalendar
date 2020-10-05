@@ -24,7 +24,11 @@ CloudDriver::Engine.routes.draw do
         end
     end
 
-    resources :dashboards
+    resources :dashboards do
+        scope module: :dashboard do
+            resources :components
+        end
+    end
     
     resources :calendars do
         scope module: :calendar do
