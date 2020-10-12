@@ -1,5 +1,5 @@
 CloudDriver::Engine.routes.draw do
-    root to: "calendars#default"
+    root to: "dashboard#show"
 
     resources :workflows do
         member do
@@ -25,6 +25,10 @@ CloudDriver::Engine.routes.draw do
     end
 
     resources :dashboards do
+        collection do
+            post "list" => :index
+            get :options
+        end
         scope module: :dashboard do
             resources :components
         end
