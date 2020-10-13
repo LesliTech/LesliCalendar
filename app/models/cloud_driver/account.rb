@@ -14,6 +14,7 @@ module CloudDriver
         # Rails will automatically execute this method after the account is created
         def initialize_account
             Workflow.initialize_data(self)
+            Dashboard.initialize_data(self)
         end
     end
 end
