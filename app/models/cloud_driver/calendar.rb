@@ -38,6 +38,11 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
+        def self.events_from_all_modules(current_user, query)
+            LC::Debug.msg "Deprecated"
+            self.index(current_user, query)
+        end
+
         def self.index(current_user, query)
 
             if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
