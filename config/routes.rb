@@ -1,5 +1,5 @@
 CloudDriver::Engine.routes.draw do
-    root to: "dashboard#show"
+    root to: "dashboarsd#index"
 
     resources :workflows do
         member do

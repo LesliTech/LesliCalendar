@@ -33,12 +33,16 @@ import app from "LesliCoreVue/app"
 // · Import apps and components
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 import componentDefault from './apps/default.vue'
+import appShow from './apps/show.vue'
 
 
 
 // · Cloud app
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-app("CloudDriver", "[default]", "/driver", [{
+app("CloudDriver", "[default]", "/driver/calendars", [{
     path: '/',
     component: componentDefault
-}])
+},{
+    path: "/:id",
+    component: appShow
+},])

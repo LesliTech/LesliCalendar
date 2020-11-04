@@ -51,32 +51,8 @@ export default {
     <section>
         <div class="box">
             <div class="field" v-for="calendar in calendars" :key="calendar.id">
-                <b-checkbox :value="true">
-                    {{ calendar.name }}
-                </b-checkbox>
+                {{ calendar.name }}
             </div>
-            <!-- 
-            <div class="field">
-                <b-checkbox :value="true" type="is-info">
-                    Calendar #2
-                </b-checkbox>
-            </div>
-            <div class="field">
-                <b-checkbox :value="true" type="is-success">
-                    Calendar #3
-                </b-checkbox>
-            </div>
-            <div class="field">
-                <b-checkbox :value="true" type="is-danger">
-                    Calendar #4
-                </b-checkbox>
-            </div>
-            <div class="field">
-                <b-checkbox :value="true" type="is-warning">
-                    Calendar #5
-                </b-checkbox>
-            </div>
-            -->
         </div>
     </section>
 </template>

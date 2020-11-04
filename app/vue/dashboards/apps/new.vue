@@ -25,21 +25,47 @@ Building a better future, one line of code at a time.
 */
 
 
-// · Import components, libraries and tools
+// · List of Imported Components
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import componentList from '../components/list.vue'
+import componentForm from '../components/form.vue'
 
 
 // · 
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+
+
 export default {
+    props: {
+
+    },
+
     components: {
-        'component-list': componentList
+        'component-form': componentForm
+    },
+
+    // @return [Object] Data used by this component's methods
+    // @description Returns the data needed for this component to work properly
+    // @data_variable dashboards [Object] An object representing a Dashboards, with
+    //      the same params as the associated rails model
+    data(){
+        return {
+            dashboards: {}
+        }
+    },
+
+    // @return [void]
+    // @description Executes the necessary functions needed to initialize this component
+    mounted(){
+
+    },
+
+    methods: {
+        
     }
 }
 </script>
 <template>
-    <section class="application-component">
-        <component-header title='Calendars'></component-header>
-        <component-list />
+    <section class="section">
+        <component-form :dashboards="dashboards" view-type="new" />
     </section>
 </template>

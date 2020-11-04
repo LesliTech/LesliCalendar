@@ -38,7 +38,14 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
-        def self.events_from_all_modules(current_user, query)
+        def self.index(current_user, query)
+
+            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
+                filters_date = self.get_date_range_filter()
+                query[:filters][:start_date] = filters_date[:start_date]
+                query[:filters][:end_date] = filters_date[:end_date]
+            end
+
             calendar = self.default
             calendar_data = {
                 id: calendar.id,
@@ -72,7 +79,11 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("CDEA.users_id = ? or cloud_driver_events.user_main_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
-            .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
+            .where(
+                "cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date < ?",
+                query[:filters][:start_date],
+                query[:filters][:end_date]+1
+            )
             own_driver_events.each do |event|
                 event[:editable] = event.is_editable_by?(current_user)
                 all_events[event.id] = event
@@ -87,7 +98,7 @@ module CloudDriver
                 :title, 
                 :description, 
                 "event_date as date",
-                "time_start as start", 
+                "time_start as start",
                 "time_end as end", 
                 :location,
                 :model_type,
@@ -99,7 +110,11 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("cloud_driver_event_details.public = true")
-            .where("cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date <= ?", query[:filters][:start], query[:filters][:end])
+            .where(
+                "cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date < ?",
+                query[:filters][:start_date],
+                query[:filters][:end_date]+1
+            )
             public_driver_events.each do |event|
                 unless all_events[event.id]
                     event[:editable] = event.is_editable_by?(current_user)
@@ -132,5 +147,16 @@ module CloudDriver
             calendar_data
         end
 
+        def self.get_date_range_filter(month=nil, day=nil)
+            start_date = Date.today.beginning_of_month
+            start_date = start_date.change(:day => day.to_i) if !day.blank?
+            start_date = start_date.change(:month => month.to_i) if !month.blank?
+
+            end_date = Date.today.end_of_month
+            end_date = end_date.change(:day => day.to_i) if !day.blank?
+            end_date = end_date.change(:month => month.to_i) if !month.blank?
+
+            { start_date: start_date, end_date: end_date }
+        end
     end
 end

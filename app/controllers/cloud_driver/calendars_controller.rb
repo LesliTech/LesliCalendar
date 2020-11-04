@@ -3,6 +3,7 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class CalendarsController < ApplicationController
         before_action :set_calendar, only: [:show, :edit, :update, :destroy]
+        before_action :set_date_filter_params, only: :show
 
         # GET /calendars
         def index
@@ -23,7 +24,12 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    respond_with_successful(Calendar.events_from_all_modules(current_user, @query))
+                    respond_with_successful(
+                        Calendar.index(
+                            current_user,
+                            @query
+                        )
+                    )
                 end
             end
         end
@@ -84,13 +90,19 @@ module CloudDriver
             if params[:id].blank? || params[:id] == "default"
                 @calendar = current_user.account.driver.calendars.default
             elsif params[:id]
-                @calendar = current_user.account.driver.calendards.find_by(id: params[:id])
+                @calendar = current_user.account.driver.calendars.find_by(id: params[:id])
             end
         end
 
         # Only allow a trusted parameter "white list" through.
         def calendar_params
             params.fetch(:calendar, {})
+        end
+
+        def set_date_filter_params
+            filters_date = Calendar.get_date_range_filter(params[:month], params[:day])
+            @query[:filters][:start_date] = filters_date[:start_date]
+            @query[:filters][:end_date] = filters_date[:end_date]
         end
     end
 end

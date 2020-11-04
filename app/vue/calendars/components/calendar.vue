@@ -30,6 +30,7 @@ Building a better future, one line of code at a time.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 
 // · 
@@ -37,11 +38,16 @@ export default {
     props: {
         calendarData: {
             required: true
+        },
+        main_route: {
+            required: false,
+            type: String,
+            default: '/driver/events',
         }
     },
     data() {
         return {
-            calendarPlugins: [ dayGridPlugin ],
+            calendarPlugins: [ dayGridPlugin, interactionPlugin ],
             calendar: {},
         }
     },
@@ -53,7 +59,10 @@ export default {
         initCalendar() {
             this.calendar = new Calendar(document.getElementById("driver_calendar_"+this._uid), {
                 plugins: this.calendarPlugins,
-                header: false
+                header: false,
+                dateClick: this.onDateSelect,
+                eventClick: this.onEventClick,
+                eventRender: this.onEventRender,
             })
             this.calendar.render()
         },
@@ -68,15 +77,45 @@ export default {
                 events.forEach(event => event.remove() )
 
                 // events from my calendar
-                this.calendarData.events.forEach(event => this.calendar.addEvent(event))
+                this.calendarData.driver_events.forEach(
+                    (event) => {
+                        event.url = `${this.main_route}/${event.id}`
+                        this.calendar.addEvent(event)
+                    }
+                );
 
                 // events from CloudFocus tasks
-                this.calendarData.focus_tasks.forEach(event => this.calendar.addEvent(event))
+                this.calendarData.focus_tasks.forEach(
+                    (event) => {
+                        event.url = `${this.main_route}/${event.id}`
+                        this.calendar.addEvent(event)
+                    }
+                );
                 
             })
 
+        },
+        onDateSelect: function(arg) {
+            this.bus.publish('index:/driver/components/calendar', arg.date)
+        },
+
+        onEventClick: function(arg) {
+            console.log(arg)
+            arg.jsEvent.preventDefault()
+            this.bus.publish('show:/driver/components/calendar/event', arg.event)
+            console.log("Click")
+        },
+        onEventRender: function(arg) {
+            console.log(arg)
+            console.log("render")
+        },
+    },
+
+    watch: {
+        calendarData: function(){
+            this.resetEvents()
         }
-    }   
+    }
 }
 </script>
 <template>

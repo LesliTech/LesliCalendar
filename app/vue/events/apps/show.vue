@@ -25,21 +25,41 @@ Building a better future, one line of code at a time.
 */
 
 
-// · Import components, libraries and tools
+// · List of Imported Components
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import componentList from '../components/list.vue'
+import componentForm from '../components/form.vue'
+import eventComponent from '../components/event.vue'
 
 
 // · 
-export default {
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+
+
+export default {  
     components: {
-        'component-list': componentList
-    }
+        'component-form': componentForm,
+        'event-component': eventComponent
+    },
 }
 </script>
 <template>
     <section class="application-component">
-        <component-header title='Calendars'></component-header>
-        <component-list />
+        <component-header title="Edit Event">
+            <div class="is-grouped">
+                <router-link class="button" :to="`/${this.$route.params.id}/edit`">
+                    <span class="icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    <span>Edit Event</span>
+                </router-link>
+                <router-link class="button" to="/">
+                    <span class="icon">
+                        <i class="fas fa-undo"></i>
+                    </span>
+                    <span>Return</span>
+                </router-link>
+            </div>
+        </component-header>
+        <event-component :event-id="this.$route.params.id"></event-component>
     </section>
 </template>

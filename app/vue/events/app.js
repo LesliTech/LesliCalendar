@@ -1,4 +1,3 @@
-<script>
 /*
 Lesli
 
@@ -24,22 +23,31 @@ Building a better future, one line of code at a time.
 // · 
 */
 
-
-// · Import components, libraries and tools
+// · Import main app from core
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import componentList from '../components/list.vue'
+import app from 'LesliCoreVue/app'
+
+
+// · Import common apps
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+import appList  from './apps/list.vue'
+import appEdit  from './apps/edit.vue'
+import appShow  from './apps/show.vue'
+import appNew   from './apps/new.vue'
 
 
 // · 
-export default {
-    components: {
-        'component-list': componentList
-    }
-}
-</script>
-<template>
-    <section class="application-component">
-        <component-header title='Calendars'></component-header>
-        <component-list />
-    </section>
-</template>
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+app("CloudDriver", "[list|new|edit|show]", "/driver/events", [{
+    path: "/",
+    component: appList
+},{
+    path: "/new",
+    component: appNew
+},{
+    path: "/:id",
+    component: appShow
+},{
+    path: "/:id/edit",
+    component: appEdit
+}])

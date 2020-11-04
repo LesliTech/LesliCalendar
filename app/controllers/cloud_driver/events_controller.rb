@@ -29,10 +29,21 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class EventsController < ApplicationLesliController
         before_action :set_event, only: [:update, :destroy, :show]
+        before_action :set_date_filter_params, only: :index
 
         # GET /events
         def index
-            respond_with_successful()
+            respond_to do |format|
+                format.html { }
+                format.json do
+                    respond_with_successful(
+                        Calendar.index(
+                            current_user,
+                            @query
+                        )
+                    )
+                end
+            end
         end
 
         # GET /events/1
@@ -140,6 +151,12 @@ module CloudDriver
                     :public
                 ]
             )
+        end
+
+        def set_date_filter_params
+            filters_date = Calendar.get_date_range_filter(params[:month], params[:day])
+            @query[:filters][:start_date] = filters_date[:start_date]
+            @query[:filters][:end_date] = filters_date[:end_date]
         end
     end
 end
