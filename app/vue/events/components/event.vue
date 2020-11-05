@@ -54,24 +54,10 @@ export default {
     },
 
     methods: {
-
-        // @return [void]
-        // @description Retrieves the id of the event and stores it in the data variable event_id
-        // @example
-        //      console.log(this.event_id) // will display null
-        //      this.seteventId()
-        //      console.log(this.event_id) // will display a number, like 5
         seteventId(){            
             this.event_id = this.eventId
         },
 
-        // @return [void]
-        // @description Connects to the backend using HTTP and retrieves the event associated to
-        //      the variable *event_id*. If the HTTP request fails, an error message is shown
-        // @example
-        //      console.log(this.event) // will display null
-        //      this.getevent()
-        //      console.log(this.event) // will display an object representation of the event
         getevent(){
             let url = `${this.main_route}/${this.event_id}.json`
             this.http.get(url).then(result => {
@@ -84,6 +70,20 @@ export default {
                 console.log(error)
             })
         }
+    },
+
+    computed: {
+        event_date() {
+            let time_start = new Date(this.event.detail_attributes.time_start)
+            return `${time_start.getUTCFullYear()}-${(time_start.getUTCMonth() + 1)}-${time_start.getUTCDate()}`
+            return time_start
+        },
+
+        time_start_end() {
+            let time_start = new Date(this.event.detail_attributes.time_start)
+            let time_end = new Date(this.event.detail_attributes.time_end)
+            return `${time_start.getUTCHours()}:${time_start.getUTCMinutes()} to ${time_end.getUTCHours()}:${time_end.getUTCMinutes()}`
+        }
     }
 
 }
@@ -95,7 +95,7 @@ export default {
                     <div class="media-content">
                         <p class="title is-4">{{event.detail_attributes.title}}</p>
                         <p class="subtitle is-6">
-                            {{event.detail_attributes.event_date}}
+                            {{event_date}} - {{time_start_end}}
                         </p>
                     </div>
                 </div>

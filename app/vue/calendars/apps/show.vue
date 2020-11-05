@@ -30,7 +30,7 @@ Building a better future, one line of code at a time.
 
 import Calendar from '../components/calendar.vue'
 import Today from '../../components/today.vue'
-
+import EventSidebar from '../components/event-sidebar.vue'
 // · 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 
@@ -43,6 +43,7 @@ export default {
     components: {
         'calendar': Calendar,
         'today': Today,
+        'event-sidebar': EventSidebar,
     },
 
     data(){
@@ -56,6 +57,7 @@ export default {
                 driver_events: [],
             },
             calendar_id: null,
+            selected_event_id: '',
         }
     },
 
@@ -69,6 +71,11 @@ export default {
         addListeners() {
             this.bus.subscribe("index:/driver/components/calendar", (date) => {
                 this.setEventsForTodayComponent(date)
+            })
+
+            this.bus.subscribe('show:/driver/components/calendar/event', (event) => {
+                this.selected_event_id = event.id;
+                this.data.state.event_sidebar.open = true;
             })
         },
 
@@ -131,6 +138,6 @@ export default {
                 </div>
             </div>
         </div>
+        <event-sidebar :event-id="selected_event_id" size="small"></event-sidebar>
     </section>
 </template>
-

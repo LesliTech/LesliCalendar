@@ -62,7 +62,6 @@ export default {
                 header: false,
                 dateClick: this.onDateSelect,
                 eventClick: this.onEventClick,
-                eventRender: this.onEventRender,
             })
             this.calendar.render()
         },
@@ -100,14 +99,8 @@ export default {
         },
 
         onEventClick: function(arg) {
-            console.log(arg)
             arg.jsEvent.preventDefault()
             this.bus.publish('show:/driver/components/calendar/event', arg.event)
-            console.log("Click")
-        },
-        onEventRender: function(arg) {
-            console.log(arg)
-            console.log("render")
         },
     },
 

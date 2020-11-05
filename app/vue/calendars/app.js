@@ -45,4 +45,10 @@ app("CloudDriver", "[default]", "/driver/calendars", [{
 },{
     path: "/:id",
     component: appShow
-},])
+},], {
+    state: {
+        event_sidebar: {
+            open: false
+        }
+    }
+})
