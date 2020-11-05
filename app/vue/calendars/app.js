@@ -46,9 +46,8 @@ app("CloudDriver", "[default]", "/driver/calendars", [{
     path: "/:id",
     component: appShow
 },], {
-    state: {
-        event_sidebar: {
-            open: false
-        }
+    calendar: {
+        selected_date: new Date(),
+        selected_event: {},
     }
 })

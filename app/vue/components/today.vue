@@ -94,7 +94,7 @@ export default {
             })
         },
         emitShowEvent(event){
-            this.bus.publish('show:/driver/component/event-quickview', event.id)
+            this.data.calendar.selected_event = event
         },
         getDateTitle(date) {
             return this.translations.core[`text_month_${dayjs(this.date).format('MMMM').toLowerCase()}`]

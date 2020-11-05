@@ -95,12 +95,12 @@ export default {
 
         },
         onDateSelect: function(arg) {
-            this.bus.publish('index:/driver/components/calendar', arg.date)
+            this.data.calendar.selected_date = arg.date
         },
 
         onEventClick: function(arg) {
             arg.jsEvent.preventDefault()
-            this.bus.publish('show:/driver/components/calendar/event', arg.event)
+            this.data.calendar.selected_event = arg.event
         },
     },
 

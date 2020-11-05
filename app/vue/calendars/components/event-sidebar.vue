@@ -32,10 +32,6 @@ export default {
     },
 
     props: {
-        eventId: {
-            type: String,
-            required: true
-        },
         size: {
             type: String,
             required: false,
@@ -47,19 +43,21 @@ export default {
     data() {
         return {
             open: false,
+            event_id: null,
         }
     },
 
     methods: {
         onSidebarClosed() {
-            this.data.state.event_sidebar.open = false            
+            this.open = false
         }
     },
 
     watch: {
-        'data.state.event_sidebar.open'() {
-            this.open = this.data.state.event_sidebar.open;
-        },
+        'data.calendar.selected_event': function() {
+            this.open = true
+            this.event_id = this.data.calendar.selected_event.id
+        }
     },
 }
 </script>
@@ -76,7 +74,7 @@ export default {
     >
         <section class="section">
             <div class="container">
-                <event-component v-if="eventId" :event-id="eventId"></event-component>
+                <event-component v-if="event_id" :event-id="event_id" :key="event_id"></event-component>
             </div>
         </section>
     </b-sidebar>
