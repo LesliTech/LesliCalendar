@@ -65,6 +65,7 @@ export default {
         this.setCalendarId()
         this.addListeners()
         this.getCalendar()
+        this.setEventsForTodayComponent(new Date())
     },
 
     methods: {
@@ -121,14 +122,10 @@ export default {
 
         <div class="columns">
             <div class="column">
-                <div class="card">
-                    <div class="card-content">
-                        <today
-                            :driverEvents="today_data.driver_events"
-                            :focusTasks="[]"
-                        ></today>
-                    </div>
-                </div>
+                <today
+                    :driverEvents="today_data.driver_events"
+                    :focusTasks="[]"
+                ></today>
             </div>
             <div class="column is-four-fifths">
                 <div class="card">

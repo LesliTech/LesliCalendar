@@ -118,6 +118,7 @@ export default {
                     {{ getDateTitle(date) + " - " + date.getDate() }}
                 </span>
             </p>
+            <div v-if="events.length > 0">
             <a  class="panel-block" v-for="(event, index) in events" :key="index" role="button" @click="emitShowEvent(event)">
                 
                 <span class="icon">
@@ -132,6 +133,11 @@ export default {
                 </b>
                 {{ event.title }}
             </a>
+            </div>
+            <div  v-else class="panel-block">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                No events
+            </div>
         </article>
     </section>
 </template>
