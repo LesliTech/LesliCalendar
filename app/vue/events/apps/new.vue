@@ -61,7 +61,7 @@ export default {
 </script>
 <template>
     <section class="application-component">
-        <component-header title="Edit Event">
+        <component-header title="New Event">
             <div class="is-grouped">
                 <router-link class="button" to="/">
                     <span class="icon">

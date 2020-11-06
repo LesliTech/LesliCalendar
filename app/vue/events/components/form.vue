@@ -75,6 +75,14 @@ export default {
         }
     },
 
+    beforeMount() {
+        if(this.view_type !== 'new') return true;
+
+        let time_end = this.event.detail_attributes.time_end;
+        time_end.setHours(time_end.getHours() + 1)
+        this.event.detail_attributes.time_end = time_end
+    },
+
     mounted() {
         this.getOptions()
         if(!this.eventId) return true;
@@ -241,17 +249,15 @@ export default {
                                 <sup class="has-text-danger">*</sup>
                             </label>
                             <div class="control">
-                                <vc-date-picker
+                                <b-datetimepicker
                                     v-model="event.detail_attributes.time_start"
-                                    mode="date"
-                                    required: true
-                                    :input-props="{
-                                        disabled: ! eventEditable,
-                                        placeholder: 'Time Start',
-                                        required: true
-                                    }"
-                                >
-                                </vc-date-picker>
+                                    rounded
+                                    placeholder="click to select start date for event"
+                                    icon="fa fa-calendar"
+                                    :datepicker="{ showWeekNumber: false }"
+                                    :timepicker="{ enableSeconds: false, hourFormat: '24' }"
+                                    horizontal-time-picker>
+                                </b-datetimepicker>
                             </div>
                         </div>
                         <div class="field">
@@ -260,17 +266,15 @@ export default {
                                 <sup class="has-text-danger">*</sup>
                             </label>
                             <div class="control">
-                                <vc-date-picker
+                                <b-datetimepicker
                                     v-model="event.detail_attributes.time_end"
-                                    mode="date"
-                                    required: true
-                                    :input-props="{
-                                        disabled: ! eventEditable,
-                                        placeholder: 'Time End',
-                                        required: true
-                                    }"
-                                >
-                                </vc-date-picker>
+                                    rounded
+                                    placeholder="click to select end date for event"
+                                    icon="fa fa-calendar"
+                                    :datepicker="{ showWeekNumber: false }"
+                                    :timepicker="{ enableSeconds: false, hourFormat: '24' }"
+                                    horizontal-time-picker>
+                                </b-datetimepicker>
                             </div>
                         </div>
                     </div>
