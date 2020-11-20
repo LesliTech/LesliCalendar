@@ -253,7 +253,7 @@ export default {
 <template>
     <div :class="[{ 'is-active': show }, 'quickview', 'is-size-large']">
         <header class="quickview-header">
-            <h4 class="title">{{ (this.event.detail_attributes.title ? this.event.detail_attributes.title : this.translations.main.form_title_new) }}</h4>
+            <h4 class="title" name="event-title">{{ (this.event.detail_attributes.title ? this.event.detail_attributes.title : this.translations.main.form_title_new) }}</h4>
             <span class="delete" @click="show = false"></span>
         </header>
         <div class="quickview-body">
@@ -264,25 +264,25 @@ export default {
                             <div class="field" v-if="event_id">
                                 <label class="label">{{translations.core.text_organizer}}</label>
                                 <div class="control">
-                                    <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
+                                    <input class="input" type="text" name="organizer_name" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
                                 </div>
                             </div>
                             <div class="field">
                                 <label class="label">{{translations.core.text_title}}<sup class="has-text-danger">*</sup></label>
                                 <div class="control">
-                                    <input class="input" type="text" v-model="event.detail_attributes.title" required :readonly="!eventEditable">
+                                    <input class="input" type="text" name="title" v-model="event.detail_attributes.title" required :readonly="!eventEditable">
                                 </div>
                             </div>
                             <div class="field">
                                 <label class="label">{{translations.core.text_description}}</label>
                                 <div class="control">
-                                    <textarea class="textarea" v-model="event.detail_attributes.description" :readonly="!eventEditable"></textarea>
+                                    <textarea class="textarea" name="description" :readonly="!eventEditable"></textarea>
                                 </div>
                             </div>
                             <div class="field">
                                 <label class="label">{{translations.core.text_address}}</label>
                                 <div class="control">
-                                    <input class="input" type="text" v-model="event.detail_attributes.location" :readonly="!eventEditable">
+                                    <input class="input" type="text" name="address" v-model="event.detail_attributes.location" :readonly="!eventEditable">
                                 </div>
                             </div>
                             <div class="field">
@@ -291,6 +291,7 @@ export default {
                                     <sup class="has-text-danger">*</sup>
                                 </label>
                                 <b-select
+                                    name="event_type"
                                     v-model="event.detail_attributes.event_type"
                                     :disabled="! eventEditable"
                                     expanded
@@ -308,7 +309,7 @@ export default {
                             </div> 
                             <div class="field">
                                 <label class="checkbox">
-                                    <input type="checkbox" v-model="event.detail_attributes.public" :disabled='isDefaultPublic() || !eventEditable'>
+                                    <input type="checkbox" name="public" v-model="event.detail_attributes.public" :disabled='isDefaultPublic() || !eventEditable'>
                                     {{ translations.main.form_input_mark_event_as_public_title }}
                                 </label>
                             </div>
@@ -323,6 +324,7 @@ export default {
                                         :locale="date.vcDatepickerConfig()"
                                         :popover="{ visibility: 'focus' }"
                                         :input-props="{
+                                            name: `event_date`,
                                             disabled: ! eventEditable,
                                             placeholder: translations.core.text_select_date,
                                             required: true
@@ -333,6 +335,7 @@ export default {
                             </div>
                             <b-field :label="translations.core.text_start_at">
                                 <b-timepicker
+                                    name="time_start"
                                     v-if="eventEditable"
                                     editable
                                     :placeholder="translations.core.text_select_time"
@@ -346,6 +349,7 @@ export default {
                             </b-field>
                             <b-field :label="translations.core.text_end_at">
                                 <b-timepicker
+                                    name="time_end"
                                     v-if="eventEditable"
                                     editable
                                     :placeholder="translations.core.text_select_time"
@@ -388,7 +392,7 @@ export default {
                                             </span>
                                             <span>{{ translations.core.btn_download }}</span>
                                         </a>
-                                        <button v-if="eventEditable" class="button is-primary" type="submit">
+                                        <button v-if="eventEditable" name="btn-save" class="button is-primary" type="submit">
                                             <span v-if="submitting_form">
                                                 <b-icon icon="circle-notch" custom-class="fa-spin" size="is-small" />
                                                 &nbsp;
