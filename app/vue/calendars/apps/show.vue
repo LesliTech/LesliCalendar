@@ -1,137 +1,174 @@
 <script>
 /*
-Lesli
+Copyright (c) 2020, all rights reserved.
 
-Copyright (c) 2020, Lesli Technologies, S. A.
+All the information provided by this platform is protected by international laws related  to 
+industrial property, intellectual property, copyright and relative international laws. 
+All intellectual or industrial property rights of the code, texts, trade mark, design, 
+pictures and any other information belongs to the owner of this platform.
 
-All the information provided by this website is protected by laws of Guatemala related 
-to industrial property, intellectual property, copyright and relative international laws. 
-Lesli Technologies, S. A. is the exclusive owner of all intellectual or industrial property
-rights of the code, texts, trade mark, design, pictures and any other information.
-Without the written permission of Lesli Technologies, S. A., any replication, modification,
+Without the written permission of the owner, any replication, modification,
 transmission, publication is strictly forbidden.
+
 For more information read the license file including with this software.
-
-LesliCloud - Your Smart Business Assistant
-
-Powered by https://www.lesli.tech
-Building a better future, one line of code at a time.
-
-@license  Propietary - all rights reserved.
-@version  0.1.0-alpha
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 */
 
 
+
 // · List of Imported Components
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+import { Calendar } from "@fullcalendar/core"
+import dayGridPlugin from "@fullcalendar/daygrid"
+import interactionPlugin from "@fullcalendar/interaction"
 
-import Calendar from '../components/calendar.vue'
-import Today from '../../components/today.vue'
-import EventSidebar from '../components/event-sidebar.vue'
+import componentAgenda from "../../components/agenda.vue"
+import componentEvent from "../../components/event-sidebar.vue"
+
+
+
 // · 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-
-
 export default {
-    props: {
-
-    },
-    
     components: {
-        'calendar': Calendar,
-        'today': Today,
-        'event-sidebar': EventSidebar,
+        "component-agenda": componentAgenda,
+        "component-event": componentEvent,
     },
-
     data(){
         return {
-            main_route: '/driver/calendars',
-            calendar_data: {
-                driver_events: [],
-                focus_tasks: []
+            main_route: "/driver/calendars",
+            translations: {
             },
-            today_data: {
-                driver_events: [],
-            },
-            calendar_id: null,
+            calendarPlugins: [ dayGridPlugin, interactionPlugin ],
+            calendar: {},
         }
     },
 
     mounted(){
-        this.setCalendarId()
-        this.addListeners()
-        this.getCalendar()
-        this.setEventsForTodayComponent(new Date())
+        this.calendar_id = this.$route.params.id
+        this.initCalendar()
     },
 
     methods: {
-        addListeners() {
-        },
 
-        setCalendarId(){
-            this.calendar_id = this.$route.params.id
-        },
-
-        getCalendar(){
-            let url = `${this.main_route}/${this.calendar_id}.json`
-            this.http.get(url).then(result => {
-                if (result.successful) {
-                    this.calendar_data = result.data
-                }else{
-                    this.alert(result.error.message, 'danger')
+        initCalendar() {
+            this.calendar = new Calendar(document.getElementById("calendar"), {
+                plugins: this.calendarPlugins,
+                header: false,
+                firstDay: this.date.firstDayOfWeek(),
+                locale: I18n.currentLocale(),
+                eventClick: info => {
+                    info.jsEvent.preventDefault();
+                    this.$router.replace({
+                        query: {event_id: info.event.id}
+                    }).then(()=>{
+                        this.bus.publish("show:/driver/component/event-quickview", info.event.id)
+                    }).catch((error)=>{})
+                },
+                dateClick: info => {
+                    this.selected_day = info.date
+                    this.emptyEventsToday()
+                    this.getCalendarEventsDay()
                 }
+            })
+            this.calendar.render()
+        },
+
+        getCalendarEvents() {
+
+            let query = `month=${ this.calendar.getDate().getMonth() }`
+            this.http.get(`/driver/calendars/default.json?${query}`).then(result => {
+                console.log(result)
+
             }).catch(error => {
                 console.log(error)
             })
         },
-        
-        setEventsForTodayComponent(date){
-            let params = {
-                day: date.getDate(),
-                month: date.getMonth()+1,
+
+        loadPrevMonth() {
+            this.calendar.prev()
+        },
+
+        loadNextMonth() {
+            this.calendar.next()
+        },
+
+        loadCurrentMonth() {
+            this.calendar.today()
+        },
+
+        showEvent() {
+            this.data.event.show = true
+        }
+
+    },
+    computed: {
+        title() {
+            if (!this.calendar.getDate) {
+                return ""
             }
-            let url = '/driver/events.json/'
-            this.http.get(url, {params}).then(result => {
-                if (result.successful) {
-                    this.today_data = result.data
-                }else{
-                    this.alert(result.error.message, 'danger')
-                }
-            }).catch(error => {
-                console.log(error)
-            })
+            return `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
         }
     },
-
-    watch: {
-        'data.calendar.selected_date': function(){
-            this.setEventsForTodayComponent(this.data.calendar.selected_date);
-        },
-    }
 }
 </script>
 <template>
     <section class="application-component">
-        <component-header title='Calendar'></component-header>
-
-        <div class="columns">
-            <div class="column">
-                <today
-                    :driverEvents="today_data.driver_events"
-                    :focusTasks="[]"
-                ></today>
-            </div>
-            <div class="column is-four-fifths">
-                <div class="card">
-                    <div class="card-content">
-                        <calendar :calendarData="calendar_data" :key="calendar_id"> </calendar>
+        <component-header :title="title" :buttons="false">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <button class="button" @click="loadPrevMonth()">
+                                <span class="icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </span>
+                                <span>prev</span>
+                            </button>
+                        </div>
+                        <div class="control">
+                            <button class="button" @click="loadNextMonth">
+                                <span>next</span>
+                                <span class="icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <button class="button" @click="loadCurrentMonth">
+                            <span class="icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
+                            <span>today</span>
+                        </button>
+                        <button class="button" @click="showEvent()">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>create event</span>
+                        </button>
                     </div>
                 </div>
             </div>
+        </component-header>
+
+        <component-toolbar></component-toolbar>
+
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <component-agenda></component-agenda>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div id="calendar"></div>
+                </div>
+            </div>
         </div>
-        <event-sidebar size="small"></event-sidebar>
+
+        <component-event></component-event>
+
     </section>
 </template>

@@ -1,16 +1,5 @@
-<p align="center">
-	<img width="120" alt="LesliCloud logo" src="./app/assets/images/cloud_driver/driver-logo.svg" />
-</p>
-
-<h3 align="center">Unified calendar app for The Lesli Platform</h3>
-
-<hr/>
-
-Version 0.1.0-alpha
-
-
-#### License
--------
+<script>
+/*
 Copyright (c) 2020, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
@@ -23,4 +12,22 @@ transmission, publication is strictly forbidden.
 
 For more information read the license file including with this software.
 
-<hr>
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+*/
+
+
+import componentSidebarView from "LesliVue/components/views/sidebar-view.vue"
+
+
+export default {
+    components: {
+        "component-sidebar-view": componentSidebarView
+    }
+}
+</script>
+<template>
+    <component-sidebar-view :open.sync="data.event.show" size="large">
+        <h1>hola</h1>
+    </component-sidebar-view>
+</template>

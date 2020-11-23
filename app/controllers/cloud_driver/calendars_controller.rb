@@ -1,3 +1,22 @@
+=begin
+    
+Copyright (c) 2020, all rights reserved.
+
+All the information provided by this platform is protected by international laws related  to 
+industrial property, intellectual property, copyright and relative international laws. 
+All intellectual or industrial property rights of the code, texts, trade mark, design, 
+pictures and any other information belongs to the owner of this platform.
+
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
+
+For more information read the license file including with this software.
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+    
+=end
+
 require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
@@ -23,14 +42,7 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json do
-                    respond_with_successful(
-                        Calendar.index(
-                            current_user,
-                            @query
-                        )
-                    )
-                end
+                format.json { respond_with_successful(Calendar.index(current_user, @query)) }
             end
         end
 
@@ -86,7 +98,6 @@ module CloudDriver
         #     puts @calendar
         #     # This will either display nil or an instance of CloudDriver::Calendar
         def set_calendar
-
             if params[:id].blank? || params[:id] == "default"
                 @calendar = current_user.account.driver.calendars.default
             elsif params[:id]
