@@ -67,7 +67,7 @@ module CloudDriver
                 user = attendant.user
                 {
                     name: user.full_name,
-                    role: user.role.detail.name,
+                    roles: user.roles.map(&:name),
                     email: user.email,
                     users_id: user.id,
                     id: attendant.id
@@ -154,7 +154,7 @@ module CloudDriver
                 href: "/crm/calendar?event_id=#{attendant.event.id}"
             }
 
-            ::DriverMailer.event_attendant_new(receipt, I18n.t("driver.events.mailer_new_event_attendant_subject"), data).deliver_now
+            ::DriverMailer.event_attendant_new(receipt, I18n.t("deutscheleibrenten.events.mailer_new_event_attendant_subject"), data).deliver_now
         end
 
         #############################
