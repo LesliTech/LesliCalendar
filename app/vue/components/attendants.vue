@@ -55,7 +55,12 @@ export default {
             this.http.get(this.users_route).then(result => {
                 this.loading.options = false
                 if (result.successful) {
-                    this.$set(this.attendant_options, 'users', result.data)
+                    this.$set(this.attendant_options, 'users', result.data.map(e => {
+                        return {
+                            ...e,
+                            roles: e.roles.split(",")
+                        }
+                    }))
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
@@ -141,7 +146,7 @@ export default {
                         id: result.data.id,
                         name: user.name || user.email,
                         email: user.email,
-                        role: user.role_name,
+                        roles: user.roles,
                         users_id: user.id
                     })
                     this.alert(this.translations.main.notification_attendant_created, 'success')
@@ -183,6 +188,16 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
+        },
+
+        extractInitials(name){
+            return name.split(" ").map((word)=>{
+                if(word){
+                    return word[0].toUpperCase()
+                }else{
+                    return ''
+                }
+            }).join("")
         },
 
         clearOptions(){
@@ -274,7 +289,14 @@ export default {
                         {{ props.row.email }}
                     </b-table-column>
                     <b-table-column field="role_name" :label="translations.core.text_role">
-                        {{ translateUserRole(props.row.role_name) }}
+                        <span>
+                            <span v-for="role in props.row.roles" :key="`employee-${props.row.id}-${role}`">
+                                <b-tooltip type="is-white" :label="role">
+                                    <b-tag type="is-info">{{extractInitials(translateUserRole(role))}}</b-tag>
+                                    &nbsp;
+                                </b-tooltip>
+                            </span>
+                        </span>
                     </b-table-column>
                     <b-table-column field="actions" label="">
                         <b-checkbox :disabled="props.row.submitting" size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
@@ -311,7 +333,14 @@ export default {
                         {{ props.row.email }}
                     </b-table-column>
                     <b-table-column field="role" :label="translations.core.text_role">
-                        {{ translateUserRole(props.row.role) }}
+                        <span>
+                            <span v-for="role in props.row.roles" :key="`attendance-${props.row.id}-${role}`">
+                                <b-tooltip type="is-white" :label="role">
+                                    <b-tag type="is-info">{{extractInitials(translateUserRole(role))}}</b-tag>
+                                    &nbsp;
+                                </b-tooltip>
+                            </span>
+                        </span>
                     </b-table-column>
                     <b-table-column field="actions" label="">
                         <a v-if="eventEditable" class="delete" role="button" @click="deleteAttendant(props.row)"></a>
