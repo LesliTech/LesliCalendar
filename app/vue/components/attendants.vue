@@ -14,7 +14,7 @@ export default {
         return {
             active_tab: 1,
             main_route: '/driver/events',
-            users_route: '/lock/users.json?role=kop,callcenter,api&type=exclude',
+            users_route: '/lock/users/list.json?role=kop,callcenter,api&type=exclude',
             translations: {
                 main: I18n.t('deutscheleibrenten.events'),
                 core: I18n.t('deutscheleibrenten.shared'),
@@ -55,12 +55,7 @@ export default {
             this.http.get(this.users_route).then(result => {
                 this.loading.options = false
                 if (result.successful) {
-                    this.$set(this.attendant_options, 'users', result.data.map(e => {
-                        return {
-                            ...e,
-                            roles: e.roles.split(",")
-                        }
-                    }))
+                    this.$set(this.attendant_options, 'users', result.data)
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
@@ -207,7 +202,7 @@ export default {
         },
 
         translateUserRole(role){
-            let new_role = this.translations.users[`enum_role_${role}`]
+            let new_role = this.translations.users[`enum_role_${role}`] || this.translations.users[`column_enum_role_${role}`]
             if(new_role){
                 return new_role
             }
@@ -291,8 +286,8 @@ export default {
                     <b-table-column field="role_name" :label="translations.core.text_role">
                         <span>
                             <span v-for="role in props.row.roles" :key="`employee-${props.row.id}-${role}`">
-                                <b-tooltip type="is-white" :label="role">
-                                    <b-tag type="is-info">{{extractInitials(translateUserRole(role))}}</b-tag>
+                                <b-tooltip type="is-white" :label="translateUserRole(role.name)">
+                                    <b-tag type="is-white">{{extractInitials(translateUserRole(role.name))}}</b-tag>
                                     &nbsp;
                                 </b-tooltip>
                             </span>
@@ -336,7 +331,7 @@ export default {
                         <span>
                             <span v-for="role in props.row.roles" :key="`attendance-${props.row.id}-${role}`">
                                 <b-tooltip type="is-white" :label="role">
-                                    <b-tag type="is-info">{{extractInitials(translateUserRole(role))}}</b-tag>
+                                    <b-tag type="is-white">{{extractInitials(translateUserRole(role))}}</b-tag>
                                     &nbsp;
                                 </b-tooltip>
                             </span>
