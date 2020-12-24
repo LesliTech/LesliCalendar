@@ -1,0 +1,17 @@
+<router-view>
+    <section class="section">
+        <div class="columns">
+            <div class="column is-3">
+                <component-lesli-calendar></component-lesli-calendar>
+                <component-calendar-list></component-calendar-list>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <fullcalendar :plugins="plugins" default-view="timeGridWeek"></fullcalendar>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</router-view>
