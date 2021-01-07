@@ -17,7 +17,7 @@ For more information read the license file including with this software.
 
 =end
 module CloudDriver
-    class Workflow < CloudObject::Workflow
+    class Workflow < Shared::Workflow
         belongs_to :account, class_name: "Account", foreign_key: "cloud_driver_accounts_id"
         has_many :associations, class_name: "Workflow::Association", foreign_key: "cloud_driver_workflows_id"
         has_many :actions, class_name: "Workflow::Action", foreign_key: "cloud_driver_workflows_id"

@@ -19,6 +19,6 @@ For more information read the license file including with this software.
 // · 
 
 =end
-    class Workflow::AssociationsController < CloudObject::Workflow::AssociationsController
+    class Workflow::AssociationsController < Shared::Workflow::AssociationsController
     end
 end
