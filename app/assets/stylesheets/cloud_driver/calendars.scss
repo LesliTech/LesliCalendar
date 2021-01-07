@@ -19,9 +19,9 @@ For more information read the license file including with this software.
 
 @import "lesli/templates/component";
 
-@import "@fullcalendar/timegrid/main";
+@import "@fullcalendar/common/main";
 @import "@fullcalendar/daygrid/main";
-@import "@fullcalendar/core/main";
+@import "@fullcalendar/timegrid/main";
 
 .fc-head-container {
     th.fc-day-header {
