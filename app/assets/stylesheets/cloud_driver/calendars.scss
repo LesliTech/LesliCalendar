@@ -26,9 +26,9 @@ Building a better future, one line of code at a time.
 
 @import "lesli/templates/component";
 
-@import "@fullcalendar/timegrid/main";
+@import "@fullcalendar/common/main";
 @import "@fullcalendar/daygrid/main";
-@import "@fullcalendar/core/main";
+@import "@fullcalendar/timegrid/main";
 
 .fc-head-container {
     th.fc-day-header {
