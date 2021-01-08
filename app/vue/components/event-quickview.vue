@@ -317,13 +317,18 @@ export default {
                                         v-model="event.detail_attributes.event_date"
                                         :locale="date.vcDatepickerConfig()"
                                         :popover="{ visibility: 'focus' }"
-                                        :input-props="{
-                                            name: `event_date`,
-                                            disabled: ! eventEditable,
-                                            placeholder: translations.core.text_select_date,
-                                            required: true
-                                        }"
                                     >
+                                        <template v-slot="{ inputValue, inputEvents }">
+                                            <input
+                                                name="`event_date`"
+                                                class="input is-default"
+                                                v-on="inputEvents"
+                                                :value="inputValue"
+                                                :placeholder="translations.core.text_select_date"
+                                                :disabled="!eventEditable"
+                                                required
+                                            />
+                                        </template>
                                     </vc-date-picker>
                                 </div>
                             </div>
