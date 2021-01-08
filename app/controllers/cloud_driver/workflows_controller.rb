@@ -1,6 +1,3 @@
-require_dependency "cloud_driver/application_controller"
-
-module CloudDriver
 =begin
 
 Copyright (c) 2020, all rights reserved.
@@ -19,6 +16,9 @@ For more information read the license file including with this software.
 // · 
 
 =end
-    class WorkflowsController < CloudObject::WorkflowsController
+require_dependency "cloud_driver/application_controller"
+
+module CloudDriver
+    class WorkflowsController < Shared::WorkflowsController
     end
 end

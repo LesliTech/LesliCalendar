@@ -1,62 +1,25 @@
+
+=begin
+
+Copyright (c) 2020, all rights reserved.
+
+All the information provided by this platform is protected by international laws related  to 
+industrial property, intellectual property, copyright and relative international laws. 
+All intellectual or industrial property rights of the code, texts, trade mark, design, 
+pictures and any other information belongs to the owner of this platform.
+
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
+
+For more information read the license file including with this software.
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+
+=end
 require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
-  class Dashboard::ComponentsController < ApplicationController
-    before_action :set_dashboard_component, only: [:show, :edit, :update, :destroy]
-
-    # GET /dashboard/components
-    def index
-      @dashboard_components = Dashboard::Component.all
+    class Dashboard::ComponentsController < Shared::Dashboard::ComponentsController
     end
-
-    # GET /dashboard/components/1
-    def show
-    end
-
-    # GET /dashboard/components/new
-    def new
-      @dashboard_component = Dashboard::Component.new
-    end
-
-    # GET /dashboard/components/1/edit
-    def edit
-    end
-
-    # POST /dashboard/components
-    def create
-      @dashboard_component = Dashboard::Component.new(dashboard_component_params)
-
-      if @dashboard_component.save
-        redirect_to @dashboard_component, notice: 'Component was successfully created.'
-      else
-        render :new
-      end
-    end
-
-    # PATCH/PUT /dashboard/components/1
-    def update
-      if @dashboard_component.update(dashboard_component_params)
-        redirect_to @dashboard_component, notice: 'Component was successfully updated.'
-      else
-        render :edit
-      end
-    end
-
-    # DELETE /dashboard/components/1
-    def destroy
-      @dashboard_component.destroy
-      redirect_to dashboard_components_url, notice: 'Component was successfully destroyed.'
-    end
-
-    private
-      # Use callbacks to share common setup or constraints between actions.
-      def set_dashboard_component
-        @dashboard_component = Dashboard::Component.find(params[:id])
-      end
-
-      # Only allow a trusted parameter "white list" through.
-      def dashboard_component_params
-        params.fetch(:dashboard_component, {})
-      end
-  end
 end

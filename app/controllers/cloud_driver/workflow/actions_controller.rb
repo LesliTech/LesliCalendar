@@ -19,6 +19,6 @@ For more information read the license file including with this software.
 // · 
 
 =end
-    class Workflow::ActionsController < CloudObject::Workflow::ActionsController
+    class Workflow::ActionsController < Shared::Workflow::ActionsController
     end
 end
