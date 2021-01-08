@@ -25,16 +25,14 @@ require "cloud_driver/version"
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |spec|
 
-    spec.name        = "cloud_driver"
-    spec.version     = CloudDriver::VERSION
-    spec.authors     = ["LesliTech"]
-    spec.email       = ["hello@lesli.tech"]
-    spec.homepage    = "https://lesli.cloud"
-    spec.summary     = "Unified calendar app for LesliCloud"
-    spec.license     = "All rights reserved"
+    spec.name    = "cloud_driver"
+    spec.version = CloudDriver::VERSION
+    spec.authors = ["The Lesli Development Team"]
+    spec.summary = "Development resources"
+    spec.license = "All rights reserved"
 
     spec.files = Dir["{app,config,db,lib}/**/*", "license", "Rakefile", "readme.md"]
 
-    spec.add_dependency "rails", "~> 6.0.0"
+    spec.add_dependency "rails", "~> 6.1.0"
 
 end
