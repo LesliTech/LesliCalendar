@@ -14,7 +14,7 @@ export default {
         return {
             active_tab: 1,
             main_route: '/driver/events',
-            users_route: '/lock/users/list.json?role=kop,callcenter,api&type=exclude',
+            users_route: '/administration/users/list.json?role=kop,callcenter,api&type=exclude',
             translations: {
                 main: I18n.t('deutscheleibrenten.events'),
                 core: I18n.t('deutscheleibrenten.shared'),
