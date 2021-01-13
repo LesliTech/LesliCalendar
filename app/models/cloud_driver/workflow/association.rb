@@ -18,12 +18,21 @@ For more information read the license file including with this software.
 =end
 module CloudDriver
     class Workflow::Association < Shared::Workflow::Association
-
         belongs_to :workflow, class_name: "Workflow", foreign_key: "cloud_driver_workflows_id"
 
-        enum object_association: {
-            calendar: "calendar",
-            event: "event",
-        }
+        # @return [Hash] A list of all available associations that can be created
+        # @description Returns a hash where the key is the condensed name of the association and the value is the same.
+        #     This previously was an enum that was changed due to issues with the new version of rails 6.1.0
+        # @example
+        #     CloudDriver::Workflow.first.associations.create!(
+        #         workflow_for: CloudDriver::Workflow::Association.object_associations[:calendar],
+        #         global: true
+        #     )
+        def self.object_associations
+            return {
+                calendar: "calendar",
+                event: "event"
+            }
+        end
     end
 end
