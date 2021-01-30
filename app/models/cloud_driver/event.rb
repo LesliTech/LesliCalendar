@@ -172,10 +172,10 @@ module CloudDriver
                 href: "/crm/calendar?event_id=#{attendant.event.id}"
             }
 
-            ::Courier::Bell::Notifications::Web.new(
+            ::Courier::Bell::Notification.new(
                 attendant.user,
                 "event_attendant_created",
-                {
+                body: {
                     href: "/crm/calendar?event_id=#{attendant.event.id}"
                 }
             )
