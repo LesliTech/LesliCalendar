@@ -15,6 +15,7 @@ module CloudDriver
         def initialize_account
             Workflow.initialize_data(self)
             Dashboard.initialize_data(self)
+            Calendar.initialize_data(self)
         end
     end
 end

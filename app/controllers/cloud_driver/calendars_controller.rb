@@ -111,7 +111,11 @@ module CloudDriver
         end
 
         def set_date_filter_params
-            filters_date = Calendar.get_date_range_filter(params[:month], params[:day])
+            filters_date = Calendar.get_date_range_filter(
+                year=@query[:filters][:year],
+                month=@query[:filters][:month],
+                day=@query[:filters][:day]
+            )
             @query[:filters][:start_date] = filters_date[:start_date]
             @query[:filters][:end_date] = filters_date[:end_date]
         end
