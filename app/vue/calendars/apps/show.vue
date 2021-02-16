@@ -20,9 +20,8 @@ For more information read the license file including with this software.
 
 // · List of Imported Components
 import { Calendar } from "@fullcalendar/core"
-import dayGridPlugin from "@fullcalendar/daygrid"
-import interactionPlugin from "@fullcalendar/interaction"
 
+import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
 import componentEvent from "../../components/event-sidebar.vue"
 
@@ -31,6 +30,7 @@ import componentEvent from "../../components/event-sidebar.vue"
 // · 
 export default {
     components: {
+        "component-calendar": componentCalendar,
         "component-agenda": componentAgenda,
         "component-event": componentEvent,
     },
@@ -39,14 +39,12 @@ export default {
             main_route: "/driver/calendars",
             translations: {
             },
-            calendarPlugins: [ dayGridPlugin, interactionPlugin ],
-            calendar: {},
+            calendar_id: null,
         }
     },
 
     mounted(){
         this.calendar_id = this.$route.params.id
-        this.initCalendar()
     },
 
     methods: {
@@ -74,40 +72,30 @@ export default {
             this.calendar.render()
         },
 
-        getCalendarEvents() {
-
-            let query = `month=${ this.calendar.getDate().getMonth() }`
-            this.http.get(`/driver/calendars/default.json?${query}`).then(result => {
-                console.log(result)
-
-            }).catch(error => {
-                console.log(error)
-            })
+        onPrevMonth($event) {
+            this.bus.publish("action:/driver/calendars/components/calendar#prev_month", $event)
         },
 
-        loadPrevMonth() {
-            this.calendar.prev()
+        onNextMonth($event) {
+            this.bus.publish("action:/driver/calendars/components/calendar#next_month", $event)
         },
 
-        loadNextMonth() {
-            this.calendar.next()
-        },
-
-        loadCurrentMonth() {
-            this.calendar.today()
+        onCurrentMonth($event) {
+            this.bus.publish("action:/driver/calendars/components/calendar#current_month", $event)
         },
 
         showEvent() {
             this.data.event.show = true
+        },
+
+        createEvent() {
+            this.url.go("/driver/events/new")
         }
 
     },
     computed: {
         title() {
-            if (!this.calendar.getDate) {
-                return ""
-            }
-            return `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
+            return this.data.calendar.title
         }
     },
 }
@@ -119,7 +107,7 @@ export default {
                 <div class="navbar-item">
                     <div class="field has-addons">
                         <div class="control">
-                            <button class="button" @click="loadPrevMonth()">
+                            <button class="button" @click="onPrevMonth($event)">
                                 <span class="icon">
                                     <i class="fas fa-chevron-left"></i>
                                 </span>
@@ -127,7 +115,7 @@ export default {
                             </button>
                         </div>
                         <div class="control">
-                            <button class="button" @click="loadNextMonth">
+                            <button class="button" @click="onNextMonth($event)">
                                 <span>next</span>
                                 <span class="icon">
                                     <i class="fas fa-chevron-right"></i>
@@ -138,13 +126,13 @@ export default {
                 </div>
                 <div class="navbar-item">
                     <div class="buttons">
-                        <button class="button" @click="loadCurrentMonth">
+                        <button class="button" @click="onCurrentMonth($event)">
                             <span class="icon">
                                 <i class="fas fa-calendar-day"></i>
                             </span>
                             <span>today</span>
                         </button>
-                        <button class="button" @click="showEvent()">
+                        <button class="button" @click="createEvent()">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
                             </span>
@@ -163,7 +151,7 @@ export default {
             </div>
             <div class="column">
                 <div class="card">
-                    <div id="calendar"></div>
+                    <component-calendar :calendar_id="calendar_id" :key="calendar_id"> </component-calendar>
                 </div>
             </div>
         </div>

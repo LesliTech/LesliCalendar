@@ -44,7 +44,7 @@ export default {
                 category: "",
                 datetime: "today"
             },{
-                id: 0,
+                id: 1,
                 title: "My task",
                 category: "",
                 datetime: "tomorrow - 7 PM"

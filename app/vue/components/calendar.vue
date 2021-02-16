@@ -19,65 +19,165 @@ For more information read the license file including with this software.
 */
 
 
-//  · Loading core framework and libraries
-// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
-import dayjs from 'dayjs'
-import { Calendar, setupCalendar } from 'v-calendar'
+
+// · Import components, libraries and tools
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+import { Calendar } from '@fullcalendar/core'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 
-//  · Initializing 
-// ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~        ~·~
-setupCalendar({
-    componentPrefix: 'vc'
-})
-
-
-
-// · LesliCloud app
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
 export default {
-    components: {
-        'v-calendar': Calendar
+    props: {
+        calendar_id: {
+            required: false,
+        },
+        main_route: {
+            required: false,
+            type: String,
+            default: '/driver/events',
+        }
     },
     data() {
         return {
-            attributes: [{
-                key: 'today',
-                dates: new Date(),
-                highlight: 'red'
-            }, {
-                highlight: true,
-                dates: [{ 
-                    start: dayjs().add(1, 'day').format(), 
-                    end: dayjs().add(5, 'day').format() 
-                }]
-            }, {
-                dot: 'red',
-                dates: [
-                    dayjs().add(7, 'day').format()
-                ]
-            }, {
-                dot: 'blue',
-                dates: [
-                    dayjs().add(8, 'day').format()
-                ]
-            }, {
-                bar: 'green',
-                dates: [
-                    dayjs().add(10, 'day').format(),
-                    dayjs().add(11, 'day').format(),
-                    dayjs().add(12, 'day').format()
-                ]
-            }]
+            calendarPlugins: [ dayGridPlugin, interactionPlugin ],
+            calendar: {},
+            calendarData: {
+                driver_events: [],
+                focus_tasks: [],
+                help_tickets: [],
+            },
+        }
+    },
+    mounted() {
+        this.initCalendar();
+        this.getCalendarEvents(this.calendar_id);
+        this.addListeners();
+    },
+    methods: {
+        initCalendar() {
+            this.calendar = new Calendar(document.getElementById("driver_calendar_"+this._uid), {
+                plugins: this.calendarPlugins,
+                headerToolbar: false,
+                firstDay: this.date.firstDayOfWeek(),
+                locale: I18n.currentLocale(),
+                dateClick: this.onDateSelect,
+                eventClick: this.onEventClick,
+                initialView: 'dayGridMonth',
+                showNonCurrentDates: false,
+            })
+            this.calendar.render()
+            this.setTitle();
+        },
+
+        addListeners() {
+            this.bus.subscribe("action:/driver/calendars/components/calendar#prev_month", ($event) => {
+                this.loadPrevMonth();
+            });
+
+            this.bus.subscribe("action:/driver/calendars/components/calendar#next_month", ($event) => {
+                this.loadNextMonth();
+            });
+
+            this.bus.subscribe("action:/driver/calendars/components/calendar#current_month", ($event) => {
+                this.loadCurrentMonth();
+            });
+        },
+
+        setTitle() {
+            let title = `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
+            this.data.calendar.title = title;
+        },
+
+        resetEvents() {
+            this.calendar.batchRendering(() => {
+                // get rendered events in calendar
+                let events = this.calendar.getEvents()
+
+                // remove events from calendar
+                events.forEach(event => event.remove() )
+
+                // events from my calendar
+                this.calendarData.driver_events.forEach(
+                    (event) => {
+                        event.url = `${this.main_route}/${event.id}`
+                        this.calendar.addEvent(event)
+                    }
+                );
+
+                // events from CloudFocus tasks
+                this.calendarData.focus_tasks.forEach(
+                    (event) => {
+                        event.url = `${this.main_route}/${event.id}`
+                        this.calendar.addEvent(event)
+                    }
+                );
+
+                // Tickets from CloudHelp tickets with deadline
+                this.calendarData.help_tickets.forEach(
+                    (event) => {
+                        event.url = `${this.main_route}/${event.id}`
+                        this.calendar.addEvent(event)
+                    }
+                );
+            })
+        },
+        onDateSelect: function(arg) {
+            this.data.calendar.selected_date = arg.date
+        },
+
+        onEventClick: function(arg) {
+            arg.jsEvent.preventDefault()
+            this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
+        },
+
+        getCalendarEvents(calendar_endpoint) {
+            calendar_endpoint = calendar_endpoint || "default";
+
+            let filters = {
+                include: {
+                    help_tickets: true,
+                    focus_tasks: true,
+                },
+                month: this.calendar.getDate().getMonth()+1,
+                year: this.calendar.getDate().getFullYear(),
+            }
+
+            let url = this.url.driver('events').filters(filters)
+            this.http.get(url).then(result => {
+                this.calendarData = result.data
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
+        loadPrevMonth() {
+            this.calendar.prev();
+            this.setTitle();
+            this.getCalendarEvents();
+        },
+
+        loadNextMonth() {
+            this.calendar.next();
+            this.setTitle();
+            this.getCalendarEvents();
+        },
+
+        loadCurrentMonth() {
+            this.calendar.today();
+            this.setTitle();
+            this.getCalendarEvents();
+        },
+    },
+
+    watch: {
+        calendarData() {
+            this.resetEvents();
         }
     }
 }
 </script>
 <template>
-    <v-calendar :attributes="attributes" color="blue" is-expanded></v-calendar>
+    <div :id="'driver_calendar_'+_uid"></div>
 </template>
-<style scoped>
-    .vc-container {
-        border-radius: 2px;
-    }
-</style>

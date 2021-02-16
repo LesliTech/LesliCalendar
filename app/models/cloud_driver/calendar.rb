@@ -30,6 +30,17 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
+        def self.initialize_data(account)
+            default_calendar = self.create!(
+                account: account
+            )
+            Calendar::Detail.create!(
+                name: "Default Calendar",
+                default: true,
+                cloud_driver_calendars_id: default_calendar.id
+            )
+        end
+
         def self.events_from_all_modules(current_user, query)
             LC::Debug.msg "Deprecated"
             self.index(current_user, query)
@@ -76,11 +87,13 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("CDEA.users_id = ? or cloud_driver_events.user_main_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
-            .where(
-                "cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date < ?",
-                query[:filters][:start_date],
-                query[:filters][:end_date]+1
-            )
+            .where("extract('year' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].year)
+            .where("extract('month' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].month)
+            .where("extract('day' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].day)
+            .where("extract('year' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].year)
+            .where("extract('month' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].month)
+            .where("extract('day' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].day)
+    
             own_driver_events.each do |event|
                 event[:editable] = event.is_editable_by?(current_user)
                 all_events[event.id] = event
@@ -107,11 +120,13 @@ module CloudDriver
                 "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
             )
             .where("cloud_driver_event_details.public = true")
-            .where(
-                "cloud_driver_event_details.event_date >= ? and cloud_driver_event_details.event_date < ?",
-                query[:filters][:start_date],
-                query[:filters][:end_date]+1
-            )
+            .where("extract('year' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].year)
+            .where("extract('month' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].month)
+            .where("extract('day' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].day)
+            .where("extract('year' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].year)
+            .where("extract('month' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].month)
+            .where("extract('day' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].day)
+
             public_driver_events.each do |event|
                 unless all_events[event.id]
                     event[:editable] = event.is_editable_by?(current_user)
@@ -123,7 +138,7 @@ module CloudDriver
             
             # tasks from CloudFocus
             if query[:filters][:include] && query[:filters][:include][:focus_tasks]
-                calendar_data[:driver_events]  = Courier::Focus::Task.with_deadline(current_user, query).map do |task|
+                calendar_data[:focus_tasks]  = Courier::Focus::Task.with_deadline(current_user, query).map do |task|
                     {
                         id: task[:id],
                         title: task[:title],
@@ -138,20 +153,33 @@ module CloudDriver
 
             # tickets from CloudHelp
             if query[:filters][:include] && query[:filters][:include][:help_tickets]
-                calendar_data[:help_tickets]  = Courier::Help::Ticket.with_deadline(current_user)
+                calendar_data[:help_tickets]  = Courier::Help::Ticket.with_deadline(current_user, query).map do |ticket|
+                    {
+                        id: ticket[:id],
+                        title: ticket[:subject],
+                        description: ticket[:description],
+                        date: ticket[:deadline],
+                        start: ticket[:deadline],
+                        end: ticket[:deadline],
+                        classNames: ["cloud_driver_event"]
+                    }
+                end
             end
 
             calendar_data
         end
 
-        def self.get_date_range_filter(month=nil, day=nil)
+        def self.get_date_range_filter(year=nil, month=nil, day=nil)
             start_date = Date.today.beginning_of_month
-            start_date = start_date.change(:day => day.to_i) if !day.blank?
+            start_date = start_date.change(:year => year.to_i) if !year.blank?
             start_date = start_date.change(:month => month.to_i) if !month.blank?
+            start_date = start_date.change(:day => day.to_i) if !day.blank?
 
-            end_date = Date.today.end_of_month
-            end_date = end_date.change(:day => day.to_i) if !day.blank?
+            end_date = Date.today
+            end_date = end_date.change(:year => year.to_i) if !year.blank?
             end_date = end_date.change(:month => month.to_i) if !month.blank?
+            end_date = end_date.end_of_month
+            end_date = end_date.change(:day => day.to_i) if !day.blank?
 
             { start_date: start_date, end_date: end_date }
         end
