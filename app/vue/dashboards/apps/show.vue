@@ -19,8 +19,6 @@ For more information read the license file including with this software.
 
 
 // · List of Imported Components
-import { Calendar } from "@fullcalendar/core"
-
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
 import componentEvent from "../../components/event-sidebar.vue"
@@ -40,36 +38,35 @@ export default {
             translations: {
             },
             calendar_id: null,
+            filters: {
+                status: "all"
+            },
+            options: {
+                events_type: []
+            },
+            loading: true,
         }
     },
 
     mounted(){
         this.calendar_id = this.$route.params.id
+        this.getEventsType();
     },
 
     methods: {
-
-        initCalendar() {
-            this.calendar = new Calendar(document.getElementById("calendar"), {
-                plugins: this.calendarPlugins,
-                header: false,
-                firstDay: this.date.firstDayOfWeek(),
-                locale: I18n.currentLocale(),
-                eventClick: info => {
-                    info.jsEvent.preventDefault();
-                    this.$router.replace({
-                        query: {event_id: info.event.id}
-                    }).then(()=>{
-                        this.bus.publish("show:/driver/component/event-quickview", info.event.id)
-                    }).catch((error)=>{})
-                },
-                dateClick: info => {
-                    this.selected_day = info.date
-                    this.emptyEventsToday()
-                    this.getCalendarEventsDay()
+        getEventsType() {
+            this.loading = true;
+            this.http.get('/driver/calendars/options.json').then(result => {
+                if (result.successful) {
+                    this.options.events_type = result.data.events_type
+                }else{
+                    this.alert(result.error.message,'danger')
                 }
+                this.loading = false
+            }).catch(error => {
+                console.log(error)
+                this.loading = false
             })
-            this.calendar.render()
         },
 
         onPrevMonth($event) {
@@ -90,8 +87,7 @@ export default {
 
         createEvent() {
             this.url.go("/driver/events/new")
-        }
-
+        },
     },
     computed: {
         title() {
@@ -143,7 +139,19 @@ export default {
             </div>
         </component-header>
 
-        <component-toolbar></component-toolbar>
+        <component-toolbar>
+            <b-select
+                placeholder="Select a event type"
+                v-model="filters.status"
+                :loading="loading">
+                <option
+                    v-for="option in options.events_type"
+                    :value="option.value"
+                    :key="option.value">
+                    {{ option.name }}
+                </option>
+            </b-select>
+        </component-toolbar>
 
         <div class="columns">
             <div class="column is-one-quarter">
@@ -151,7 +159,11 @@ export default {
             </div>
             <div class="column">
                 <div class="card">
-                    <component-calendar :calendar_id="calendar_id" :key="calendar_id"> </component-calendar>
+                    <component-calendar
+                        :calendar_id="calendar_id"
+                        :filter_event="filters.status"
+                        :key="calendar_id">
+                    </component-calendar>
                 </div>
             </div>
         </div>
