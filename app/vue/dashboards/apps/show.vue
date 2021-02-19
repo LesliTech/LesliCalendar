@@ -39,12 +39,12 @@ export default {
             },
             calendar_id: null,
             filters: {
-                status: "all"
+                module_event: "all"
             },
             options: {
-                events_type: []
+                types_module_events: []
             },
-            loading: true,
+            loading: true
         }
     },
 
@@ -58,7 +58,7 @@ export default {
             this.loading = true;
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
-                    this.options.events_type = result.data.events_type
+                    this.options.types_module_events = result.data.types_module_events
                 }else{
                     this.alert(result.error.message,'danger')
                 }
@@ -92,6 +92,25 @@ export default {
     computed: {
         title() {
             return this.data.calendar.title
+        },
+
+        event_filter_options() {
+            let options = [
+                {
+                    value: "all",
+                    label: "All events type"
+                },
+                {
+                    value: "driver_events",
+                    label: "Calendar Events"
+                }
+            ];
+
+            if ("focus_tasks" in this.options.types_module_events) options.push({value: this.options.types_module_events.focus_tasks, label: "Tasks"})
+            if ("help_tickets" in this.options.types_module_events) options.push({value: this.options.types_module_events.help_tickets, label: "Tickets"})
+
+
+            return options;
         }
     },
 }
@@ -142,13 +161,13 @@ export default {
         <component-toolbar>
             <b-select
                 placeholder="Select a event type"
-                v-model="filters.status"
+                v-model="filters.module_event"
                 :loading="loading">
                 <option
-                    v-for="option in options.events_type"
+                    v-for="option in this.event_filter_options"
                     :value="option.value"
                     :key="option.value">
-                    {{ option.name }}
+                    {{ option.label }}
                 </option>
             </b-select>
         </component-toolbar>
@@ -161,7 +180,7 @@ export default {
                 <div class="card">
                     <component-calendar
                         :calendar_id="calendar_id"
-                        :filter_event="filters.status"
+                        :filter_event="filters.module_event"
                         :key="calendar_id">
                     </component-calendar>
                 </div>

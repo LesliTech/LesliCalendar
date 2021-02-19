@@ -142,9 +142,9 @@ export default {
 
             let filters = {
                 include: {
-                    help_tickets:  (this.filter_event === "all" || this.filter_event === "tickets" ) ? true : false,
-                    focus_tasks: (this.filter_event === "all" || this.filter_event === "tasks" ) ? true : false,
-                    driver_events: (this.filter_event === "all" || this.filter_event === "events" ) ? true : false,
+                    help_tickets:  (this.filter_event === "all" || this.filter_event === "help_tickets" ) ? true : false,
+                    focus_tasks: (this.filter_event === "all" || this.filter_event === "focus_tasks" ) ? true : false,
+                    driver_events: (this.filter_event === "all" || this.filter_event === "driver_events" ) ? true : false,
                 },
                 month: this.calendar.getDate().getMonth()+1,
                 year: this.calendar.getDate().getFullYear(),

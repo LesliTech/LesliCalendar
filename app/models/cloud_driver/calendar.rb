@@ -30,6 +30,15 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
+
+
+        enum types_module_events: {
+            driver_events: "driver_events",
+            focus_tasks: ('focus_tasks' if defined? CloudFocus),
+            help_tickets: ('help_tickets' if defined? CloudHelp)
+        }.compact
+
+
         def self.initialize_data(account)
             default_calendar = self.create!(
                 account: account
@@ -187,34 +196,9 @@ module CloudDriver
         end
 
         def self.options(current_user, query)
-            options = { :events_type => 
-                [
-                    {
-                        :value => "all",
-                        :name => "All events type"
-                    },
-                    {
-                        :value => "events",
-                        :name => "Calendar Events"
-                    }
-                ]
+            {
+                :types_module_events => Calendar.types_module_events
             }
-
-            options[:events_type].push(
-                {
-                    :value => "tasks",
-                    :name => "Tasks"
-                }
-            ) if defined? CloudFocus
-
-            options[:events_type].push(
-                {
-                    :value => "tickets",
-                    :name => "Tickets"
-                }
-            ) if defined? CloudHelp
-
-            return options
         end
     end
 end
