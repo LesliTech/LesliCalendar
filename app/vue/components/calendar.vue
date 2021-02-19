@@ -37,6 +37,11 @@ export default {
             required: false,
             type: String,
             default: '/driver/events',
+        },
+        filter_event: {
+            required: false,
+            type: String,
+            default: 'all',
         }
     },
     data() {
@@ -137,8 +142,9 @@ export default {
 
             let filters = {
                 include: {
-                    help_tickets: true,
-                    focus_tasks: true,
+                    help_tickets:  (this.filter_event === "all" || this.filter_event === "help_tickets" ) ? true : false,
+                    focus_tasks: (this.filter_event === "all" || this.filter_event === "focus_tasks" ) ? true : false,
+                    driver_events: (this.filter_event === "all" || this.filter_event === "driver_events" ) ? true : false,
                 },
                 month: this.calendar.getDate().getMonth()+1,
                 year: this.calendar.getDate().getFullYear(),
@@ -174,6 +180,10 @@ export default {
     watch: {
         calendarData() {
             this.resetEvents();
+        },
+
+        filter_event(){
+            this.getCalendarEvents();
         }
     }
 }

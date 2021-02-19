@@ -63,6 +63,9 @@ CloudDriver::Engine.routes.draw do
     end
     
     resources :calendars do
+        collection do
+            get :options
+        end
         scope module: :calendar do
             resources :actions
             resources :discussions

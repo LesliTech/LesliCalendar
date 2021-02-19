@@ -85,7 +85,7 @@ module CloudDriver
         end
 
         def options
-            
+            respond_with_successful(Calendar.options(current_user, @query))
         end
 
         private
