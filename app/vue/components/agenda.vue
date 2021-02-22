@@ -17,58 +17,76 @@ For more information read the license file including with this software.
 */
 
 
-// · Import framework libraries and tools
-import dayjs from "dayjs"
-
-
-
 // · 
 export default {
     props: {
-        driverEvents: {
+        events: {
             default() {
-                return []
+                return {
+                    driver_events: [],
+                    focus_tasks: [],
+                    help_tickets: []
+                }
             }
         },
-        focusTasks: {
-            default() {
-                return []
-            }
-        }
-    },
-    data() {
-        return {
-            events: [{
-                id: 0,
-                title: "My task planned for today",
-                category: "",
-                datetime: "today"
-            },{
-                id: 1,
-                title: "My task",
-                category: "",
-                datetime: "tomorrow - 7 PM"
-            }],
-            translations: {
-                core: I18n.t('deutscheleibrenten.shared')
-            }
+        loading: {
+            required: false,
+            default: true,
         }
     }
 }
 </script>
 <template>
     <div>
-        <div class="mb-5" v-for="event in events" :key="event.id">
-            <div class="media">
-                <div class="media-left">
-                    <span class="icon is-medium">
-                        <i class="far fa-lg fa-calendar-alt"></i>
-                    </span>
+        <component-data-loading v-if="loading" />
+        <component-data-empty
+            v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0" />
+        <div v-if="events.driver_events && events.driver_events.length > 0 && !loading">
+            <div class="mb-5" v-for="event in events.driver_events" :key="event.id">
+                <div class="media">
+                    <div class="media-left">
+                        <span class="icon">
+                            <i class="far fa-lg fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="mb-0">{{ event.title }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p class="is-size-5 mb-0">{{ event.title }}</p>
-                        <p class="has-text-grey">{{ event.datetime }}</p>
+            </div>
+        </div>
+
+        <div v-if="events.focus_tasks && events.focus_tasks.length > 0 && !loading">
+            <div class="mb-5" v-for="event in events.focus_tasks" :key="event.id">
+                <div class="media">
+                    <div class="media-left">
+                        <span class="icon">
+                            <i class="far fa-lg fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="mb-0">{{ event.title }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="events.help_tickets && events.help_tickets.length > 0 && !loading">
+            <div class="mb-5" v-for="event in events.help_tickets" :key="event.id">
+                <div class="media">
+                    <div class="media-left">
+                        <span class="icon">
+                            <i class="far fa-lg fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="mb-0">{{ event.title }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
