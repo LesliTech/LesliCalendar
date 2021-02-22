@@ -33,13 +33,19 @@ export default {
             required: false,
             default: true,
         }
+    },
+    methods: {
+        showEvent(event) {
+            this.data.event.details = event;
+            this.data.event.show = true;
+        }
     }
 }
 </script>
 <template>
     <div>
         <component-data-loading v-if="loading" />
-        <component-data-empty
+        <component-data-empty text="No activity for today"
             v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0" />
         <div v-if="events.driver_events && events.driver_events.length > 0 && !loading">
             <div class="mb-5" v-for="event in events.driver_events" :key="event.id">
@@ -51,7 +57,7 @@ export default {
                     </div>
                     <div class="media-content">
                         <div class="content">
-                            <p class="mb-0">{{ event.title }}</p>
+                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
                         </div>
                     </div>
                 </div>
@@ -68,7 +74,7 @@ export default {
                     </div>
                     <div class="media-content">
                         <div class="content">
-                            <p class="mb-0">{{ event.title }}</p>
+                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
                         </div>
                     </div>
                 </div>
@@ -85,7 +91,7 @@ export default {
                     </div>
                     <div class="media-content">
                         <div class="content">
-                            <p class="mb-0">{{ event.title }}</p>
+                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
                         </div>
                     </div>
                 </div>
