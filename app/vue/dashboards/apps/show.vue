@@ -212,7 +212,7 @@ export default {
         <div class="columns">
             <div class="column is-one-quarter">
                 <component-agenda
-                    :events="this.events_today"
+                    :events="events_today"
                     :loading="loading_agenda"
                 ></component-agenda>
             </div>
