@@ -44,13 +44,16 @@ export default {
             options: {
                 types_module_events: []
             },
-            loading: true
+            loading: true,
+            events_today: [],
+            loading_agenda: true,
         }
     },
 
     mounted(){
         this.calendar_id = this.$route.params.id
         this.getEventsType();
+        this.getEventsToday();
     },
 
     methods: {
@@ -66,6 +69,35 @@ export default {
             }).catch(error => {
                 console.log(error)
                 this.loading = false
+            })
+        },
+
+        getEventsToday() {
+            this.loading_agenda = true;
+            let today = new Date();
+            let filters = {
+                include: {
+                    help_tickets:  (this.filters.module_event === "all" || this.filters.module_event === "help_tickets" ) ? true : false,
+                    focus_tasks: (this.filters.module_event === "all" || this.filters.module_event === "focus_tasks" ) ? true : false,
+                    driver_events: (this.filters.module_event === "all" || this.filters.module_event === "driver_events" ) ? true : false,
+                },
+                day: today.getDate(),
+                month: today.getMonth()+1,
+                year: today.getFullYear(),
+            }
+
+            let url = this.url.driver('events').filters(filters);
+
+            this.http.get(url).then(result => {
+                if (result.successful) {
+                    this.events_today = result.data;
+                } else {
+                    this.alert(result.error.message,'danger')
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.loading_agenda = false;
             })
         },
 
@@ -88,6 +120,11 @@ export default {
         createEvent() {
             this.url.go("/driver/events/new")
         },
+    },
+    watch: {
+        "filters.module_event"() {
+            this.getEventsToday();
+        }
     },
     computed: {
         title() {
@@ -174,7 +211,10 @@ export default {
 
         <div class="columns">
             <div class="column is-one-quarter">
-                <component-agenda></component-agenda>
+                <component-agenda
+                    :events="this.events_today"
+                    :loading="loading_agenda"
+                ></component-agenda>
             </div>
             <div class="column">
                 <div class="card">
