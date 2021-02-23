@@ -24,24 +24,15 @@ import app from 'LesliCoreVue/app'
 
 // · Import common apps
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import appList  from './apps/list.vue'
-import appEdit  from './apps/edit.vue'
 import appShow  from './apps/show.vue'
-import appNew   from './apps/new.vue'
 
 
 // · 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-app("CloudDriver", "[list|new|edit|show]", "/driver", [{
+app("CloudDriver", "[show]", "/driver", [{
     path: "/",
-    component: appList
-},{
-    path: "/new",
-    component: appNew
-},{
-    path: "/:id",
     component: appShow
-},{
-    path: "/:id/edit",
-    component: appEdit
-}])
+}], {
+    event: { show: false },
+    calendar: { title: ''}
+})

@@ -39,6 +39,13 @@ module CloudDriver
             notary_appointment: "notary_appointment"
         }
 
+        def self.index(current_user, query)
+            Calendar.index(
+                current_user,
+                query
+            )
+        end
+
         def show(current_user = nil)
             data = Event
             .joins(:detail)
