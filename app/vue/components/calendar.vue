@@ -135,6 +135,17 @@ export default {
         onEventClick: function(arg) {
             arg.jsEvent.preventDefault()
             this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
+            const details = {
+                "id": arg.event.id,
+                "title": arg.event.title,
+                "start": arg.event.start,
+                "end": arg.event.end,
+                "url": arg.event.url,
+                "classNames": arg.event.classNames,
+                ...arg.event.extendedProps
+            }
+            this.data.event.details = details;
+            this.data.event.show = true;
         },
 
         getCalendarEvents(calendar_endpoint) {
