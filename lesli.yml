@@ -7,6 +7,6 @@ info:
     name: "CloudDriver"
     code: "cloud_driver"
     github:
-        url: "https://github.com/leitfaden/CloudDriver"
-        ssh: "git@github.com:leitfaden/CloudDriver.git"
-        ssh_backup: "git@github.com:LesliTech/CloudDriver.git"
+        url: "https://github.com/leitfaden/cloud_driver"
+        ssh: "git@github.com:leitfaden/cloud_driver.git"
+        ssh_backup: "git@github.com:LesliTech/cloud_driver.git"
