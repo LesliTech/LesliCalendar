@@ -33,6 +33,6 @@ app("CloudDriver", "[show]", "/driver", [{
     path: "/",
     component: appShow
 }], {
-    event: { show: false },
+    event: { show: false, details: {}},
     calendar: { title: ''}
 })

@@ -23,11 +23,51 @@ import componentSidebarView from "LesliVue/components/views/sidebar-view.vue"
 export default {
     components: {
         "component-sidebar-view": componentSidebarView
+    },
+
+    methods: {
+        getDate(date){
+            let start_date = date
+            if( typeof(start_date) === 'string') {
+                start_date = new Date(date)
+            }
+            return start_date;
+        }
+    },
+    computed: {
+        start() {
+            return this.date.toString(this.getDate(this.data.event.details.start))
+        },
+        time() {
+            return this.date.toStringTime(this.getDate(this.data.event.details.start))
+        }
     }
 }
 </script>
 <template>
     <component-sidebar-view :open.sync="data.event.show" size="large">
-        <h1>hola</h1>
+            <div class="content p-5" v-if="data.event.details">
+                <h1> {{ data.event.details.title}} </h1>
+                <div>
+                    <span class="icon-text">
+                        <span class="icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </span>
+                        <span>{{ start }}</span>
+                    </span>
+                    <br>
+                    <span class="icon-text">
+                        <span class="icon">
+                            <i class="fas fa-clock"></i>
+                        </span>
+                        <span>{{ time }}</span>
+                    </span>
+                </div>
+                <div class="mt-3">
+                    <p>
+                        {{ data.event.details.description }}
+                    </p>
+                </div>
+            </div>
     </component-sidebar-view>
 </template>
