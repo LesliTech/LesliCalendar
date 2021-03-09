@@ -98,12 +98,8 @@ module CloudDriver
                     "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
                 )
                 .where("CDEA.users_id = ? or cloud_driver_events.user_main_id = ? or cloud_driver_events.users_id = ?", current_user.id, current_user.id, current_user.id)
-                .where("extract('year' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].year)
-                .where("extract('month' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].month)
-                .where("extract('day' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].day)
-                .where("extract('year' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].year)
-                .where("extract('month' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].month)
-                .where("extract('day' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].day)
+                .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
+                .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
         
                 own_driver_events.each do |event|
                     event[:editable] = event.is_editable_by?(current_user)
@@ -131,12 +127,8 @@ module CloudDriver
                     "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\""
                 )
                 .where("cloud_driver_event_details.public = true")
-                .where("extract('year' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].year)
-                .where("extract('month' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].month)
-                .where("extract('day' from cloud_driver_event_details.event_date) >= ?", query[:filters][:start_date].day)
-                .where("extract('year' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].year)
-                .where("extract('month' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].month)
-                .where("extract('day' from cloud_driver_event_details.event_date) <= ?", query[:filters][:end_date].day)
+                .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
+                .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
 
                 public_driver_events.each do |event|
                     unless all_events[event.id]
