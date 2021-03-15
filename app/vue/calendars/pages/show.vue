@@ -19,8 +19,6 @@ For more information read the license file including with this software.
 
 
 // · List of Imported Components
-import { Calendar } from "@fullcalendar/core"
-
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
 import componentEvent from "../../components/event-sidebar.vue"
@@ -40,36 +38,67 @@ export default {
             translations: {
             },
             calendar_id: null,
+            filters: {
+                module_event: "all"
+            },
+            options: {
+                types_module_events: []
+            },
+            loading: true,
+            events_today: [],
+            loading_agenda: true,
         }
     },
 
     mounted(){
         this.calendar_id = this.$route.params.id
+        this.getEventsType();
+        this.getEventsToday();
     },
 
     methods: {
-
-        initCalendar() {
-            this.calendar = new Calendar(document.getElementById("calendar"), {
-                plugins: this.calendarPlugins,
-                header: false,
-                firstDay: this.date.firstDayOfWeek(),
-                locale: I18n.currentLocale(),
-                eventClick: info => {
-                    info.jsEvent.preventDefault();
-                    this.$router.replace({
-                        query: {event_id: info.event.id}
-                    }).then(()=>{
-                        this.bus.publish("show:/driver/component/event-quickview", info.event.id)
-                    }).catch((error)=>{})
-                },
-                dateClick: info => {
-                    this.selected_day = info.date
-                    this.emptyEventsToday()
-                    this.getCalendarEventsDay()
+        getEventsType() {
+            this.loading = true;
+            this.http.get('/driver/calendars/options.json').then(result => {
+                if (result.successful) {
+                    this.options.types_module_events = result.data.types_module_events
+                }else{
+                    this.alert(result.error.message,'danger')
                 }
+                this.loading = false
+            }).catch(error => {
+                console.log(error)
+                this.loading = false
             })
-            this.calendar.render()
+        },
+
+        getEventsToday() {
+            this.loading_agenda = true;
+            let today = new Date();
+            let filters = {
+                include: {
+                    help_tickets:  (this.filters.module_event === "all" || this.filters.module_event === "help_tickets" ) ? true : false,
+                    focus_tasks: (this.filters.module_event === "all" || this.filters.module_event === "focus_tasks" ) ? true : false,
+                    driver_events: (this.filters.module_event === "all" || this.filters.module_event === "driver_events" ) ? true : false,
+                },
+                day: today.getDate(),
+                month: today.getMonth()+1,
+                year: today.getFullYear(),
+            }
+
+            let url = this.url.driver('events').filters(filters);
+
+            this.http.get(url).then(result => {
+                if (result.successful) {
+                    this.events_today = result.data;
+                } else {
+                    this.alert(result.error.message,'danger')
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.loading_agenda = false;
+            })
         },
 
         onPrevMonth($event) {
@@ -90,12 +119,35 @@ export default {
 
         createEvent() {
             this.url.go("/driver/events/new")
+        },
+    },
+    watch: {
+        "filters.module_event"() {
+            this.getEventsToday();
         }
-
     },
     computed: {
         title() {
             return this.data.calendar.title
+        },
+
+        event_filter_options() {
+            let options = [
+                {
+                    value: "all",
+                    label: "All events type"
+                },
+                {
+                    value: "driver_events",
+                    label: "Calendar Events"
+                }
+            ];
+
+            if ("focus_tasks" in this.options.types_module_events) options.push({value: this.options.types_module_events.focus_tasks, label: "Tasks"})
+            if ("help_tickets" in this.options.types_module_events) options.push({value: this.options.types_module_events.help_tickets, label: "Tickets"})
+
+
+            return options;
         }
     },
 }
@@ -143,16 +195,33 @@ export default {
             </div>
         </component-header>
 
-        <component-toolbar></component-toolbar>
+        <component-toolbar>
+            <b-select
+                placeholder="Select a event type"
+                v-model="filters.module_event"
+                :loading="loading">
+                <option
+                    v-for="option in this.event_filter_options"
+                    :value="option.value"
+                    :key="option.value">
+                    {{ option.label }}
+                </option>
+            </b-select>
+        </component-toolbar>
 
         <div class="columns">
             <div class="column is-one-quarter">
-                <component-agenda></component-agenda>
+                <component-agenda
+                    :events="events_today"
+                    :loading="loading_agenda"
+                ></component-agenda>
             </div>
             <div class="column">
-                <div class="card">
-                    <component-calendar :calendar_id="calendar_id" :key="calendar_id"> </component-calendar>
-                </div>
+                <component-calendar
+                    :calendar_id="calendar_id"
+                    :filter_event="filters.module_event"
+                    :key="calendar_id">
+                </component-calendar>
             </div>
         </div>
 

@@ -19,14 +19,9 @@ For more information read the license file including with this software.
 
 CloudDriver::Engine.routes.draw do
 
-    root to: "dashboards#index"
+    root to: "calendars#show"
 
     resource :dashboards
-
-
-
-
-
 
     # the routes bellow needs revision
     resources :workflows do

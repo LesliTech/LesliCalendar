@@ -44,11 +44,13 @@ export default {
 </script>
 <template>
     <div>
-        <component-data-loading v-if="loading" />
-        <component-data-empty text="No activity for today"
-            v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0" />
+        <component-data-loading v-if="loading"></component-data-loading>
+        <component-data-empty
+            v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
+            text="No activity for today">
+        </component-data-empty>
         <div v-if="events.driver_events && events.driver_events.length > 0 && !loading">
-            <div class="mb-5" v-for="event in events.driver_events" :key="event.id">
+            <div class="box mb-2" v-for="event in events.driver_events" :key="event.id">
                 <div class="media">
                     <div class="media-left">
                         <span class="icon">
