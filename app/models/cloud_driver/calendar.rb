@@ -173,12 +173,14 @@ module CloudDriver
         end
 
         def self.get_date_range_filter(year=nil, month=nil, day=nil)
-            start_date = Date.today.beginning_of_month
+            start_date = Date.today
+            start_date = Time.current.beginning_of_month
             start_date = start_date.change(:year => year.to_i) if !year.blank?
             start_date = start_date.change(:month => month.to_i) if !month.blank?
             start_date = start_date.change(:day => day.to_i) if !day.blank?
 
             end_date = Date.today
+            end_date = Time.current
             end_date = end_date.change(:year => year.to_i) if !year.blank?
             end_date = end_date.change(:month => month.to_i) if !month.blank?
             end_date = end_date.end_of_month

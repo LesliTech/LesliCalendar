@@ -28,12 +28,7 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    respond_with_successful(
-                        Event.index(
-                            current_user,
-                            @query
-                        )
-                    )
+                    respond_with_successful(Event.index(current_user, @query))
                 end
             end
         end

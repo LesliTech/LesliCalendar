@@ -17,19 +17,19 @@ For more information read the license file including with this software.
 
 
 // · Import main app
-import app from "LesliCoreVue/app"
+import app from "LesliVue/app"
 
 
 
 // · Import apps and components
-import appShow from "./apps/show.vue"
+import pageShow from "./pages/show.vue"
 
 
 
 // · Cloud app
-app("CloudDriver", "[show]", "/driver/calendars", [{
+app("CloudDriver", "[show]", "/driver/", [{
     path: "/",
-    component: appShow
+    component: pageShow
 }], {
     event: { show: false },
     calendar: { title: ''}
