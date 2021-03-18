@@ -136,14 +136,20 @@ export default {
             this.http.post(url, data).then(result => {
                 this.$set(user, 'submitting', false)
                 if (result.successful) {
+                    let user_roles = []
+                    user.roles.forEach((role)=>{
+                        user_roles.push(role.name)
+                    })
+
                     this.$set(user, 'attendant_id', result.data.id)
                     this.attendants.push({
                         id: result.data.id,
                         name: user.name || user.email,
                         email: user.email,
-                        roles: user.roles,
+                        roles: user_roles,
                         users_id: user.id
                     })
+
                     this.alert(this.translations.main.notification_attendant_created, 'success')
                 }else{
                     this.alert(result.error.message,'danger')

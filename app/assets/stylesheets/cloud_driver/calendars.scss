@@ -17,15 +17,49 @@ For more information read the license file including with this software.
 
 */
 
+
+// · 
 @import "lesli/templates/component";
 
+
+// · 
 @import "@fullcalendar/common/main";
 @import "@fullcalendar/daygrid/main";
 @import "@fullcalendar/timegrid/main";
 
-.fc-head-container {
-    th.fc-day-header {
-        padding: 5px;
-        text-align: center;
+
+// · 
+.fc-theme-standard {
+    background-color: white;
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+
+    .fc-scrollgrid-section-header {
+
+        .fc-col-header-cell {
+            text-align: center;
+            padding: .8rem 0;
+        }
+
     }
+
+    th.fc-col-header-cell {
+        border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
+        border-bottom: 1px solid lesli-css-get-color(silver, 300);
+    }
+
+    td.fc-daygrid-day {
+        border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
+    }
+
+    .fc-daygrid-day {
+
+        .fc-daygrid-event {
+            padding: .3rem 0;
+            color: lesli-css-get-color(black, 300);
+            background-color: lighten(lesli-css-get-color(blue, 100), 18);
+            border-left: 4px solid lesli-css-get-color(blue, 100);
+        }
+        
+    }
+
 }
