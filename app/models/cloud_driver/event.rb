@@ -40,9 +40,7 @@ module CloudDriver
         }
 
         def self.index(current_user, query)
-            Calendar.index(
-                current_user,
-                query
+            Calendar.index(current_user, query
             )
         end
 

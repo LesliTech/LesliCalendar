@@ -34,70 +34,83 @@ export default {
             default: true,
         }
     },
+    data() {
+        return {
+            today_events: []
+        }
+    },
     methods: {
+        prepareEvents() {
+            this.today_events = [
+                ...this.events.driver_events.map(event => { event['module'] = 'driver'; return event }), 
+                ...this.events.focus_tasks.map(event => { event['module'] = 'focus'; return event }), 
+                ...this.events.help_tickets.map(event => { event['module'] = 'help'; return event })
+            ]
+            this.today_events = this.today_events.sort(function(a,b){
+                return new Date(b.start) - new Date(a.start);
+            });
+        },
         showEvent(event) {
             this.data.event.details = event;
             this.data.event.show = true;
+        }
+    },
+    watch: {
+        events() {
+            this.prepareEvents()
         }
     }
 }
 </script>
 <template>
-    <div>
+    <section>
         <component-data-loading v-if="loading"></component-data-loading>
         <component-data-empty
             v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
             text="No activity for today">
         </component-data-empty>
-        <div v-if="events.driver_events && events.driver_events.length > 0 && !loading">
-            <div class="box mb-2" v-for="event in events.driver_events" :key="event.id">
-                <div class="media">
-                    <div class="media-left">
-                        <span class="icon">
-                            <i class="far fa-lg fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
-                        </div>
+        <div class="box">
+            <a 
+                class="media"
+                v-on:click.prevent.stop="showEvent(event)" 
+                v-for="(event, index) in today_events" 
+                :key="index">
+                <div class="media-left">
+                    <span class="icon">
+                        <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
+                        <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
+                        <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
+                    </span>
+                </div>
+                <div class="media-content">
+                    <div class="content">
+                        <p class="mb-0">
+                            <span>{{ event.title }}</span>
+                            <small>{{ event.event_date_string }}</small>
+                        </p>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
-
-        <div v-if="events.focus_tasks && events.focus_tasks.length > 0 && !loading">
-            <div class="mb-5" v-for="event in events.focus_tasks" :key="event.id">
-                <div class="media">
-                    <div class="media-left">
-                        <span class="icon">
-                            <i class="far fa-lg fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div v-if="events.help_tickets && events.help_tickets.length > 0 && !loading">
-            <div class="mb-5" v-for="event in events.help_tickets" :key="event.id">
-                <div class="media">
-                    <div class="media-left">
-                        <span class="icon">
-                            <i class="far fa-lg fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <p class="mb-0"><a v-on:click.prevent.stop="showEvent(event)" >{{ event.title }}</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 </template>
+<style lang="css">
+
+    .driver-color { color: #3689e6; }
+    .focus-color { color: #28bca3; }
+    .help-color { color: #a56de2; }
+
+    div.box .media .media-left {
+        align-self: center;   
+    }
+    div.box .media .media-content p span {
+        font-size: 1.1rem;
+        line-height: 0.6;
+        display: block;
+        color: rgb(60,60,60);
+    }
+    div.box .media .media-content p small {
+        font-size: .8rem;
+        color: rgb(100,100,100);
+    }
+</style>
