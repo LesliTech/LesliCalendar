@@ -57,8 +57,6 @@ module CloudDriver
 
         def self.index(current_user, query)
 
-            LC::Debug.msg "ldonis"
-
             if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
                 filters_date = self.get_date_range_filter()
                 query[:filters][:start_date] = filters_date[:start_date]
