@@ -71,6 +71,20 @@ export default {
                 eventClick: this.onEventClick,
                 initialView: 'dayGridMonth',
                 showNonCurrentDates: false,
+                eventContent: function(args) {
+
+                    let title = document.createElement('span')
+                    let time = document.createElement('span')
+
+                    title.innerHTML = args.event.title
+                    time.innerHTML = args.timeText
+
+                    title.classList.add('event-title')
+                    time.classList.add('event-time')
+
+                    return { domNodes: [ title, time ] }
+
+                }
             })
             this.calendar.render()
             this.setTitle();
@@ -96,6 +110,7 @@ export default {
         },
 
         resetEvents() {
+
             this.calendar.batchRendering(() => {
                 // get rendered events in calendar
                 let events = this.calendar.getEvents()
@@ -153,8 +168,8 @@ export default {
 
             let filters = {
                 include: {
-                    help_tickets:  (this.filter_event === "all" || this.filter_event === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filter_event === "all" || this.filter_event === "focus_tasks" ) ? true : false,
+                    help_tickets:  (this.filter_event === "all" || this.filter_event === "help_tickets" ) ? true : false,
                     driver_events: (this.filter_event === "all" || this.filter_event === "driver_events" ) ? true : false,
                 },
                 month: this.calendar.getDate().getMonth()+1,
