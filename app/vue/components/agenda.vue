@@ -65,33 +65,35 @@ export default {
 <template>
     <section>
         <component-data-loading v-if="loading"></component-data-loading>
-        <component-data-empty
-            v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
-            text="No activity for today">
-        </component-data-empty>
-        <div class="box">
-            <a 
-                class="media"
-                v-on:click.prevent.stop="showEvent(event)" 
-                v-for="(event, index) in today_events" 
-                :key="index">
-                <div class="media-left">
-                    <span class="icon">
-                        <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
-                        <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
-                        <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
-                    </span>
-                </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p class="mb-0">
-                            <span>{{ event.title }}</span>
-                            <small>{{ event.event_date_string }}</small>
-                        </p>
+        <template v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0">
+            <component-data-empty text="No activity for today">
+            </component-data-empty>
+        </template>
+        <template v-else>
+            <div class="box">
+                <a 
+                    class="media"
+                    v-on:click.prevent.stop="showEvent(event)" 
+                    v-for="(event, index) in today_events" 
+                    :key="index">
+                    <div class="media-left">
+                        <span class="icon">
+                            <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
+                            <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
+                            <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
+                        </span>
                     </div>
-                </div>
-            </a>
-        </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="mb-0">
+                                <span>{{ event.title }}</span>
+                                <small>{{ event.event_date_string }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </template>
     </section>
 </template>
 <style lang="css">

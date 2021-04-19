@@ -28,36 +28,81 @@ For more information read the license file including with this software.
 @import "@fullcalendar/timegrid/main";
 
 
+$default-color: lesli-css-get-color(blue, 100);
+$driver-color: #3689e6;
+$focus-color: #28bca3;
+$help-color: #a56de2;
+
+
 // · 
 .fc-theme-standard {
     background-color: white;
-    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+    //box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 
     .fc-scrollgrid-section-header {
 
         .fc-col-header-cell {
-            text-align: center;
             padding: .8rem 0;
+            text-align: center;
+            border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
+            border-bottom: 1px solid lesli-css-get-color(silver, 300);
+            a {
+                color: lesli-css-get-color(black, 300);
+            }
         }
 
     }
 
-    th.fc-col-header-cell {
+    .fc-daygrid-day  {
         border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
-        border-bottom: 1px solid lesli-css-get-color(silver, 300);
-    }
-
-    td.fc-daygrid-day {
-        border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
-    }
-
-    .fc-daygrid-day {
 
         .fc-daygrid-event {
-            padding: .3rem 0;
-            color: lesli-css-get-color(black, 300);
-            background-color: lighten(lesli-css-get-color(blue, 100), 18);
-            border-left: 4px solid lesli-css-get-color(blue, 100);
+            display: block;
+            padding: .3rem;
+            overflow: hidden;
+            margin-bottom: .2rem;
+
+            .event-title, .event-time {
+                display: block;
+                width: 100%;
+            }
+
+            .event-title {
+                max-width: 100%;
+                font-size: .9rem;
+                font-weight: 600;
+                text-transform: capitalize;
+            }
+
+            .fc-event-main {
+                .event-time {
+                    color: lesli-css-get-color(black);
+                }
+            }
+
+            // driver events
+            border-left: 5px solid $driver-color;
+            background-color: lighten($driver-color, 30);
+            .event-title { color: darken($driver-color, 30) }
+
+            // ticket events
+            &.cloud_help_tickets {
+                border-left: 5px solid $help-color;
+                background-color: lighten($help-color, 30);
+                .event-title { color: darken($help-color, 30) }
+            }
+
+            // focus events
+            &.cloud_focus_tasks {
+                border-left: 5px solid $focus-color;
+                background-color: lighten($focus-color, 30);
+                .event-title { color: darken($focus-color, 30) }
+            }
+
+            .fc-event-main-frame {
+                color: lesli-css-get-color(black, 300);
+            }
+
         }
         
     }
