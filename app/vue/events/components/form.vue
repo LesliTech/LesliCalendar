@@ -44,6 +44,9 @@ export default {
 
     data() {
         return {
+            translations: {
+                main: I18n.t('driver.events')
+            },
             main_route: '/driver/events',
             event: {
                 detail_attributes: {
@@ -225,16 +228,10 @@ export default {
                         <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
                     </div>
                 </div>
-                <div class="field">
-                    <div class="field-body">
-                        <div class="field">
-                            <label class="label">Title</label>
-                            <p class="control">
-                                <input class="input" type="text" placeholder="Add a title for the event" v-model="event.detail_attributes.title" :readonly="!eventEditable">
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <b-field :label="translations.main.column_title">
+                    <b-input type="text" :placeholder="translations.main.view_placeholder_title" v-model="event.detail_attributes.title">
+                    </b-input>
+                </b-field>
                 <div class="field is-horizontal">
                     <div class="field-body">
                         <div class="field">

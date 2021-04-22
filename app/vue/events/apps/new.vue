@@ -41,7 +41,12 @@ export default {
     // @data_variable event [Object] An object representing a Event, with
     //      the same params as the associated rails model
     data(){
-        return {}
+        return {
+            translations: {
+                main: I18n.t('driver.events'),
+                core: I18n.t('core.shared')
+            }
+        }
     },
 
     // @return [void]
@@ -55,16 +60,17 @@ export default {
 </script>
 <template>
     <section class="application-component">
-        <component-header title="New Event">
-            <div class="is-grouped">
-                <router-link class="button" to="/">
-                    <span class="icon">
-                        <i class="fas fa-undo"></i>
-                    </span>
-                    <span>Return</span>
-                </router-link>
+        <component-header :title="translations.main.view_title_new" >
+            <div class="navbar-item">
+                <div class="buttons">
+                    <router-link class="button" to="/">
+                        <b-icon icon="list" size="is-small" />
+                        <span>{{ translations.core.view_btn_list }}</span>
+                    </router-link>
+                </div>
             </div>
         </component-header>
-        <component-form view-type="new" />
+        <component-form view-type="new">
+        </component-form>
     </section>
 </template>
