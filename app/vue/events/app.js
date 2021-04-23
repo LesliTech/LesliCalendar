@@ -44,4 +44,8 @@ app("CloudDriver", "[list|new|edit|show]", "/driver/events", [{
 },{
     path: "/:id/edit",
     component: appEdit
-}])
+}], {
+    event: {
+        detail_attributes: {}
+    }
+})

@@ -50,63 +50,27 @@ export default {
                     shared: I18n.t('core.shared')
                 }
             },
-            main_route: '/driver/events',
             submit: {
-                event: false
+                event: false,
+                delete: false
             },
             event: {
-                detail_attributes: {
-                    title: '',
-                    description: '',
-                    event_date: new Date(),
-                    time_start: new Date(),
-                    time_end: new Date(),
-                    event_type: null,
-                    public: false,
-                },
-                organizer_name: '',
-                editable: true,
+                detail_attributes: {}
             },
-            config: {
-                dateFormat: ""
-            },
-            view_type: 'new',
             options: {
                 event_types: []
             }
         }
     },
 
-    beforeMount() {
-        if(this.view_type !== 'new') return true;
-
-        let time_end = this.event.detail_attributes.time_end;
-        time_end.setHours(time_end.getHours() + 1)
-        this.event.detail_attributes.time_end = time_end
-    },
-
     mounted() {
         this.getOptions()
-        if(!this.eventId) return true;
-
-        this.view_type = 'edit'
-        this.getEvent()
+        this.setEvent()
     },
 
     methods: {
-        getEvent(){
-            this.http.get(`/driver/events/${this.eventId}.json`).then(result => {
-                if(result.data.detail_attributes.time_start){
-                    result.data.detail_attributes.time_start = new Date(result.data.detail_attributes.time_start)
-                }
-                if(result.data.detail_attributes.time_end){
-                    result.data.detail_attributes.time_end = new Date(result.data.detail_attributes.time_end)
-                }
-                this.event = result.data
-                this.syncEventDate()
-            }).catch(error => {
-                console.log(error)
-            })
+        setEvent(){
+            this.event = this.data.event
         },
 
         submitEvent(event){
@@ -124,7 +88,7 @@ export default {
             let form_data = {
                 event: this.event
             }
-            let url = `${this.main_route}.json`
+            let url = this.url.driver('events')
             this.submit.event = true
 
             this.http.post(url, form_data).then(result => {
@@ -133,7 +97,7 @@ export default {
                     this.$set(this.event, 'id', result.data.id)
                     this.$set(this.event, 'editable', true)
                     this.alert('Event created successfully', 'success')
-                    this.$router.push(`/${result.data.id}`)
+                    this.$router.push(`/${result.data.id}/edit`)
                 }else{
                     this.alert(result.error.message,'danger')
                 }
@@ -149,7 +113,7 @@ export default {
             let form_data = {
                 event: this.event
             }
-            let url = `${this.main_route}/${this.eventId}.json`
+            let url = this.url.driver(`events/${this.eventId}`)
             this.submit.event = true
 
             this.http.put(url, form_data).then(result => {
@@ -167,7 +131,8 @@ export default {
         },
 
         deleteEvent() {
-            let url = `${this.main_route}/${this.event_id}`
+            let url = this.url.driver(`events/${this.eventId}`)
+            this.submit.delete = true
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
@@ -178,6 +143,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error)
+            }).finally(()=>{
+                this.submit.delete = false
             })
         },
 
@@ -220,143 +187,158 @@ export default {
 <template>
     <div class="card" v-if="event">
         <!--------------------------------------- START CARD CONTENT--------------------------------------->
-        <div class="card-content">
-            <section v-if="viewType == 'new' || viewType == 'edit'">
-                <form @submit="submitEvent">
-                    <fieldset :disabled="submit.event">
-                        <div class="field" v-if="eventId">
-                            <label class="label">Organizer</label>
-                            <div class="control">
-                                <input class="input" type="text" v-model="event.organizer_name" placeholder="Organizer" disabled="true">
+        <div class="card-content subtabs">
+            <b-tabs>
+                <b-tab-item :label="translations.core.shared.view_tab_title_general_information">
+                    <form @submit="submitEvent">
+                        <fieldset :disabled="submit.event">
+                            <div class="field" v-if="eventId">
+                        <label class="label">{{translations.main.column_user_main_id}}</label>
+                                <div class="control">
+                                    <input class="input" type="text" v-model="event.organizer_name" readonly>
+                                </div>
                             </div>
-                        </div>
-                        <b-field>
-                            <template v-slot:label>
-                                {{translations.main.column_title}}
-                                <sup class="has-text-danger">*</sup>
-                            </template>
-                            <b-input type="text" :placeholder="translations.main.view_placeholder_title" v-model="event.detail_attributes.title" required>
-                            </b-input>
-                        </b-field>
-                        <div class="columns is-multiline">
-                            <div class="column is-3">
-                                <b-field>
-                                    <template v-slot:label>
-                                        {{translations.main.column_time_start}}
-                                        <sup class="has-text-danger">*</sup>
-                                    </template>
-                                    <b-datetimepicker
-                                        v-model="event.detail_attributes.time_start"
-                                        rounded
-                                        required
-                                        :placeholder="translations.core.shared.view_placeholder_select_date"
-                                        icon="fa fa-calendar"
-                                        :datetime-formatter="date.toStringDatetime"
-                                        :datepicker="{ showWeekNumber: false }"
-                                        :timepicker="{ enableSeconds: false, hourFormat: '24' }"
-                                        horizontal-time-picker
-                                    >
-                                    </b-datetimepicker>
-                                </b-field>
-                            </div>
-                            <div class="column is-3">
-                                <b-field>
-                                    <template v-slot:label>
-                                        {{translations.main.column_time_end}}
-                                        <sup class="has-text-danger">*</sup>
-                                    </template>
-                                    <b-datetimepicker
-                                        v-model="event.detail_attributes.time_end"
-                                        rounded
-                                        required
-                                        :placeholder="translations.core.shared.view_placeholder_select_date"
-                                        icon="fa fa-calendar"
-                                        :datetime-formatter="date.toStringDatetime"
-                                        :datepicker="{ showWeekNumber: false }"
-                                        :timepicker="{ enableSeconds: false, hourFormat: '24' }"
-                                        horizontal-time-picker
-                                    >
-                                    </b-datetimepicker>
-                                </b-field>
-                            </div>
-                            <div class="column is-6">
-                                <b-field :label="translations.main.column_location">
-                                    <b-input v-model="event.detail_attributes.location" :placeholder="translations.main.view_placeholder_location">
-                                    </b-input>
-                                </b-field>
-                            </div>
-                            <div class="column is-4">
-                                <b-field>
-                                    <template v-slot:label>
-                                        {{translations.main.column_event_type}}
-                                        <sup class="has-text-danger">*</sup>
-                                    </template>
-                                    <b-select
-                                        v-model="event.detail_attributes.event_type"
-                                        expanded
-                                        :placeholder="translations.core.shared.view_placeholder_select_option"
-                                        required
-                                    >
-                                        <option
-                                            v-for="event_type in options.event_types"
-                                            :value="event_type.value"
-                                            :key="event_type.value"
+                            <b-field>
+                                <template v-slot:label>
+                                    {{translations.main.column_title}}
+                                    <sup class="has-text-danger">*</sup>
+                                </template>
+                                <b-input type="text"
+                                    :placeholder="translations.main.view_placeholder_title"
+                                    v-model="event.detail_attributes.title"
+                                    required
+                                >
+                                </b-input>
+                            </b-field>
+                            <div class="columns is-multiline">
+                                <div class="column is-3">
+                                    <b-field>
+                                        <template v-slot:label>
+                                            {{translations.main.column_time_start}}
+                                            <sup class="has-text-danger">*</sup>
+                                        </template>
+                                        <b-datetimepicker
+                                            v-model="event.detail_attributes.time_start"
+                                            rounded
+                                            required
+                                            :placeholder="translations.core.shared.view_placeholder_select_date"
+                                            icon="fa fa-calendar"
+                                            :datetime-formatter="date.toStringDatetime"
+                                            :datepicker="{ showWeekNumber: false }"
+                                            :timepicker="{ enableSeconds: false, hourFormat: '24' }"
+                                            horizontal-time-picker
                                         >
-                                            {{ event_type.text }}
-                                        </option>
-                                    </b-select> 
-                                </b-field>
-                            </div>
-                            <div class="column is-4">
-                                <b-field :label="translations.main.column_public">
-                                    <b-checkbox v-model="event.detail_attributes.public" :true-value="true" :false-value="false">
-                                        <span v-if="event.detail_attributes.public">
-                                            {{translations.core.shared.view_text_yes}}
+                                        </b-datetimepicker>
+                                    </b-field>
+                                </div>
+                                <div class="column is-3">
+                                    <b-field>
+                                        <template v-slot:label>
+                                            {{translations.main.column_time_end}}
+                                            <sup class="has-text-danger">*</sup>
+                                        </template>
+                                        <b-datetimepicker
+                                            v-model="event.detail_attributes.time_end"
+                                            rounded
+                                            required
+                                            :placeholder="translations.core.shared.view_placeholder_select_date"
+                                            icon="fa fa-calendar"
+                                            :datetime-formatter="date.toStringDatetime"
+                                            :datepicker="{ showWeekNumber: false }"
+                                            :timepicker="{ enableSeconds: false, hourFormat: '24' }"
+                                            horizontal-time-picker
+                                        >
+                                        </b-datetimepicker>
+                                    </b-field>
+                                </div>
+                                <div class="column is-6">
+                                    <b-field :label="translations.main.column_location">
+                                        <b-input
+                                            v-model="event.detail_attributes.location"
+                                            :placeholder="translations.main.view_placeholder_location"
+                                        >
+                                        </b-input>
+                                    </b-field>
+                                </div>
+                                <div class="column is-4">
+                                    <b-field>
+                                        <template v-slot:label>
+                                            {{translations.main.column_event_type}}
+                                            <sup class="has-text-danger">*</sup>
+                                        </template>
+                                        <b-select
+                                            v-model="event.detail_attributes.event_type"
+                                            expanded
+                                            :placeholder="translations.core.shared.view_placeholder_select_option"
+                                            required
+                                        >
+                                            <option
+                                                v-for="event_type in options.event_types"
+                                                :value="event_type.value"
+                                                :key="event_type.value"
+                                            >
+                                                {{ event_type.text }}
+                                            </option>
+                                        </b-select> 
+                                    </b-field>
+                                </div>
+                                <div class="column is-4">
+                                    <b-field :label="translations.main.column_public">
+                                        <b-checkbox v-model="event.detail_attributes.public" :true-value="true" :false-value="false">
+                                            <span v-if="event.detail_attributes.public">
+                                                {{translations.core.shared.view_text_yes}}
+                                            </span>
+                                            <span v-else>
+                                                {{translations.core.shared.view_text_no}}
+                                            </span>
+                                        </b-checkbox>
+                                    </b-field>
+                                </div>
+                                <div class="column is-12">
+                                    <b-field :label="translations.main.column_description">
+                                        <b-input 
+                                            type="textarea"
+                                            :placeholder="translations.main.view_placeholder_description"
+                                            rows="7"
+                                            v-model="event.detail_attributes.description"
+                                        >
+                                        </b-input>
+                                    </b-field>
+                                </div>
+                                <div class="column is-12">
+                                    <b-button type="is-primary" native-type="submit" expanded>
+                                        <span v-if="submit.event">
+                                            <b-icon icon="circle-notch" custom-class="fa-spin"></b-icon>
+                                            <span>{{translations.core.shared.view_btn_saving}}</span>
                                         </span>
                                         <span v-else>
-                                            {{translations.core.shared.view_text_no}}
+                                            <b-icon icon="save"></b-icon>
+                                            <span>{{translations.core.shared.view_btn_save}}</span>
                                         </span>
-                                    </b-checkbox>
-                                </b-field>
+                                    </b-button>
+                                </div>
                             </div>
-                            <div class="column is-12">
-                                <b-field :label="translations.main.column_description">
-                                    <b-input 
-                                        type="textarea"
-                                        :placeholder="translations.main.view_placeholder_description"
-                                        rows="7"
-                                        v-model="event.detail_attributes.description"
-                                    >
-                                    </b-input>
-                                </b-field>
-                            </div>
-                            <div class="column is-12">
-                                <b-button type="is-primary" native-type="submit" expanded>
-                                    <span v-if="submit.event">
-                                        <b-icon icon="circle-notch" custom-class="fa-spin"></b-icon>
-                                        <span>{{translations.core.shared.view_btn_saving}}</span>
-                                    </span>
-                                    <span v-else>
-                                        <b-icon icon="save"></b-icon>
-                                        <span>{{translations.core.shared.view_btn_save}}</span>
-                                    </span>
-                                </b-button>
-                            </div>
-                        </div>
-
-                        <!---------------------------------- START SUBMIT BUTTON ---------------------------------->
-                        <!----------------------------------  END SUBMIT BUTTON  ---------------------------------->
-                        
-                        <!---------------------------------- START DELETE BUTTON ---------------------------------->
-                        <b-field v-if="viewType == 'show'">
-                            <b-button type="is-danger" @click="deleteEvent">
-                                Delete Event
-                            </b-button>
-                        </b-field>
-                        <!----------------------------------  END DELETE BUTTON  ---------------------------------->
-                    </fieldset>
-                </form>
-            </section>
+                        </fieldset>
+                    </form>
+                </b-tab-item>
+                <b-tab-item v-if="eventId" :label="translations.core.shared.view_tab_title_delete_record">
+                    <span class="has-text-danger">
+                        {{translations.main.view_text_delete_confirmation}}
+                    </span>
+                    <br>
+                    <br>
+                    <b-field v-if="viewType != 'new'">
+                        <b-button type="is-danger" @click="deleteEvent" expanded class="submit-button" :disabled="submit.delete">
+                            <span v-if="submit.delete">
+                                <i class="fas fa-spin fa-circle-notch"></i> {{translations.core.shared.view_btn_deleting}}
+                            </span>
+                            <span v-else>
+                                <i class="fas fa-trash-alt"></i> {{translations.core.shared.view_btn_delete}}
+                            </span>
+                        </b-button>
+                    </b-field>
+                </b-tab-item>
+            </b-tabs>
         </div>
         <!---------------------------------------  END CARD CONTENT --------------------------------------->
     </div>
