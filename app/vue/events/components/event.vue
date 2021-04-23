@@ -27,56 +27,22 @@ export default {
 
     data() {
         return {
-            main_route: '/driver/events',
             event: {
-                detail_attributes: {
-                    title: '',
-                    description: '',
-                    event_date: '',
-                    time_start: '',
-                    time_end: '',
-                    location: ''
-                }
+                detail_attributes: {}
             },
-            event_id: null
+            translations: {
+                main: I18n.t('driver.events')
+            }
         }
     },
 
     mounted(){
-        this.seteventId()
-        this.getevent()
+        this.setEvent()
     },
 
     methods: {
-        seteventId(){            
-            this.event_id = this.eventId
-        },
-
-        getevent(){
-            let url = `${this.main_route}/${this.event_id}.json`
-            this.http.get(url).then(result => {
-                if (result.successful) {
-                    this.event = result.data
-                }else{
-                    this.alert(result.error.message, 'danger')
-                }
-            }).catch(error => {
-                console.log(error)
-            })
-        }
-    },
-
-    computed: {
-        event_date() {
-            let time_start = new Date(this.event.detail_attributes.time_start)
-            return `${time_start.getUTCFullYear()}-${(time_start.getUTCMonth() + 1)}-${time_start.getUTCDate()}`
-            return time_start
-        },
-
-        time_start_end() {
-            let time_start = new Date(this.event.detail_attributes.time_start)
-            let time_end = new Date(this.event.detail_attributes.time_end)
-            return `${time_start.getUTCHours()}:${time_start.getUTCMinutes()} to ${time_end.getUTCHours()}:${time_end.getUTCMinutes()}`
+        setEvent(){
+            this.event = this.data.event
         }
     }
 
@@ -88,18 +54,22 @@ export default {
                 <div class="media">
                     <div class="media-content">
                         <p class="title is-4">{{event.detail_attributes.title}}</p>
-                        <p class="subtitle is-6">
-                            {{event_date}} - {{time_start_end}}
-                        </p>
                     </div>
                 </div>
                 <div class="content">
                     <p class="subtitle is-6">
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                        {{event.detail_attributes.location}}
+                        <i class="fas fa-calendar" aria-hidden="true"></i>
+                        <b>{{translations.main.column_event_date}}</b>:
+                        {{date.toStringDatetime(event.detail_attributes.time_start)}} - 
+                        {{date.toStringTime(event.detail_attributes.time_end)}}
                     </p>
                     <p class="subtitle is-6">
-                        {{event.detail_attributes.description}}
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        <b>{{translations.main.column_location}}</b>: {{event.detail_attributes.location}}
+                    </p>
+                    <p class="subtitle is-6">
+                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                        <b>{{translations.main.column_description}}</b>: {{event.detail_attributes.description}}
                     </p>
                 </div>
             </div>
