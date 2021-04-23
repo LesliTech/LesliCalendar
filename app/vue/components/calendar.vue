@@ -38,10 +38,15 @@ export default {
             type: String,
             default: '/driver/events',
         },
-        filter_event: {
+        filterEventSource: {
             required: false,
             type: String,
             default: 'all',
+        },
+        filterQuery: {
+            required: false,
+            type: String,
+            default: ''
         }
     },
     data() {
@@ -56,9 +61,9 @@ export default {
         }
     },
     mounted() {
-        this.initCalendar();
-        this.getCalendarEvents(this.calendar_id);
-        this.addListeners();
+        this.initCalendar()
+        this.getCalendarEvents(this.calendar_id)
+        this.addListeners()
     },
     methods: {
         initCalendar() {
@@ -87,26 +92,26 @@ export default {
                 }
             })
             this.calendar.render()
-            this.setTitle();
+            this.setTitle()
         },
 
         addListeners() {
             this.bus.subscribe("action:/driver/calendars/components/calendar#prev_month", ($event) => {
-                this.loadPrevMonth();
-            });
+                this.loadPrevMonth()
+            })
 
             this.bus.subscribe("action:/driver/calendars/components/calendar#next_month", ($event) => {
-                this.loadNextMonth();
-            });
+                this.loadNextMonth()
+            })
 
             this.bus.subscribe("action:/driver/calendars/components/calendar#current_month", ($event) => {
-                this.loadCurrentMonth();
-            });
+                this.loadCurrentMonth()
+            })
         },
 
         setTitle() {
             let title = `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
-            this.data.calendar.title = title;
+            this.data.calendar.title = title
         },
 
         resetEvents() {
@@ -124,7 +129,7 @@ export default {
                         event.url = `${this.main_route}/${event.id}`
                         this.calendar.addEvent(event)
                     }
-                );
+                )
 
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(
@@ -132,7 +137,7 @@ export default {
                         event.url = `${this.main_route}/${event.id}`
                         this.calendar.addEvent(event)
                     }
-                );
+                )
 
                 // Tickets from CloudHelp tickets with deadline
                 this.calendarData.help_tickets.forEach(
@@ -140,7 +145,7 @@ export default {
                         event.url = `${this.main_route}/${event.id}`
                         this.calendar.addEvent(event)
                     }
-                );
+                )
             })
         },
         onDateSelect: function(arg) {
@@ -159,19 +164,20 @@ export default {
                 "classNames": arg.event.classNames,
                 ...arg.event.extendedProps
             }
-            this.data.event.details = details;
-            this.data.event.show = true;
+            this.data.event.details = details
+            this.data.event.show = true
         },
 
         getCalendarEvents(calendar_endpoint) {
-            calendar_endpoint = calendar_endpoint || "default";
+            calendar_endpoint = calendar_endpoint || "default"
 
             let filters = {
                 include: {
-                    focus_tasks: (this.filter_event === "all" || this.filter_event === "focus_tasks" ) ? true : false,
-                    help_tickets:  (this.filter_event === "all" || this.filter_event === "help_tickets" ) ? true : false,
-                    driver_events: (this.filter_event === "all" || this.filter_event === "driver_events" ) ? true : false,
+                    focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
+                    help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
+                    driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
                 },
+                query: this.filterQuery,
                 month: this.calendar.getDate().getMonth()+1,
                 year: this.calendar.getDate().getFullYear(),
             }
@@ -185,31 +191,35 @@ export default {
         },
 
         loadPrevMonth() {
-            this.calendar.prev();
-            this.setTitle();
-            this.getCalendarEvents();
+            this.calendar.prev()
+            this.setTitle()
+            this.getCalendarEvents()
         },
 
         loadNextMonth() {
-            this.calendar.next();
-            this.setTitle();
-            this.getCalendarEvents();
+            this.calendar.next()
+            this.setTitle()
+            this.getCalendarEvents()
         },
 
         loadCurrentMonth() {
-            this.calendar.today();
-            this.setTitle();
-            this.getCalendarEvents();
+            this.calendar.today()
+            this.setTitle()
+            this.getCalendarEvents()
         },
     },
 
     watch: {
         calendarData() {
-            this.resetEvents();
+            this.resetEvents()
         },
 
-        filter_event(){
-            this.getCalendarEvents();
+        filterEventSource(){
+            this.getCalendarEvents()
+        },
+
+        filterQuery(){
+            this.getCalendarEvents()
         }
     }
 }

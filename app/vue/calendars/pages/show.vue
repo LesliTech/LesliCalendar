@@ -34,12 +34,15 @@ export default {
     },
     data(){
         return {
+            filters_ready: false,
             main_route: "/driver/calendars",
             translations: {
+                calendars: I18n.t('driver.calendars')
             },
             calendar_id: null,
             filters: {
-                module_event: "all"
+                module_event: "all",
+                query: ""
             },
             options: {
                 types_module_events: []
@@ -52,13 +55,13 @@ export default {
 
     mounted(){
         this.calendar_id = this.$route.params.id
-        this.getEventsType();
-        this.getEventsToday();
+        this.getEventsType()
+        this.getEventsToday()
+        this.setSessionStorageFilters()
     },
 
     methods: {
         getEventsType() {
-            this.loading = true;
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
                     this.options.types_module_events = result.data.types_module_events
@@ -73,31 +76,32 @@ export default {
         },
 
         getEventsToday() {
-            this.loading_agenda = true;
-            let today = new Date();
+            this.loading_agenda = true
+            let today = new Date()
             let filters = {
                 include: {
                     help_tickets:  (this.filters.module_event === "all" || this.filters.module_event === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.module_event === "all" || this.filters.module_event === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.module_event === "all" || this.filters.module_event === "driver_events" ) ? true : false,
                 },
+                query: this.filters.query,
                 day: today.getDate(),
                 month: today.getMonth()+1,
                 year: today.getFullYear(),
             }
 
-            let url = this.url.driver('events').filters(filters);
+            let url = this.url.driver('events').filters(filters)
 
             this.http.get(url).then(result => {
                 if (result.successful) {
-                    this.events_today = result.data;
+                    this.events_today = result.data
                 } else {
                     this.alert(result.error.message,'danger')
                 }
             }).catch(error => {
                 console.log(error)
             }).finally(() => {
-                this.loading_agenda = false;
+                this.loading_agenda = false
             })
         },
 
@@ -120,10 +124,30 @@ export default {
         createEvent() {
             this.url.go("/driver/events/new")
         },
+
+        setSessionStorageFilters(){
+            let stored_filters = this.storage.local("filters")
+
+            if(stored_filters){
+                for(let key in stored_filters){
+                    this.$set(this.filters, key, stored_filters[key])
+                }
+            }
+
+            this.filters_ready = true
+        },
+
+        searchEvents(text_to_search){
+            this.filters.query = text_to_search
+        }
     },
     watch: {
         "filters.module_event"() {
-            this.getEventsToday();
+            this.getEventsToday()
+        },
+
+        "filters.query"(){
+            this.getEventsToday()
         }
     },
     computed: {
@@ -141,13 +165,13 @@ export default {
                     value: "driver_events",
                     label: "Calendar Events"
                 }
-            ];
+            ]
 
             if ("focus_tasks" in this.options.types_module_events) options.push({value: this.options.types_module_events.focus_tasks, label: "Tasks"})
             if ("help_tickets" in this.options.types_module_events) options.push({value: this.options.types_module_events.help_tickets, label: "Tickets"})
 
 
-            return options;
+            return options
         }
     },
 }
@@ -195,7 +219,12 @@ export default {
             </div>
         </component-header>
 
-        <component-toolbar>
+        <component-toolbar
+            v-if="filters_ready"
+            :initialValue="filters.text"
+            :search-text="translations.calendars.view_placeholder_filter_text"
+            @search="searchEvents"
+        >
             <b-select
                 placeholder="Select a event type"
                 v-model="filters.module_event"
@@ -219,7 +248,8 @@ export default {
             <div class="column">
                 <component-calendar
                     :calendar_id="calendar_id"
-                    :filter_event="filters.module_event"
+                    :filter-query="filters.query"
+                    :filter-event-source="filters.module_event"
                     :key="calendar_id">
                 </component-calendar>
             </div>
