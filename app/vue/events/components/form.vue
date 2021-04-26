@@ -93,7 +93,6 @@ export default {
 
             this.http.post(url, form_data).then(result => {
                 if (result.successful) {
-                    this.eventId = result.data.id
                     this.$set(this.event, 'id', result.data.id)
                     this.$set(this.event, 'editable', true)
                     this.alert('Event created successfully', 'success')
