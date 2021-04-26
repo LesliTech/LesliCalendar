@@ -58,6 +58,11 @@ export default {
                 focus_tasks: [],
                 help_tickets: [],
             },
+            translations: {
+                core: {
+                    shared: I18n.t('core.shared')
+                }
+            }
         }
     },
     mounted() {
@@ -109,8 +114,15 @@ export default {
             })
         },
 
+        removeListeners(){
+            this.bus.$off("action:/driver/calendars/components/calendar#prev_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#next_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#current_month")
+        },
+
         setTitle() {
-            let title = `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
+            let title = this.object_utils.translateEnum(this.translations.core.shared, 'view_text_month',this.date.getMonthName(this.calendar.getDate()))
+            title = `${title} ${this.calendar.getDate().getFullYear()}`
             this.data.calendar.title = title
         },
 
@@ -149,7 +161,7 @@ export default {
             })
         },
         onDateSelect: function(arg) {
-            this.data.calendar.selected_date = arg.date
+            this.data.agenda_day = arg.date
         },
 
         onEventClick: function(arg) {
@@ -177,12 +189,11 @@ export default {
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
                 },
-                query: this.filterQuery,
-                month: this.calendar.getDate().getMonth()+1,
-                year: this.calendar.getDate().getFullYear(),
+                query: this.filterQuery
             }
 
-            let url = this.url.driver('events').filters(filters)
+            let url = this.url.driver('calendars/default').filters(filters).monthTimestamp(this.calendar.getDate())
+
             this.http.get(url).then(result => {
                 this.calendarData = result.data
             }).catch(error => {
@@ -207,6 +218,10 @@ export default {
             this.setTitle()
             this.getCalendarEvents()
         },
+    },
+
+    beforeDestroy(){
+        this.removeListeners()
     },
 
     watch: {
