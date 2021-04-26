@@ -16,12 +16,22 @@ For more information read the license file including with this software.
 // · 
 
 %>
+<% @current_path = request.env['PATH_INFO'] %>
+<% @tabs_granted = {} 
+    [
+        {name: "dashboard", route: "cloud_driver/dashboards", privilege: "grant_show"},
+        {name: "dashboards", route: "cloud_driver/dashboards"},
+        {name: "calendars", route: "cloud_driver/calendars"},
+        {name: "workflows", route: "cloud_driver/workflows"}
+    ].each do |tab|
+        privilege = @account[:current_user][:abilities][tab[:route]]
+        unless privilege.blank?
+            privilege_name = "grant_index"
+            privilege_name = tab[:privilege] if tab[:privilege]
 
-<template>
+            @tabs_granted[tab[:name]] = privilege[privilege_name]
+        end
+    end
+%>
+<%= render partial: 'layouts/cloud_driver/partials/module-app-navigation' %>
 
-    <%= nav_link(root_path) do %>
-        <i class="fas fa-tachometer-alt"></i>
-        <span>Dashboard</span>
-    <% end %>
-
-</template>

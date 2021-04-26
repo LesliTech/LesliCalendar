@@ -37,18 +37,19 @@ export default {
             filters_ready: false,
             main_route: "/driver/calendars",
             translations: {
-                calendars: I18n.t('driver.calendars')
+                calendars: I18n.t('driver.calendars'),
+                events: I18n.t('driver.events')
             },
             calendar_id: null,
             filters: {
-                module_event: "all",
+                event_category: "all",
                 query: ""
             },
             options: {
-                types_module_events: []
+                event_categories: []
             },
             loading: true,
-            events_today: [],
+            events_day: [],
             loading_agenda: true,
         }
     },
@@ -56,7 +57,7 @@ export default {
     mounted(){
         this.calendar_id = this.$route.params.id
         this.getEventsType()
-        this.getEventsToday()
+        this.getDayEvents()
         this.setSessionStorageFilters()
     },
 
@@ -64,7 +65,7 @@ export default {
         getEventsType() {
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
-                    this.options.types_module_events = result.data.types_module_events
+                    this.options.event_categories = result.data.event_categories
                 }else{
                     this.alert(result.error.message,'danger')
                 }
@@ -75,26 +76,22 @@ export default {
             })
         },
 
-        getEventsToday() {
+        getDayEvents() {
             this.loading_agenda = true
-            let today = new Date()
+
             let filters = {
                 include: {
-                    help_tickets:  (this.filters.module_event === "all" || this.filters.module_event === "help_tickets" ) ? true : false,
-                    focus_tasks: (this.filters.module_event === "all" || this.filters.module_event === "focus_tasks" ) ? true : false,
-                    driver_events: (this.filters.module_event === "all" || this.filters.module_event === "driver_events" ) ? true : false,
+                    help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
+                    focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
+                    driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
                 },
-                query: this.filters.query,
-                day: today.getDate(),
-                month: today.getMonth()+1,
-                year: today.getFullYear(),
+                query: this.filters.query
             }
-
-            let url = this.url.driver('events').filters(filters)
+            let url = this.url.driver('calendars/default').filters(filters).dayTimestamp(this.data.agenda_day)
 
             this.http.get(url).then(result => {
                 if (result.successful) {
-                    this.events_today = result.data
+                    this.events_day = result.data
                 } else {
                     this.alert(result.error.message,'danger')
                 }
@@ -113,7 +110,8 @@ export default {
             this.bus.publish("action:/driver/calendars/components/calendar#next_month", $event)
         },
 
-        onCurrentMonth($event) {
+        onToday($event) {
+            this.data.agenda_day = new Date()
             this.bus.publish("action:/driver/calendars/components/calendar#current_month", $event)
         },
 
@@ -141,44 +139,25 @@ export default {
             this.filters.query = text_to_search
         }
     },
+
     watch: {
-        "filters.module_event"() {
-            this.getEventsToday()
+        "filters.event_category"() {
+            this.getDayEvents()
         },
 
         "filters.query"(){
-            this.getEventsToday()
-        }
-    },
-    computed: {
-        title() {
-            return this.data.calendar.title
+            this.getDayEvents()
         },
 
-        event_filter_options() {
-            let options = [
-                {
-                    value: "all",
-                    label: "All events type"
-                },
-                {
-                    value: "driver_events",
-                    label: "Calendar Events"
-                }
-            ]
-
-            if ("focus_tasks" in this.options.types_module_events) options.push({value: this.options.types_module_events.focus_tasks, label: "Tasks"})
-            if ("help_tickets" in this.options.types_module_events) options.push({value: this.options.types_module_events.help_tickets, label: "Tickets"})
-
-
-            return options
+        "data.agenda_day"(){
+            this.getDayEvents()
         }
-    },
+    }
 }
 </script>
 <template>
     <section class="application-component">
-        <component-header :title="title" :buttons="false">
+        <component-header :title="data.calendar.title" :buttons="false">
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="field has-addons">
@@ -187,12 +166,12 @@ export default {
                                 <span class="icon">
                                     <i class="fas fa-chevron-left"></i>
                                 </span>
-                                <span>prev</span>
+                                <span>{{translations.calendars.view_btn_previous_month}}</span>
                             </button>
                         </div>
                         <div class="control">
                             <button class="button" @click="onNextMonth($event)">
-                                <span>next</span>
+                                <span>{{translations.calendars.view_btn_next_month}}</span>
                                 <span class="icon">
                                     <i class="fas fa-chevron-right"></i>
                                 </span>
@@ -202,17 +181,17 @@ export default {
                 </div>
                 <div class="navbar-item">
                     <div class="buttons">
-                        <button class="button" @click="onCurrentMonth($event)">
+                        <button class="button" @click="onToday($event)">
                             <span class="icon">
                                 <i class="fas fa-calendar-day"></i>
                             </span>
-                            <span>today</span>
+                            <span>{{translations.calendars.view_btn_today}}</span>
                         </button>
                         <button class="button" @click="createEvent()">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
                             </span>
-                            <span>create event</span>
+                            <span>{{translations.events.view_btn_new}}</span>
                         </button>
                     </div>
                 </div>
@@ -226,14 +205,13 @@ export default {
             @search="searchEvents"
         >
             <b-select
-                placeholder="Select a event type"
-                v-model="filters.module_event"
+                v-model="filters.event_category"
                 :loading="loading">
                 <option
-                    v-for="option in this.event_filter_options"
-                    :value="option.value"
-                    :key="option.value">
-                    {{ option.label }}
+                    v-for="(key, value) in this.options.event_categories"
+                    :value="key"
+                    :key="key">
+                    {{ object_utils.translateEnum(translations.calendars, 'view_toolbar_filter_event_categories', value) }}
                 </option>
             </b-select>
         </component-toolbar>
@@ -241,7 +219,7 @@ export default {
         <div class="columns">
             <div class="column is-one-quarter">
                 <component-agenda
-                    :events="events_today"
+                    :events="events_day"
                     :loading="loading_agenda"
                 ></component-agenda>
             </div>
@@ -249,7 +227,7 @@ export default {
                 <component-calendar
                     :calendar_id="calendar_id"
                     :filter-query="filters.query"
-                    :filter-event-source="filters.module_event"
+                    :filter-event-source="filters.event_category"
                     :key="calendar_id">
                 </component-calendar>
             </div>
