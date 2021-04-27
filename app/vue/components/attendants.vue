@@ -4,9 +4,15 @@ export default {
         eventId: {
             required: true
         },
+
         eventEditable: {
             type: Boolean,
             default: true
+        },
+
+        customTableClass: {
+            type: String,
+            default: ''
         }
     },
 
@@ -34,7 +40,7 @@ export default {
                 current_page: 1,
                 range_before: 3,
                 range_after: 3,
-                per_page: 8
+                per_page: 10
             },
             attendant_options: {
                 users: []
@@ -281,7 +287,7 @@ export default {
             </b-field>
             <component-data-loading v-if="loading.options" />
             <component-data-empty v-if="!loading.options && attendant_options.users.length == 0" />
-            <b-table :data="currentUserPage">
+            <b-table :data="currentUserPage" narrowed :class="customTableClass">
                 <template slot-scope="props">
                     <b-table-column field="name" :label="translations.core.text_name">
                         {{ props.row.name }}
@@ -291,7 +297,7 @@ export default {
                     </b-table-column>
                     <b-table-column field="role_name" :label="translations.core.text_role">
                         <span>
-                            <span v-for="role in props.row.roles" :key="`employee-${props.row.id}-${role}`">
+                            <span v-for="role in props.row.roles" :key="`user-${props.row.id}-${role.id}`">
                                 <b-tooltip type="is-white" :label="translateUserRole(role.name)">
                                     <b-tag type="is-white">{{extractInitials(translateUserRole(role.name))}}</b-tag>
                                     &nbsp;
@@ -325,7 +331,7 @@ export default {
         <b-tab-item :label="translations.main.form_attendants_tab_list">
             <component-data-loading v-if="loading.attendants" />
             <component-data-empty v-if="!loading.attendants && attendants.length == 0" />
-            <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants">
+            <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants" narrowed :class="customTableClass">
                 <template slot-scope="props">
                     <b-table-column field="name" :label="translations.core.text_name">
                         {{ props.row.name }}
@@ -344,7 +350,8 @@ export default {
                         </span>
                     </b-table-column>
                     <b-table-column field="actions" label="">
-                        <a v-if="eventEditable" class="delete" role="button" @click="deleteAttendant(props.row)"></a>
+                        <a v-if="eventEditable" class="delete is-pulled-right" role="button" @click="deleteAttendant(props.row)">
+                        </a>
                     </b-table-column>
                 </template>
             </b-table>

@@ -31,7 +31,11 @@ app("CloudDriver", "[show]", "/driver/", [{
     path: "/",
     component: pageShow
 }], {
-    event: { show: false },
+    event: {
+        show: false,
+        id: null,
+        details: {}
+    },
     calendar: {
         title: '',
         selected_date: null
