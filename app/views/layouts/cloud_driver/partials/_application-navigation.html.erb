@@ -2,9 +2,9 @@
 
 Copyright (c) 2020, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,18 +13,24 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 %>
 <% @current_path = request.env['PATH_INFO'] %>
-<% @tabs_granted = {} 
+<% @tabs_granted = {}
     [
         {name: "dashboard", route: "cloud_driver/dashboards", privilege: "grant_show"},
-        {name: "dashboards", route: "cloud_driver/dashboards"},
-        {name: "calendars", route: "cloud_driver/calendars"},
-        {name: "workflows", route: "cloud_driver/workflows"}
+        {name: "event_types", route: "cloud_driver/catalog/event_types"},
+        {name: "dashboards"},
+        {name: "calendars"},
+        {name: "workflows"}
     ].each do |tab|
-        privilege = @account[:current_user][:abilities][tab[:route]]
+        if tab[:route]
+            privilege = @account[:current_user][:abilities][tab[:route]]
+        else
+            privilege = @account[:current_user][:abilities]["#{lesli_engine_or_instance}/#{tab[:name]}"]
+        end
+
         unless privilege.blank?
             privilege_name = "grant_index"
             privilege_name = tab[:privilege] if tab[:privilege]
@@ -34,4 +40,3 @@ For more information read the license file including with this software.
     end
 %>
 <%= render partial: 'layouts/cloud_driver/partials/module-app-navigation' %>
-
