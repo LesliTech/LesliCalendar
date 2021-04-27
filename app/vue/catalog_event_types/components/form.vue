@@ -127,7 +127,7 @@ export default {
             this.http.delete(url).then(result => {
                 this.deleting = false
                 if (result.successful) {
-                    this.msg.success(this.translations.main.messages_success_event_type_destroyed)
+                    this.msg.success(this.translations.main.messages_success_event_type_deleted)
 
                     this.$router.push('/')
                 }else{
