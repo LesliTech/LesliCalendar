@@ -29,6 +29,7 @@ export default {
                 }
             }
         },
+
         loading: {
             required: false,
             default: true,
@@ -36,6 +37,12 @@ export default {
     },
     data() {
         return {
+            translations: {
+                calendars: I18n.t('driver.calendars'),
+                core: {
+                    shared: I18n.t('core.shared')
+                }
+            },
             today_events: []
         }
     },
@@ -65,32 +72,44 @@ export default {
 <template>
     <section>
         <component-data-loading v-if="loading"></component-data-loading>
-        <component-data-empty
-            v-if="!loading && events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
-            text="No activity for today">
-        </component-data-empty>
-        <div class="box">
-            <a 
-                class="media"
-                v-on:click.prevent.stop="showEvent(event)" 
-                v-for="(event, index) in today_events" 
-                :key="index">
-                <div class="media-left">
-                    <span class="icon">
-                        <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
-                        <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
-                        <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
-                    </span>
+        <div v-else class="card">
+            <div class="card-header">
+                <div class="card-header-title">
+                    {{object_utils.translateEnum(translations.core.shared, 'view_text_month', date.getMonthName(data.agenda_day))}}
+                    -
+                    {{data.agenda_day.getDate()}}
                 </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p class="mb-0">
-                            <span>{{ event.title }}</span>
-                            <small>{{ event.event_date_string }}</small>
-                        </p>
-                    </div>
+            </div>
+            <div class="card-content">
+                <component-data-empty
+                    v-if="events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
+                    :text="translations.calendars.view_title_no_activity"
+                >
+                </component-data-empty>
+                <div v-else>
+                    <a 
+                        class="media"
+                        v-on:click.prevent.stop="showEvent(event)" 
+                        v-for="(event, index) in today_events" 
+                        :key="index">
+                        <div class="media-left">
+                            <span class="icon">
+                                <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
+                                <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
+                                <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
+                            </span>
+                        </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <p class="mb-0">
+                                    <span>{{ event.title }}</span>
+                                    <small>{{ event.event_date_string }}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+            </div>
         </div>
     </section>
 </template>
@@ -105,7 +124,7 @@ export default {
     }
     div.box .media .media-content p span {
         font-size: 1.1rem;
-        line-height: 0.6;
+        line-height: 1.2;
         display: block;
         color: rgb(60,60,60);
     }

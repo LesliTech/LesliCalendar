@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2021, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -30,15 +30,12 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
 
-
-
-        enum types_module_events: {
-            driver_events: "driver_events",
-            focus_tasks: ('focus_tasks' if defined? CloudFocus),
-            help_tickets: ('help_tickets' if defined? CloudHelp)
-        }.compact
-
-
+        # @return [void]
+        # @param account [CloudDriver::Account] The account to be initialized
+        # @description Initializes the data required for the calendars to work when a new account is created.
+        #     @example
+        #         new_account = Account.create!({}) # This method should initialize a new CloudDriver::Account
+        #         # The instance of CloudDriver::Account should call this method in an after_create()
         def self.initialize_data(account)
             default_calendar = self.create!(
                 account: account
@@ -49,124 +46,85 @@ module CloudDriver
                 cloud_driver_calendars_id: default_calendar.id
             )
         end
-
-        def self.events_from_all_modules(current_user, query)
-            LC::Debug.msg "Deprecated"
-            self.index(current_user, query)
-        end
-
-        def self.index(current_user, query)
-
-            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
-                filters_date = self.get_date_range_filter()
-                query[:filters][:start_date] = filters_date[:start_date]
-                query[:filters][:end_date] = filters_date[:end_date]
-            end
-
-            calendar = self.default
-            calendar_data = {
-                id: calendar.id,
-                name: calendar.name,
-                driver_events: [],
-                focus_tasks: [],
-                help_tickets: []
-            }
-
-            # events from CloudDriver
-            unless query[:filters][:include] && query[:filters][:include][:driver_events].to_s.downcase == "false"           
-
-                # selection all my events in one query
-                own_and_public_driver_events = calendar.events.joins(:detail)
-                .joins("inner join cloud_driver_event_attendants CDEA on CDEA.cloud_driver_events_id = cloud_driver_events.id")
-                .select(
-                    :users_id,
-                    :user_main_id,
-                    :id, 
-                    :title, 
-                    :description, 
-                    "event_date as date",
-                    "time_start as start", 
-                    "time_end as end", 
-                    :location,
-                    :model_type,
-                    :url,
-                    :event_type,
-                    "true as \"is_attendant\"",
-                    "false as \"editable\"",
-                    "CONCAT('cloud_driver_event',' ', LOWER(SPLIT_PART(cloud_driver_events.model_type, '::', 2)))  as \"classNames\"",
-                    LC::Date2.new.date_time.db_column("event_date")
-                )
-                .where("
-                    CDEA.users_id = :user 
-                    or cloud_driver_events.user_main_id = :user 
-                    or cloud_driver_events.users_id = :user
-                    or cloud_driver_event_details.public = true", { user: current_user.id })
-                .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
-                .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
-                .order("date")
         
-                own_and_public_driver_events.each do |event|
-                    event[:editable] = event.is_editable_by?(current_user)
-                end
-
-                calendar_data[:driver_events] = own_and_public_driver_events
+        # @return [Array] Array of CloudObjects that can be ordered within a calendar as events or an empty array if
+        #     query[:filters][:start_date] and query[:filters][:end_date] are not set.
+        # @param current_user [User] The user that requested this method to be executed
+        # @param query [Hash] Hash containing important information like wether to include help_tickets and focus_tasks,
+        #     and start_date and end_date 
+        # @description Retrieves a list of cloud_objects that can be arranged into a calendar. At the time, driver_events,
+        #     focus_tasks and help_tickets are the only cloud_objects included. Uses the courier to retrieve this information.
+        # @example
+        #     current_user = User.find(1)
+        #     query = {
+        #         filters: {
+        #             start_date: "2020-01-01 00:00",
+        #             end_date: "2020-01-20 00:00",
+        #             include: {
+        #                 driver_events: "true",
+        #                 focus_tasks: "false",
+        #                 help_tickets: "true"
+        #             }
+        #         }
+        #     }
+        #     puts CloudDriver::Calendar.index(current_user, query)
+        #     # this will display something like 
+        #     # {
+        #         help_tickets: [...],
+        #         driver_events: [...],
+        #     }
+        def self.show(current_user, query)
+            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
+                return []
             end
 
-            # tasks from CloudFocus
-            if query[:filters][:include] && query[:filters][:include][:focus_tasks].to_s.downcase == "true"
-                calendar_data[:focus_tasks]  = Courier::Focus::Task.with_deadline(current_user, query).map do |task|
-                    {
-                        id: task[:id],
-                        title: task[:title],
-                        description: task[:description],
-                        date: task[:deadline],
-                        start: task[:deadline],
-                        end: task[:deadline],
-                        event_date_string: task[:deadline_string],
-                        classNames: ["cloud_focus_tasks"]
-                    }
-                end
-            end
-
-            # tickets from CloudHelp
-            if query[:filters][:include] && query[:filters][:include][:help_tickets].to_s.downcase == "true"
-                calendar_data[:help_tickets]  = Courier::Help::Ticket.with_deadline(current_user, query).map do |ticket|
-                    {
-                        id: ticket[:id],
-                        title: ticket[:subject],
-                        description: ticket[:description],
-                        date: ticket[:deadline],
-                        start: ticket[:deadline],
-                        end: ticket[:deadline],
-                        event_date_string: ticket[:deadline_string],
-                        classNames: ["cloud_help_tickets"]
-                    }
-                end
-            end
-
-            calendar_data
+            calendar = current_user.account.driver.calendars.default
+            Courier::Driver::Calendar.show(current_user, query, calendar)
         end
 
-        def self.get_date_range_filter(year=nil, month=nil, day=nil)
-            start_date = Date.today
-            start_date = Time.current.beginning_of_month
-            start_date = start_date.change(:year => year.to_i) if !year.blank?
-            start_date = start_date.change(:month => month.to_i) if !month.blank?
-            start_date = start_date.change(:day => day.to_i) if !day.blank?
-
-            end_date = Date.today
-            end_date = Time.current
-            end_date = end_date.change(:year => year.to_i) if !year.blank?
-            end_date = end_date.change(:month => month.to_i) if !month.blank?
-            end_date = end_date.end_of_month
-            end_date = end_date.change(:day => day.to_i) if !day.blank?
-
-            { start_date: start_date, end_date: end_date }
-        end
-
+        # @return [Hash] The required information to create or filter a calendar
+        # @param current_user [User] The user that requested this method to be executed. Unused at the moment
+        # @param query [Hash] Hash containing important information to filter these options. Unused at the moment
+        # @description Retrueves and returns a hash on information required to create or filter a calendar.
+        #     At the moment, only event_categories are returned.
+        # @example
+        #     puts CloudDriver::Calendar.options(User.find(2), {})
+        #     # This will display something like
+        #     # {
+        #     #     event_categories: {
+        #     #         all: "all",
+        #     #         driver_events: "driver_events",
+        #     #         focus_tasks: "focus_tasks",
+        #     #         help_tickets: "help_tickets"
+        #     #     }
+        #     # } 
         def self.options(current_user, query)
             {
-                :types_module_events => Calendar.types_module_events
+                event_categories: Calendar.event_categories
+            }
+        end
+
+        protected
+
+        # @return [Hash] A hash containing a list of event categories
+        # @description Returns a list of event categories. An event category is a class that represents a cloud_object
+        #     that can be added to a calendar as an event. Current event categories are all, driver_events, focus_tasks
+        #     and help_tickets 
+        # @example
+        #     puts CloudDriver::Calendar.event_categories
+        #     # This will display something like
+        #     # {
+        #     #     all: "all",
+        #     #     driver_events: "driver_events",
+        #     #     focus_tasks: "focus_tasks",
+        #     #     help_tickets: "help_tickets"
+        #     # }
+        def self.event_categories
+            {
+                all: "all",
+                driver_events: "driver_events",
+                focus_tasks: "focus_tasks",
+                help_tickets: "help_tickets"
             }
         end
     end

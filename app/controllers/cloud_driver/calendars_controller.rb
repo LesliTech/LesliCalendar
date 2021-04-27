@@ -22,7 +22,7 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class CalendarsController < ApplicationController
         before_action :set_calendar, only: [:show, :edit, :update, :destroy]
-        before_action :set_date_filter_params, only: :show
+        before_action :parse_query_params, only: :show
 
         # GET /calendars
         def index
@@ -42,7 +42,7 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json { respond_with_successful(Calendar.index(current_user, @query)) }
+                format.json { respond_with_successful(Calendar.show(current_user, @query)) }
             end
         end
 
@@ -110,20 +110,9 @@ module CloudDriver
             params.fetch(:calendar, {})
         end
 
-        def set_date_filter_params
-            if @query[:filters][:start_date] && @query[:filters][:end_date]
-                @query[:filters][:start_date] = @query[:filters][:start_date].to_date
-                @query[:filters][:end_date] = @query[:filters][:end_date].to_date
-            else
-                filters_date = Calendar.get_date_range_filter(
-                    year=@query[:filters][:year],
-                    month=@query[:filters][:month],
-                    day=@query[:filters][:day]
-                )
-
-                @query[:filters][:start_date] = filters_date[:start_date]
-                @query[:filters][:end_date] = filters_date[:end_date]
-            end
+        def parse_query_params
+            @query[:filters][:start_date] = @query[:filters][:start_date].to_datetime if @query[:filters][:start_date]
+            @query[:filters][:end_date] = @query[:filters][:end_date].to_datetime if @query[:filters][:end_date]
         end
     end
 end
