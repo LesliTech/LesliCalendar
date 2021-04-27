@@ -145,17 +145,17 @@ export default {
 
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
+                    (task) => {
+                        task.url = `focus/tasks/${task.id}`
+                        this.calendar.addEvent(task)
                     }
                 )
 
                 // Tickets from CloudHelp tickets with deadline
                 this.calendarData.help_tickets.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
+                    (ticket) => {
+                        ticket.url = `help/tickets/${ticket.id}`
+                        this.calendar.addEvent(ticket)
                     }
                 )
             })
@@ -166,18 +166,17 @@ export default {
 
         onEventClick: function(arg) {
             arg.jsEvent.preventDefault()
-            this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
-            const details = {
-                "id": arg.event.id,
-                "title": arg.event.title,
-                "start": arg.event.start,
-                "end": arg.event.end,
-                "url": arg.event.url,
-                "classNames": arg.event.classNames,
-                ...arg.event.extendedProps
+
+            let class_names = arg.event.classNames
+            if(class_names.includes('cloud_focus_tasks') || class_names.includes('cloud_help_tickets')){
+                window.open(arg.event.url, '_blank')
+                return
             }
-            this.data.event.details = details
+
+
+            this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
             this.data.event.show = true
+            this.data.event.id = arg.event.id
         },
 
         getCalendarEvents(calendar_endpoint) {

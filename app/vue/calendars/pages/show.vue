@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 // · List of Imported Components
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
-import componentEvent from "../../components/event-sidebar.vue"
+import componentEventPanel from "../../components/event-panel.vue"
 
 
 
@@ -30,7 +30,7 @@ export default {
     components: {
         "component-calendar": componentCalendar,
         "component-agenda": componentAgenda,
-        "component-event": componentEvent,
+        "component-event-panel": componentEventPanel,
     },
     data(){
         return {
@@ -119,8 +119,9 @@ export default {
             this.data.event.show = true
         },
 
-        createEvent() {
-            this.url.go("/driver/events/new")
+        showPanelNew() {
+            this.data.event.id = null
+            this.data.event.show = true
         },
 
         setSessionStorageFilters(){
@@ -187,7 +188,7 @@ export default {
                             </span>
                             <span>{{translations.calendars.view_btn_today}}</span>
                         </button>
-                        <button class="button" @click="createEvent()">
+                        <button class="button" @click="showPanelNew()">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
                             </span>
@@ -233,7 +234,8 @@ export default {
             </div>
         </div>
 
-        <component-event></component-event>
+        <component-event-panel>
+        </component-event-panel>
 
     </section>
 </template>

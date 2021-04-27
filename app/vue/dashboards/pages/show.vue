@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 // · List of Imported Components
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
-import componentEvent from "../../components/event-sidebar.vue"
+import componentEvent from "../../components/event-panel.vue"
 
 
 
