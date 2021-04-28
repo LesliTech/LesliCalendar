@@ -1,10 +1,10 @@
 =begin
-    
+
 Copyright (c) 2020, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,15 +13,22 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
-    
+// ·
+
 =end
 
 CloudDriver::Engine.routes.draw do
-
     root to: "calendars#show"
 
     resource :dashboards
+
+    scope :catalog, module: :catalog do
+        resources :event_types do
+            collection do
+                get :options
+            end
+        end
+    end
 
     # the routes bellow needs revision
     resources :workflows do
@@ -37,7 +44,7 @@ CloudDriver::Engine.routes.draw do
             resources :associations
             resources :statuses
             resources :actions do
-                collection do 
+                collection do
                     scope :resources do
                         get :options_create_cloud_object_file
                         get :options_cloud_object_clone
@@ -56,7 +63,7 @@ CloudDriver::Engine.routes.draw do
             resources :components
         end
     end
-    
+
     resources :calendars do
         collection do
             get :options
@@ -76,7 +83,7 @@ CloudDriver::Engine.routes.draw do
         end
         collection do
             get :search
-            get :options 
+            get :options
             get "/files/options",                   to: "event/files#options"
             get "/resources/events-by-model/:model_type/:model_id" =>  :events_by_model
         end
