@@ -90,6 +90,69 @@ export default {
             }
         },
 
+        submitEvent(event){
+            if(event){
+                event.preventDefault()
+            }
+
+            this.syncEventDateTime()
+            if(this.event.id){
+                this.putEvent()
+            }else{
+                this.postEvent()
+            }
+        },
+
+        postEvent(){
+            this.submit.event = true
+            let url = this.url.driver('events')
+            let data = {
+                event: this.event
+            }
+
+            this.http.post(url, data).then(result => {
+                if(result.successful){
+                    this.data.event.id = result.data.id
+
+                    this.$set(this.event, 'id', result.data.id)
+                    this.$set(this.event, 'editable', true)
+                    this.$set(this.event, 'organizer_name', result.data.organizer_name)
+                    this.active_tab = 1
+
+                    this.$emit('post-event', result.data)
+                    this.bus.publish("post:/driver/event")
+                    this.msg.success(this.translations.events.messages_success_event_created)
+                }else{
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(()=>{
+                this.submit.event = false
+            })
+        },
+
+        putEvent(){
+            this.submit.event = true
+            let url = this.url.driver(`events/${this.event.id}`)
+            let data = {
+                event: this.event
+            }
+
+            this.http.put(url, data).then(result => {
+                if (result.successful) {
+                    this.bus.publish("put:/driver/event")
+                    this.msg.success(this.translations.events.messages_success_event_updated)
+                } else {
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(()=>{
+                this.submit.event = false
+            })
+        },
+
         setEmptyEvent(){
             this.event = {
                 detail_attributes: {
@@ -133,13 +196,45 @@ export default {
         },
 
         deleteEvent(){
-            console.log('deleting event')
+            let url = this.url.driver(`events/${this.event.id}`)
+            this.submit.delete = true
+
+            this.http.delete(url).then(result => {
+                if (result.successful) {
+                    this.data.event.show = false
+                    this.$emit('delete-event', this.event)
+                    this.msg.success(this.translations.events.messages_success_event_destroyed)
+                } else {
+                    this.msg.error(result.error.message, 'danger')
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
+        syncEventDateTime(){
+            const event = { ...this.event, ...this.event.detail_attributes }
+            if (event.time_start) {
+                this.event.detail_attributes.time_start = this.parseDate(event.time_start);
+                this.event.detail_attributes.time_end = this.parseDate(event.time_end || event.time_start);
+            }
+        },
+
+        parseDate(time) {
+            const date = new Date(this.event.detail_attributes.event_date);
+            date.setHours(time.getHours());
+            date.setMinutes(time.getMinutes());
+            return date;
         }
     },
 
     watch: {
         "data.event.id"(){
             this.setEvent()
+        },
+
+        'event.detail_attributes.event_date'(event_date) {
+            this.syncEventDateTime()
         }
     },
 
@@ -282,7 +377,7 @@ export default {
                         <div class="field">
                             <label class="label">{{translations.events.column_description}}</label>
                             <div class="control">
-                                <textarea class="textarea" name="description" :readonly="!eventEditable"></textarea>
+                                <textarea v-model="event.detail_attributes.description" class="textarea" name="description" :readonly="!eventEditable"></textarea>
                             </div>
                         </div>
                         <div class="columns">
