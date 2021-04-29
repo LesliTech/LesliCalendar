@@ -146,7 +146,7 @@ export default {
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(
                     (task) => {
-                        task.url = `focus/tasks/${task.id}`
+                        task.url = this.url.focus("tasks/:id", { id: task.id })
                         this.calendar.addEvent(task)
                     }
                 )
@@ -154,7 +154,7 @@ export default {
                 // Tickets from CloudHelp tickets with deadline
                 this.calendarData.help_tickets.forEach(
                     (ticket) => {
-                        ticket.url = `help/tickets/${ticket.id}`
+                        ticket.url = this.url.help("tickets/:id", { id: ticket.id })
                         this.calendar.addEvent(ticket)
                     }
                 )
