@@ -112,12 +112,17 @@ export default {
             this.bus.subscribe("action:/driver/calendars/components/calendar#current_month", ($event) => {
                 this.loadCurrentMonth()
             })
+
+            this.bus.subscribe("action:/driver/calendars/components/calendar#reload_events", ($event) => {
+                this.getCalendarEvents()
+            })
         },
 
         removeListeners(){
             this.bus.$off("action:/driver/calendars/components/calendar#prev_month")
             this.bus.$off("action:/driver/calendars/components/calendar#next_month")
             this.bus.$off("action:/driver/calendars/components/calendar#current_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#reload_events")
         },
 
         setTitle() {
@@ -146,7 +151,7 @@ export default {
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(
                     (task) => {
-                        task.url = `focus/tasks/${task.id}`
+                        task.url = this.url.focus("tasks/:id", { id: task.id })
                         this.calendar.addEvent(task)
                     }
                 )
@@ -154,7 +159,7 @@ export default {
                 // Tickets from CloudHelp tickets with deadline
                 this.calendarData.help_tickets.forEach(
                     (ticket) => {
-                        ticket.url = `help/tickets/${ticket.id}`
+                        ticket.url = this.url.help("tickets/:id", { id: ticket.id })
                         this.calendar.addEvent(ticket)
                     }
                 )
