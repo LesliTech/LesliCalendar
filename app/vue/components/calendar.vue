@@ -112,12 +112,17 @@ export default {
             this.bus.subscribe("action:/driver/calendars/components/calendar#current_month", ($event) => {
                 this.loadCurrentMonth()
             })
+
+            this.bus.subscribe("action:/driver/calendars/components/calendar#reload_events", ($event) => {
+                this.getCalendarEvents()
+            })
         },
 
         removeListeners(){
             this.bus.$off("action:/driver/calendars/components/calendar#prev_month")
             this.bus.$off("action:/driver/calendars/components/calendar#next_month")
             this.bus.$off("action:/driver/calendars/components/calendar#current_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#reload_events")
         },
 
         setTitle() {

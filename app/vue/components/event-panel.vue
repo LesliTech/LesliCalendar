@@ -101,6 +101,7 @@ export default {
             }else{
                 this.postEvent()
             }
+            this.bus.publish("action:/driver/calendars/components/calendar#reload_events", event)
         },
 
         postEvent(){
@@ -204,6 +205,7 @@ export default {
                     this.data.event.show = false
                     this.$emit('delete-event', this.event)
                     this.msg.success(this.translations.events.messages_success_event_destroyed)
+                    this.bus.publish("action:/driver/calendars/components/calendar#reload_events")
                 } else {
                     this.msg.error(result.error.message, 'danger')
                 }
