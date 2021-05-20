@@ -11,17 +11,18 @@ module CloudDriver
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
-        has_many :attendants, foreign_key: "cloud_driver_events_id"
-        has_many :files, foreign_key: "cloud_driver_events_id"
-        has_many :activities, foreign_key: "cloud_driver_events_id"
-        has_many :discussions, foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :activities,   foreign_key: "cloud_driver_events_id"
+        has_many :discussions,  foreign_key: "cloud_driver_events_id"
+        has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
         after_create :verify_date
 
         enum event_type: {
             kuv_with_kop: "kuv_with_kop",
-            kuv_dlgag: "kuv_dlgag", 
-            fair_with_kop: "fair_with_kop", 
+            kuv_dlgag: "kuv_dlgag",
+            fair_with_kop: "fair_with_kop",
             fair_dlgag: "fair_dlgag",
             digital_sales_support: "digital_sales_support",
             internal_event: "internal_event",
@@ -62,7 +63,7 @@ module CloudDriver
                 users_id: users_id,
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
-                detail_attributes: data   
+                detail_attributes: data
             }
         end
 
@@ -123,7 +124,7 @@ module CloudDriver
                     ::Courier::House::Project.create_activity(activity_params)
             end
         end
-        
+
 
         def self.log_activity_create_attendant(current_user, event, attendant)
             event.activities.create(
@@ -189,7 +190,7 @@ module CloudDriver
 
         # @return [void]
         # @description Sets the default event date if the date was not set during creation
-        # @example 
+        # @example
         #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
         #     puts new_event.detail.event_date
         #     # This will display the creation time of the event
