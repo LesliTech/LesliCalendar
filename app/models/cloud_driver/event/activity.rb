@@ -32,7 +32,8 @@ module CloudDriver
             action_create_file:         "action_create_file",
             action_destroy_file:        "action_destroy_file",
             action_create_task:         "action_create_task",
-            action_done_task:           "action_done_task"
+            action_done_task:           "action_done_task",
+            action_clone_task:          "action_clone_task"
         }
 
     end

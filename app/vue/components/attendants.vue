@@ -9,7 +9,10 @@ export default {
             type: Boolean,
             default: true
         },
-
+        engineEndpoint: {
+            type: String,
+            default: "driver"
+        },
         customTableClass: {
             type: String,
             default: ''
@@ -19,7 +22,7 @@ export default {
     data(){
         return {
             active_tab: 1,
-            main_route: '/driver/events',
+            main_route: `/${this.engineEndpoint}/events`,
             users_route: '/administration/users/list.json?role=kop,callcenter,api,support&type=exclude',
             translations: {
                 main: I18n.t('driver.events'),
@@ -297,7 +300,7 @@ export default {
                     </b-table-column>
                     <b-table-column field="role_name" :label="translations.core_users.view_text_role">
                         <span>
-                            <span v-for="role in props.row.roles" :key="`user-${props.row.id}-${role.id}`">
+                            <span v-for="(role, index) in props.row.roles" :key="`employee-${props.row.id}-${role}-${index}`">
                                 <b-tooltip type="is-white" :label="translateUserRole(role.name)">
                                     <b-tag type="is-white">{{extractInitials(translateUserRole(role.name))}}</b-tag>
                                     &nbsp;
