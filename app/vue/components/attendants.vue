@@ -4,6 +4,7 @@ export default {
         eventId: {
             required: true
         },
+
         eventEditable: {
             type: Boolean,
             default: true
@@ -11,6 +12,10 @@ export default {
         engineEndpoint: {
             type: String,
             default: "driver"
+        },
+        customTableClass: {
+            type: String,
+            default: ''
         }
     },
 
@@ -20,8 +25,9 @@ export default {
             main_route: `/${this.engineEndpoint}/events`,
             users_route: '/administration/users/list.json?role=kop,callcenter,api,support&type=exclude',
             translations: {
-                main: I18n.t('deutscheleibrenten.events'),
-                core: I18n.t('deutscheleibrenten.shared'),
+                main: I18n.t('driver.events'),
+                core: I18n.t('core.shared'),
+                core_users: I18n.t('core.users'),
                 users: I18n.t('deutscheleibrenten.users')
             },
             loading: {
@@ -38,7 +44,7 @@ export default {
                 current_page: 1,
                 range_before: 3,
                 range_after: 3,
-                per_page: 8
+                per_page: 10
             },
             attendant_options: {
                 users: []
@@ -63,7 +69,7 @@ export default {
                     this.loaded.attendant_options = true
                     this.syncLists()
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -81,7 +87,7 @@ export default {
                     this.loaded.attendants = true
                     this.syncLists()
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -153,10 +159,9 @@ export default {
                         roles: user_roles,
                         users_id: user.id
                     })
-
-                    this.alert(this.translations.main.notification_attendant_created, 'success')
+                    this.msg.success(this.translations.main.messages_success_attendant_created)
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -176,7 +181,7 @@ export default {
             this.http.delete(url).then(result => {
                 this.$set(attendant, 'submitting', false)
                 if (result.successful) {
-                    this.alert(this.translations.main.notification_attendant_deleted, 'success')
+                    this.msg.success(this.translations.main.messages_success_attendant_deleted)
                     
                     this.attendants = this.attendants.filter((attendant)=>{
                         return attendant.id != attendant_id
@@ -188,7 +193,7 @@ export default {
                     user.attendant_id = null
                     user.checked = false
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -272,7 +277,7 @@ export default {
 </script>
 <template>
     <b-tabs expanded v-model="active_tab">
-        <b-tab-item :label="translations.main.form_attendants_tab_new" :visible="eventEditable">
+        <b-tab-item :label="translations.main.view_tab_title_new_attendants" :visible="eventEditable">
             <b-field>
                 <b-input :placeholder="translations.main.form_attendants_filter_placeholder"
                     v-model="search"
@@ -285,15 +290,15 @@ export default {
             </b-field>
             <component-data-loading v-if="loading.options" />
             <component-data-empty v-if="!loading.options && attendant_options.users.length == 0" />
-            <b-table :data="currentUserPage">
+            <b-table :data="currentUserPage" narrowed :class="customTableClass">
                 <template slot-scope="props">
-                    <b-table-column field="name" :label="translations.core.text_name">
+                    <b-table-column field="name" :label="translations.core.view_text_name">
                         {{ props.row.name }}
                     </b-table-column>
-                    <b-table-column field="email" :label="translations.core.text_email">
+                    <b-table-column field="email" :label="translations.core.view_text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role_name" :label="translations.core.text_role">
+                    <b-table-column field="role_name" :label="translations.core_users.view_text_role">
                         <span>
                             <span v-for="(role, index) in props.row.roles" :key="`employee-${props.row.id}-${role}-${index}`">
                                 <b-tooltip type="is-white" :label="translateUserRole(role.name)">
@@ -326,18 +331,18 @@ export default {
             >
             </b-pagination>
         </b-tab-item>
-        <b-tab-item :label="translations.main.form_attendants_tab_list">
+        <b-tab-item :label="translations.main.view_tab_title_attendants_list">
             <component-data-loading v-if="loading.attendants" />
             <component-data-empty v-if="!loading.attendants && attendants.length == 0" />
-            <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants">
+            <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants" narrowed :class="customTableClass">
                 <template slot-scope="props">
-                    <b-table-column field="name" :label="translations.core.text_name">
+                    <b-table-column field="name" :label="translations.core.view_text_name">
                         {{ props.row.name }}
                     </b-table-column>
-                    <b-table-column field="email" :label="translations.core.text_email">
+                    <b-table-column field="email" :label="translations.core.view_text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role" :label="translations.core.text_role">
+                    <b-table-column field="role" :label="translations.core_users.view_text_role">
                         <span>
                             <span v-for="role in props.row.roles" :key="`attendance-${props.row.id}-${role}`">
                                 <b-tooltip type="is-white" :label="role">
@@ -348,7 +353,8 @@ export default {
                         </span>
                     </b-table-column>
                     <b-table-column field="actions" label="">
-                        <a v-if="eventEditable" class="delete" role="button" @click="deleteAttendant(props.row)"></a>
+                        <a v-if="eventEditable" class="delete is-pulled-right" role="button" @click="deleteAttendant(props.row)">
+                        </a>
                     </b-table-column>
                 </template>
             </b-table>

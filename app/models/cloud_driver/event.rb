@@ -41,7 +41,7 @@ module CloudDriver
         }
 
         def self.index(current_user, query)
-            Calendar.index(current_user, query)
+            Calendar.show(current_user, query)
         end
 
         def show(current_user = nil)
@@ -133,6 +133,26 @@ module CloudDriver
                 description: attendant.user.full_name,
                 value_to: attendant.user.full_name
             )
+        end
+
+        def self.with_deadline(current_user, query, calendar)
+            driver_events = calendar.events.joins(:detail)
+            .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
+            .select(
+                :id, 
+                :title, 
+                :description, 
+                :event_date,
+                :time_start, 
+                :time_end
+            )
+            .where("
+                cloud_driver_events.user_main_id = :user 
+                or cloud_driver_events.users_id = :user
+                or cloud_driver_event_details.public = true", { user: current_user.id })
+            .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
+            .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
+            .order("event_date")
         end
 
         #############################

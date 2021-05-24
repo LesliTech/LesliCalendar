@@ -58,6 +58,11 @@ export default {
                 focus_tasks: [],
                 help_tickets: [],
             },
+            translations: {
+                core: {
+                    shared: I18n.t('core.shared')
+                }
+            }
         }
     },
     mounted() {
@@ -107,10 +112,22 @@ export default {
             this.bus.subscribe("action:/driver/calendars/components/calendar#current_month", ($event) => {
                 this.loadCurrentMonth()
             })
+
+            this.bus.subscribe("action:/driver/calendars/components/calendar#reload_events", ($event) => {
+                this.getCalendarEvents()
+            })
+        },
+
+        removeListeners(){
+            this.bus.$off("action:/driver/calendars/components/calendar#prev_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#next_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#current_month")
+            this.bus.$off("action:/driver/calendars/components/calendar#reload_events")
         },
 
         setTitle() {
-            let title = `${this.date.getMonthName(this.calendar.getDate())} ${this.calendar.getDate().getFullYear()}`
+            let title = this.object_utils.translateEnum(this.translations.core.shared, 'view_text_month',this.date.getMonthName(this.calendar.getDate()))
+            title = `${title} ${this.calendar.getDate().getFullYear()}`
             this.data.calendar.title = title
         },
 
@@ -133,39 +150,38 @@ export default {
 
                 // events from CloudFocus tasks
                 this.calendarData.focus_tasks.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
+                    (task) => {
+                        task.url = this.url.focus("tasks/:id", { id: task.id })
+                        this.calendar.addEvent(task)
                     }
                 )
 
                 // Tickets from CloudHelp tickets with deadline
                 this.calendarData.help_tickets.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
+                    (ticket) => {
+                        ticket.url = this.url.help("tickets/:id", { id: ticket.id })
+                        this.calendar.addEvent(ticket)
                     }
                 )
             })
         },
         onDateSelect: function(arg) {
-            this.data.calendar.selected_date = arg.date
+            this.data.agenda_day = arg.date
         },
 
         onEventClick: function(arg) {
             arg.jsEvent.preventDefault()
-            this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
-            const details = {
-                "id": arg.event.id,
-                "title": arg.event.title,
-                "start": arg.event.start,
-                "end": arg.event.end,
-                "url": arg.event.url,
-                "classNames": arg.event.classNames,
-                ...arg.event.extendedProps
+
+            let class_names = arg.event.classNames
+            if(class_names.includes('cloud_focus_tasks') || class_names.includes('cloud_help_tickets')){
+                window.open(arg.event.url, '_blank')
+                return
             }
-            this.data.event.details = details
+
+
+            this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
             this.data.event.show = true
+            this.data.event.id = arg.event.id
         },
 
         getCalendarEvents(calendar_endpoint) {
@@ -177,12 +193,11 @@ export default {
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
                 },
-                query: this.filterQuery,
-                month: this.calendar.getDate().getMonth()+1,
-                year: this.calendar.getDate().getFullYear(),
+                query: this.filterQuery
             }
 
-            let url = this.url.driver('events').filters(filters)
+            let url = this.url.driver('calendars/default').filters(filters).monthTimestamp(this.calendar.getDate())
+
             this.http.get(url).then(result => {
                 this.calendarData = result.data
             }).catch(error => {
@@ -207,6 +222,10 @@ export default {
             this.setTitle()
             this.getCalendarEvents()
         },
+    },
+
+    beforeDestroy(){
+        this.removeListeners()
     },
 
     watch: {
