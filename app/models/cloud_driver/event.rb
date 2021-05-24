@@ -3,8 +3,9 @@ module CloudDriver
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
         belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
         belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User"
-        belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
-
+        belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id",   class_name: "Workflow::Status", optional: true
+        belongs_to  :type,           foreign_key: "cloud_driver_catalog_event_types_id", class_name: "Catalog::EventType", optional: true
+        
         belongs_to  :calendar,       foreign_key: "cloud_driver_calendars_id"
         belongs_to  :model,          polymorphic: true, optional: true
 
@@ -19,27 +20,6 @@ module CloudDriver
 
         after_create :verify_date
 
-        enum event_type: {
-            kuv_with_kop: "kuv_with_kop",
-            kuv_dlgag: "kuv_dlgag", 
-            fair_with_kop: "fair_with_kop", 
-            fair_dlgag: "fair_dlgag",
-            digital_sales_support: "digital_sales_support",
-            internal_event: "internal_event",
-            kop_acquisition: "kop_acquisition",
-            kop_visit: "kop_visit",
-            kop_qualification: "kop_qualification",
-            kop_customer_appointment: "kop_customer_appointment",
-            kop_phone_appointment: "kop_phone_appointment",
-            kop_roundtable: "kop_roundtable",
-            marketing_measures: "marketing_measures",
-            sales_jf: "sales_jf",
-            phone_jf: "phone_jf",
-            meeting_intern: "meeting_intern",
-            intern_telephone_conference: "intern_telephone_conference",
-            notary_appointment: "notary_appointment"
-        }
-
         def self.index(current_user, query)
             Calendar.show(current_user, query)
         end
@@ -47,7 +27,7 @@ module CloudDriver
         def show(current_user = nil)
             data = Event
             .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :event_type, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :public)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -63,6 +43,7 @@ module CloudDriver
                 users_id: users_id,
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
+                cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
                 detail_attributes: data   
             }
         end
@@ -117,7 +98,7 @@ module CloudDriver
                 when "CloudHouse::Project"
                     activity_params = {
                         category: "action_create_event",
-                        description: event.detail.event_type,
+                        description: event.type&.name,
                         users_id: current_user.id,
                         cloud_house_projects_id: event.model_id
                     }
@@ -138,13 +119,15 @@ module CloudDriver
         def self.with_deadline(current_user, query, calendar)
             driver_events = calendar.events.joins(:detail)
             .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
+            .left_joins(:type)
             .select(
                 :id, 
                 :title, 
                 :description, 
                 :event_date,
                 :time_start, 
-                :time_end
+                :time_end,
+                "cloud_driver_catalog_event_types.name as event_type"
             )
             .where("
                 cloud_driver_events.user_main_id = :user 
