@@ -12,11 +12,11 @@ module CloudDriver
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
-        has_many :attendants,  foreign_key: "cloud_driver_events_id"
-        has_many :files,       foreign_key: "cloud_driver_events_id"
-        has_many :activities,  foreign_key: "cloud_driver_events_id"
-        has_many :discussions, foreign_key: "cloud_driver_events_id"
-        has_many :subscribers, foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :activities,   foreign_key: "cloud_driver_events_id"
+        has_many :discussions,  foreign_key: "cloud_driver_events_id"
+        has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
         after_create :verify_date
 
@@ -105,7 +105,7 @@ module CloudDriver
                     ::Courier::House::Project.create_activity(activity_params)
             end
         end
-        
+
 
         def self.log_activity_create_attendant(current_user, event, attendant)
             event.activities.create(
@@ -193,7 +193,7 @@ module CloudDriver
 
         # @return [void]
         # @description Sets the default event date if the date was not set during creation
-        # @example 
+        # @example
         #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
         #     puts new_event.detail.event_date
         #     # This will display the creation time of the event
