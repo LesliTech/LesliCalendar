@@ -5,7 +5,7 @@ module CloudDriver
         belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User"
         belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id",   class_name: "Workflow::Status", optional: true
         belongs_to  :type,           foreign_key: "cloud_driver_catalog_event_types_id", class_name: "Catalog::EventType", optional: true
-        
+
         belongs_to  :calendar,       foreign_key: "cloud_driver_calendars_id"
         belongs_to  :model,          polymorphic: true, optional: true
 
@@ -44,7 +44,7 @@ module CloudDriver
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
                 cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
-                detail_attributes: data   
+                detail_attributes: data
             }
         end
 
@@ -121,21 +121,29 @@ module CloudDriver
             .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
             .left_joins(:type)
             .select(
-                :id, 
-                :title, 
-                :description, 
+                :id,
+                :title,
+                :description,
                 :event_date,
-                :time_start, 
+                :time_start,
                 :time_end,
                 "cloud_driver_catalog_event_types.name as event_type"
             )
             .where("
-                cloud_driver_events.user_main_id = :user 
+                cloud_driver_events.user_main_id = :user
                 or cloud_driver_events.users_id = :user
-                or cloud_driver_event_details.public = true", { user: current_user.id })
-            .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
-            .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
-            .order("event_date")
+                or cloud_driver_event_details.public = true", { user: current_user.id }
+            )
+
+            if query[:filters][:start_date] && query[:filters][:end_date]
+                driver_events = driver_events.where(
+                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
+                ).where(
+                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+                )
+            end
+
+            driver_events.order("event_date")
         end
 
         #############################
