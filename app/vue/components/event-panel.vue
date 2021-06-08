@@ -319,7 +319,7 @@ export default {
                                         editable
                                         :placeholder="translations.core.view_placeholder_select_date"
                                         icon="clock"
-                                        default-minutes="0"
+                                        :default-minutes="0"
                                         v-model="event.detail_attributes.time_start">
                                     </b-timepicker>
                                     <div v-else class="control has-icons-left is-clearfix">
@@ -336,7 +336,7 @@ export default {
                                         editable
                                         :placeholder="translations.core.view_placeholder_select_date"
                                         icon="clock"
-                                        default-minutes="0"
+                                        :default-minutes="0"
                                         v-model="event.detail_attributes.time_end">
                                     </b-timepicker>
                                     <div v-else class="control has-icons-left is-clearfix">
