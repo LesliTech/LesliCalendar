@@ -3,7 +3,8 @@ module CloudDriver
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
         belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
         belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User"
-        belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
+        belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id",   class_name: "Workflow::Status", optional: true
+        belongs_to  :type,           foreign_key: "cloud_driver_catalog_event_types_id", class_name: "Catalog::EventType", optional: true
 
         belongs_to  :calendar,       foreign_key: "cloud_driver_calendars_id"
         belongs_to  :model,          polymorphic: true, optional: true
@@ -11,34 +12,13 @@ module CloudDriver
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
-        has_many :attendants,  foreign_key: "cloud_driver_events_id"
-        has_many :files,       foreign_key: "cloud_driver_events_id"
-        has_many :activities,  foreign_key: "cloud_driver_events_id"
-        has_many :discussions, foreign_key: "cloud_driver_events_id"
-        has_many :subscribers, foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :activities,   foreign_key: "cloud_driver_events_id"
+        has_many :discussions,  foreign_key: "cloud_driver_events_id"
+        has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
         after_create :verify_date
-
-        enum event_type: {
-            kuv_with_kop: "kuv_with_kop",
-            kuv_dlgag: "kuv_dlgag", 
-            fair_with_kop: "fair_with_kop", 
-            fair_dlgag: "fair_dlgag",
-            digital_sales_support: "digital_sales_support",
-            internal_event: "internal_event",
-            kop_acquisition: "kop_acquisition",
-            kop_visit: "kop_visit",
-            kop_qualification: "kop_qualification",
-            kop_customer_appointment: "kop_customer_appointment",
-            kop_phone_appointment: "kop_phone_appointment",
-            kop_roundtable: "kop_roundtable",
-            marketing_measures: "marketing_measures",
-            sales_jf: "sales_jf",
-            phone_jf: "phone_jf",
-            meeting_intern: "meeting_intern",
-            intern_telephone_conference: "intern_telephone_conference",
-            notary_appointment: "notary_appointment"
-        }
 
         def self.index(current_user, query)
             Calendar.show(current_user, query)
@@ -47,7 +27,7 @@ module CloudDriver
         def show(current_user = nil)
             data = Event
             .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :event_type, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :public)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -63,7 +43,8 @@ module CloudDriver
                 users_id: users_id,
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
-                detail_attributes: data   
+                cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
+                detail_attributes: data
             }
         end
 
@@ -117,14 +98,14 @@ module CloudDriver
                 when "CloudHouse::Project"
                     activity_params = {
                         category: "action_create_event",
-                        description: event.detail.event_type,
+                        description: event.type&.name,
                         users_id: current_user.id,
                         cloud_house_projects_id: event.model_id
                     }
                     ::Courier::House::Project.create_activity(activity_params)
             end
         end
-        
+
 
         def self.log_activity_create_attendant(current_user, event, attendant)
             event.activities.create(
@@ -138,21 +119,31 @@ module CloudDriver
         def self.with_deadline(current_user, query, calendar)
             driver_events = calendar.events.joins(:detail)
             .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
+            .left_joins(:type)
             .select(
-                :id, 
-                :title, 
-                :description, 
+                :id,
+                :title,
+                :description,
                 :event_date,
-                :time_start, 
-                :time_end
+                :time_start,
+                :time_end,
+                "cloud_driver_catalog_event_types.name as event_type"
             )
             .where("
-                cloud_driver_events.user_main_id = :user 
+                cloud_driver_events.user_main_id = :user
                 or cloud_driver_events.users_id = :user
-                or cloud_driver_event_details.public = true", { user: current_user.id })
-            .where("cloud_driver_event_details.event_date >= ?", query[:filters][:start_date])
-            .where("cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date])
-            .order("event_date")
+                or cloud_driver_event_details.public = true", { user: current_user.id }
+            )
+
+            if query[:filters][:start_date] && query[:filters][:end_date]
+                driver_events = driver_events.where(
+                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
+                ).where(
+                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+                )
+            end
+
+            driver_events.order("event_date")
         end
 
         #############################
@@ -210,7 +201,7 @@ module CloudDriver
 
         # @return [void]
         # @description Sets the default event date if the date was not set during creation
-        # @example 
+        # @example
         #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
         #     puts new_event.detail.event_date
         #     # This will display the creation time of the event

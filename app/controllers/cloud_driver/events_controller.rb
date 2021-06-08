@@ -59,18 +59,10 @@ module CloudDriver
 
         # POST /events
         def create
-            event = current_user.account.driver.calendars.default.events.new(event_params)            
-            event.account = current_user.account
-            event.user_creator = current_user
-            event.set_workflow
+            event_create_response = CloudDriver::EventServices.create(current_user, event_params)
+            event = event_create_response.payload
 
-            unless event_params[:user_main_id]
-                event.user_main = current_user                
-            end
-
-            if event.save
-                Event.log_activity_create(current_user, event)
-                event.attendants.create(users_id: event.user_main.id)
+            if event_create_response.successful?
                 respond_with_successful(event.show(current_user))
             else
                 respond_with_error(event.errors.full_messages.to_sentence)
@@ -109,7 +101,7 @@ module CloudDriver
         def options
             # parse query string here to include or exclude options
             respond_with_successful({
-                event_types: Event.event_types.map {|k, _| {value: k, text: I18n.t("deutscheleibrenten.events.column_enum_event_type_#{k}")}}
+                event_types: current_user.account.driver.event_types.map {|event_type| {value: event_type.id, text: event_type.name}}
             })
         end
 
@@ -126,6 +118,7 @@ module CloudDriver
                 :model_id,
                 :model_type,
                 :user_main_id,
+                :cloud_driver_catalog_event_types_id,
                 detail_attributes: [
                     :title, 
                     :description, 
@@ -134,7 +127,6 @@ module CloudDriver
                     :time_end, 
                     :location, 
                     :url, 
-                    :event_type,
                     :public
                 ]
             )

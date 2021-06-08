@@ -57,7 +57,7 @@ export default {
     mounted(){
         this.calendar_id = this.$route.params.id
         this.getEventsType()
-        this.getDayEvents()
+        this.getEvents()
         this.setSessionStorageFilters()
     },
 
@@ -76,7 +76,7 @@ export default {
             })
         },
 
-        getDayEvents() {
+        getEvents() {
             this.loading_agenda = true
 
             let filters = {
@@ -143,15 +143,15 @@ export default {
 
     watch: {
         "filters.event_category"() {
-            this.getDayEvents()
+            this.getEvents()
         },
 
         "filters.query"(){
-            this.getDayEvents()
+            this.getEvents()
         },
 
         "data.agenda_day"(){
-            this.getDayEvents()
+            this.getEvents()
         }
     }
 }
