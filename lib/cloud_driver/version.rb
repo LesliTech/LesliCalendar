@@ -1,4 +1,4 @@
 module CloudDriver
-    VERSION = '0.0.16'
+    VERSION = '0.0.17'
     BUILD = "20210305.0959"
 end
