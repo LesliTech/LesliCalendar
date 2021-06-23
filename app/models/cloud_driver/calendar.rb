@@ -75,7 +75,13 @@ module CloudDriver
         #     }
         def self.show(current_user, query)
             if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
-                return []
+                return {
+                    id: self.default.id,
+                    name: self.default.name,
+                    driver_events: [],
+                    focus_tasks: [],
+                    help_tickets: []
+                }
             end
 
             calendar = current_user.account.driver.calendars.default
