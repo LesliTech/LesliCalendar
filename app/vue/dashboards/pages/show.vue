@@ -61,7 +61,7 @@ export default {
             this.loading = true;
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
-                    this.options.types_module_events = result.data.types_module_events
+                    this.options.types_module_events = result.data.event_categories
                 }else{
                     this.alert(result.error.message,'danger')
                 }

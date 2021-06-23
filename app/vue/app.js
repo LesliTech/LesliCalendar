@@ -33,6 +33,14 @@ app("CloudDriver", "[dashboard]", "/driver", [{
     path: "/",
     component: dashboardShow
 }], {
-    event: { show: false, details: {}},
-    calendar: { title: ""}
+    event: {
+        show: false,
+        id: null,
+        details: {}
+    },
+    calendar: {
+        title: '',
+        selected_date: null
+    },
+    agenda_day: new Date()
 })
