@@ -63,7 +63,7 @@ export default {
                 if (result.successful) {
                     this.options.types_module_events = result.data.event_categories
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
                 this.loading = false
             }).catch(error => {
@@ -92,7 +92,7 @@ export default {
                 if (result.successful) {
                     this.events_today = result.data;
                 } else {
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)

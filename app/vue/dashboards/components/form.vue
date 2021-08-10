@@ -120,10 +120,10 @@ export default {
 
             this.http.post(url, form_data).then(result => {
                 if (result.successful) {
-                    this.alert('Dashboards created successfully', 'success')
+                    this.msg.success('Dashboards created successfully')
                     this.$router.push(`/${result.data.id}`)
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -145,10 +145,10 @@ export default {
 
             this.http.put(url, form_data).then(result => {
                 if (result.successful) {
-                    this.alert('Dashboards updated successfully', 'success')
+                    this.msg.success('Dashboards updated successfully')
                     this.$router.push(`/${this.dashboards.id}`)
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -167,10 +167,10 @@ export default {
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
-                    this.alert('Dashboards deleted successfully', 'success')
+                    this.msg.success('Dashboards deleted successfully')
                     this.$router.push('/')
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
