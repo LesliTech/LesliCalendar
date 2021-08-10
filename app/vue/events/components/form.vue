@@ -95,10 +95,10 @@ export default {
                 if (result.successful) {
                     this.$set(this.event, 'id', result.data.id)
                     this.$set(this.event, 'editable', true)
-                    this.alert('Event created successfully', 'success')
+                    this.msg.success('Event created successfully')
                     this.$router.push(`/${result.data.id}/edit`)
                 }else{
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -117,9 +117,9 @@ export default {
 
             this.http.put(url, form_data).then(result => {
                 if (result.successful) {
-                    this.alert('Event updated successfully', 'success')
+                    this.msg.success('Event updated successfully')
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -135,10 +135,10 @@ export default {
 
             this.http.delete(url).then(result => {
                 if (result.successful) {
-                    this.alert('Event deleted successfully', 'success')
+                    this.msg.success('Event deleted successfully')
                     this.$router.push('/')
                 }else{
-                    this.alert(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)

@@ -66,8 +66,8 @@ export default {
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
                     this.options.event_categories = result.data.event_categories
-                }else{
-                    this.alert(result.error.message,'danger')
+                } else {
+                    this.msg.error(result.error.message)
                 }
                 this.loading = false
             }).catch(error => {
@@ -93,7 +93,7 @@ export default {
                 if (result.successful) {
                     this.events_day = result.data
                 } else {
-                    this.alert(result.error.message,'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
