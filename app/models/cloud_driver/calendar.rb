@@ -17,7 +17,7 @@ For more information read the license file including with this software.
 
 =end
 module CloudDriver
-    class Calendar < CloudObject::Base
+    class Calendar < CloudObject
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
         belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
         belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User", optional: true
