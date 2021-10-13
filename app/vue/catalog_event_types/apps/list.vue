@@ -205,7 +205,7 @@ export default {
                     backend-sorting
                 >
                     <template slot-scope="props">
-                        <b-table-column field="id" :label="translations.core.column_id" sortable>
+                        <b-table-column field="id" :label="translations.main.column_id" sortable>
                             <template slot="header" slot-scope="{ column }">
                                 {{ column.label }}
                                 <span v-if="sorting.field == 'id'">
@@ -216,7 +216,7 @@ export default {
                             {{props.row.id}}
                         </b-table-column>
 
-                        <b-table-column field="name" :label="translations.core.column_name" sortable>
+                        <b-table-column field="name" :label="translations.main.column_name" sortable>
                             <template slot="header" slot-scope="{ column }">
                                 {{ column.label }}
                                 <span v-if="sorting.field == 'name'">
