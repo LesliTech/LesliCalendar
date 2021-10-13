@@ -1,25 +1,21 @@
-<p id="notice"><%= notice %></p>
+<%
+=begin
 
-<h1>Workflows</h1>
+Copyright (c) 2020, all rights reserved.
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+All the information provided by this platform is protected by international laws related  to 
+industrial property, intellectual property, copyright and relative international laws. 
+All intellectual or industrial property rights of the code, texts, trade mark, design, 
+pictures and any other information belongs to the owner of this platform.
 
-  <tbody>
-    <% @workflows.each do |workflow| %>
-      <tr>
-        <td><%= link_to 'Show', workflow %></td>
-        <td><%= link_to 'Edit', edit_workflow_path(workflow) %></td>
-        <td><%= link_to 'Destroy', workflow, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
 
-<br>
+For more information read the license file including with this software.
 
-<%= link_to 'New Workflow', new_workflow_path %>
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+
+=end
+%>
+<router-view></router-view>
