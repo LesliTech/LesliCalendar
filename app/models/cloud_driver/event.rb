@@ -147,33 +147,6 @@ module CloudDriver
         end
 
         #############################
-        # Email methods
-        #############################
-
-        # sends an email to the assigned user when the attendant is created
-        def self.send_email_create_attendant(attendant)
-            receipt = attendant.user.email
-            event = attendant.event
-            organizer = event.user_main
-            event_detail = event.detail
-
-            data = {
-                name: attendant.user.full_name,
-                organizer_name: organizer.full_name,
-                organizer_email: organizer.email,
-                event_date: event_detail.event_date,
-                time_start: event_detail.time_start || event_detail.event_date,
-                time_end: event_detail.time_end || event_detail.event_date + 1.days,
-                title: event_detail.title,
-                location: event_detail.location,
-                description: event_detail.description,
-                href: "/crm/calendar?event_id=#{attendant.event.id}"
-            }
-
-            ::DriverMailer.event_attendant_new(receipt, I18n.t("deutscheleibrenten.events.mailer_new_event_attendant_subject"), data).deliver_now
-        end
-
-        #############################
         # Notification methods
         #############################
 

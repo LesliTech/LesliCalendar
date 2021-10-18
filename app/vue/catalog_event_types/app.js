@@ -17,7 +17,7 @@ For more information read the license file including with this software.
 
 // · Import main app from core
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import app from 'LesliCoreVue/app'
+import app from 'LesliVue/app'
 
 
 // · Import common apps
@@ -25,7 +25,6 @@ import app from 'LesliCoreVue/app'
 import appList  from './apps/list.vue'
 import appEdit  from './apps/edit.vue'
 import appNew   from './apps/new.vue'
-
 
 // ·
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~

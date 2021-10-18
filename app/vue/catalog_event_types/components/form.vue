@@ -49,11 +49,11 @@ export default {
     },
 
     mounted() {
-        this.getEventTypeOptions()
+        this.getOptions()
     },
 
     methods: {
-        getEventTypeOptions(){
+        getOptions(){
             let url = this.url.driver('catalog/event_types/options')
 
             this.http.get(url).then(result => {
@@ -142,12 +142,6 @@ export default {
 </script>
 <template>
     <div class="card" v-if="event_type">
-        <div class="card-header" v-if="event_type.id">
-            <h2 class="card-header-title">
-                {{translations.main.view_title_edit}}
-            </h2>
-        </div>
-
         <div class="card-content">
             <b-tabs>
                 <b-tab-item :label="translations.core.view_tab_title_general_information">
@@ -156,7 +150,7 @@ export default {
                             <div class="column">
                                 <b-field>
                                     <template v-slot:label>
-                                        {{translations.core.column_name}}
+                                        {{translations.main.column_name}}
                                         <sup class="has-text-danger">*</sup>
                                     </template>
                                     <b-input v-model="event_type.name" required="true"></b-input>
