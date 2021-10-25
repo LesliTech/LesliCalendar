@@ -17,6 +17,9 @@
     02.03. driver/workflow/associations
     02.04. driver/workflow/actions
 
+    05.01. help/dashboards
+    05.02 help/dashboard/components
+
     10.01. driver/calendars
     10.03. driver/calendar/actions 
     10.04. driver/calendar/activities 
