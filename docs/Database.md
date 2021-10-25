@@ -1,10 +1,3 @@
-<p align="center">
-	<img width="75" alt="CloudDriver logo" src="../app/assets/images/cloud_driver/driver-logo.svg" />
-</p>
-
-<h3 align="center">Database structure</h3>
-
-
 ### 07.02. CloudDriver
 ```
     00.01. driver/account 
