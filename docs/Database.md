@@ -17,7 +17,7 @@
     10.03. driver/calendar/actions 
     10.04. driver/calendar/activities 
     10.05. driver/calendar/discussions 
-    10.06. driver/calendar/files 
+    10.06. driver/calendar/files
     10.07. driver/calendar/subscribers
 
     11.01. driver/events
