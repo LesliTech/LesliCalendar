@@ -59,9 +59,19 @@ export default {
         this.getEventsType()
         this.getEvents()
         this.setSessionStorageFilters()
+        this.openEventFromParams()
     },
 
     methods: {
+        openEventFromParams(){
+            if(this.$route.query.event_id){
+                this.data.event.id = this.$route.query.event_id
+                this.$nextTick(()=>{
+                    this.showEvent()
+                })
+            }
+        },
+
         getEventsType() {
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {

@@ -75,7 +75,7 @@ export default {
 <template>
     <section class="application-component">
         <component-header
-            :title="translations.main.view_title_main"
+            :title="event_type ? event_type.name : ''"
         >
             <div class="buttons">
                 <router-link class="button" to="/">

@@ -19,7 +19,7 @@ For more information read the license file including with this software.
 <% @current_path = request.env['PATH_INFO'] %>
 <% @tabs_granted = {}
     [
-        {name: "dashboard", route: "cloud_driver/dashboards", privilege: "grant_show"},
+        {name: "dashboard", route: "cloud_driver/dashboards", privilege: "show"},
         {name: "event_types", route: "cloud_driver/catalog/event_types"},
         {name: "dashboards"},
         {name: "calendars"},
@@ -32,7 +32,7 @@ For more information read the license file including with this software.
         end
 
         unless privilege.blank?
-            privilege_name = "grant_index"
+            privilege_name = "index"
             privilege_name = tab[:privilege] if tab[:privilege]
 
             @tabs_granted[tab[:name]] = privilege[privilege_name]

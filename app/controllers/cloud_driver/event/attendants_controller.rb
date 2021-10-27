@@ -65,15 +65,14 @@ For more information read the license file including with this software.
             return respond_with_not_found unless @event
             return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
-            attendant = Event::Attendant.new(event_attendant_params)
-            attendant.event = @event
+            attendant = @event.attendants.new(event_attendant_params)
 
             if attendant.save
                 responseWithSuccessful(attendant)
 
                 Event.log_activity_create_attendant(current_user, @event, attendant)
                 Event.send_notification_create_attendant(attendant)
-                Event.send_email_create_attendant(attendant)
+                EventMailer.with({user: attendant.user, event: @event}).attendant.deliver_later
             else
                 responseWithError(attendant.errors.full_messages.to_sentence)
             end

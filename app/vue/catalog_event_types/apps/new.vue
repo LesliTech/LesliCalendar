@@ -56,7 +56,7 @@ export default {
 <template>
     <section class="application-component">
         <component-header
-            :title="translations.main.view_title_main"
+            :title="translations.main.view_title_new"
         >
             <div class="navbar-item">
                 <div class="buttons">
