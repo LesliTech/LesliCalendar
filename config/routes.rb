@@ -34,6 +34,7 @@ CloudDriver::Engine.routes.draw do
     resources :workflows do
         member do
             get "actions/options",          to: "workflow/actions#options"
+            get "checks/options",           to: "workflow/checks#options"
         end
         collection do
             post "list" => :index
@@ -43,6 +44,7 @@ CloudDriver::Engine.routes.draw do
         scope module: :workflow do
             resources :associations
             resources :statuses
+            resources :checks
             resources :actions do
                 collection do
                     scope :resources do
