@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2021, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -28,24 +28,25 @@ For more information read the license file including with this software.
 @import "@fullcalendar/timegrid/main";
 
 
-$default-color: lesli-css-get-color(blue, 100);
+$default-color: lesli-css-color(blue, 100);
 $driver-color: #3689e6;
 $focus-color: #28bca3;
 $help-color: #a56de2;
+
+$grid-color: lighten($default-color, 15);
 
 
 // · 
 .fc-theme-standard {
     background-color: white;
-    //box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 
     .fc-scrollgrid-section-header {
 
         .fc-col-header-cell {
             padding: .8rem 0;
             text-align: center;
-            border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
-            border-bottom: 1px solid lesli-css-get-color(silver, 300);
+            border: 1px solid $grid-color;
+            background-color: $grid-color;
             a {
                 color: lesli-css-get-color(black, 300);
             }
@@ -55,6 +56,7 @@ $help-color: #a56de2;
 
     .fc-daygrid-day  {
         border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
+        border: 1px solid $grid-color;
 
         .fc-daygrid-event {
             display: block;
