@@ -203,12 +203,10 @@ export default {
             v-if="filters_ready"
             :initialValue="filters.text"
             :search-text="translations.calendars.view_placeholder_filter_text"
-            @search="searchEvents"
-        >
+            @search="searchEvents">
             <b-select
                 v-model="filters.event_category"
-                :loading="loading"
-            >
+                :loading="loading">
                 <option
                     v-for="(key, value) in this.options.event_categories"
                     :value="key"
@@ -222,8 +220,8 @@ export default {
             <div class="column is-one-quarter">
                 <component-agenda
                     :events="events_day"
-                    :loading="loading_agenda"
-                ></component-agenda>
+                    :loading="loading_agenda">
+                </component-agenda>
             </div>
             <div class="column">
                 <component-calendar
