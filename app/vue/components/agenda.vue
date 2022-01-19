@@ -62,9 +62,16 @@ export default {
                 return new Date(b.start) - new Date(a.start);
             });
         },
+
         showEvent(event) {
-            this.data.event.details = event;
-            this.data.event.show = true;
+            if(event.module == 'focus'){
+                this.url.go(`/focus/tasks/${event.id}`)
+            }else if(event.module == 'help'){
+                this.url.go(`/help/tickets/${event.id}`)
+            }else{
+                this.data.event.id = event.id
+                this.data.event.show = true
+            }
         }
     },
     watch: {
