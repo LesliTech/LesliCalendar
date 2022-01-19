@@ -16,6 +16,7 @@ For more information read the license file including with this software.
 // · 
 */
 
+import dayjs from 'dayjs'
 
 // · 
 export default {
@@ -43,8 +44,12 @@ export default {
                     shared: I18n.t('core.shared')
                 }
             },
-            today_events: []
+            today_events: [],
+            dayjs: null
         }
+    },
+    mounted() {
+        this.dayjs = dayjs
     },
     methods: {
         prepareEvents() {
@@ -101,9 +106,17 @@ export default {
                         </div>
                         <div class="media-content">
                             <div class="content">
-                                <p class="mb-0">
-                                    <span>{{ event.title }}</span>
-                                    <small>{{ event.event_date_string }}</small>
+                                <p class="mb-0"><b>{{ event.title }}</b></p>
+                                <p class="m-0" v-if="event.description">
+                                    {{ event.description.substring(0, 25) }}..
+                                </p>
+                                <p class="m-0">
+                                    <span v-if="event.start">
+                                        {{ dayjs(event.start).format('HH:mm') }}
+                                    </span>
+                                    <span v-if="event.end">
+                                        - {{ dayjs(event.end).format('HH:mm') }}
+                                    </span>
                                 </p>
                             </div>
                         </div>
