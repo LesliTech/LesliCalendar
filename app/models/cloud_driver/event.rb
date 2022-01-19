@@ -127,6 +127,7 @@ module CloudDriver
                 :event_date,
                 :time_start,
                 :time_end,
+                "(cdea.users_id = #{current_user.id}) as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type"
             )
             .where("
