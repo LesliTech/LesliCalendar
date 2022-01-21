@@ -17,6 +17,7 @@ module CloudDriver
             Workflow.initialize_data(self)
             Dashboard.initialize_data(self)
             Calendar.initialize_data(self)
+            Catalog.initialize_data(self)
         end
     end
 end
