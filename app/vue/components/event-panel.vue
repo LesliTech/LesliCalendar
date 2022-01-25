@@ -48,7 +48,7 @@ export default {
                     title: null,
                     description: '',
                     event_type: null,
-                    event_date: null,
+                    event_date: new Date(),
                     time_start: null,
                     time_end: null,
                     location: '',
