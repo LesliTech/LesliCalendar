@@ -48,18 +48,24 @@ export default {
                     title: null,
                     description: '',
                     event_type: null,
-                    event_date: null,
+                    event_date: new Date(),
                     time_start: null,
                     time_end: null,
                     location: '',
                     url: ''
                 }
             },
+            event_abilities: {
+                catalog_event_types: {
+                    new: this.abilities.privilege('catalog/event_types', 'cloud_driver')
+                }
+            },
             options: {
                 event_types: []
             },
             loading: {
-                event: false
+                event: false,
+                options: false
             }
         }
     },
@@ -71,6 +77,8 @@ export default {
     methods: {
         getOptions(){
             let url = this.url.driver('events/options')
+            this.loading.options = true
+
             this.http.get(url).then(result => {
                 if (result.successful) {
                     for(let key in result.data){
@@ -79,7 +87,9 @@ export default {
                 }
             }).catch(error => {
                 console.log(error)
-            }) 
+            }).finally(()=>{
+                this.loading.options = false
+            })
         },
 
         setEvent(){
@@ -355,26 +365,40 @@ export default {
                             </div>
                             <div class="column is-5">
                                 <b-field>
+                                    <template v-slot:message>
+                                        <a v-if="event_abilities.catalog_event_types.new" href="/driver/catalog/event_types/new" target="_blank">
+                                            {{translations.events.view_text_add_event_type}}
+                                        </a>
+                                    </template>
                                     <template v-slot:label>
                                         {{ translations.events.column_event_type }}
                                         <sup class="has-text-danger">*</sup>
                                     </template>
-                                    <b-select
-                                        name="event_type"
-                                        v-model="event.detail_attributes.event_type"
-                                        :disabled="! eventEditable"
-                                        expanded
-                                        :placeholder="translations.core.view_placeholder_select_option"
-                                        required
-                                    >
-                                        <option
-                                            v-for="event_type in options.event_types"
-                                            :value="event_type.value"
-                                            :key="event_type.value"
+                                    <b-field grouped>
+                                        <b-select
+                                            name="event_type"
+                                            v-model="event.detail_attributes.event_type"
+                                            :disabled="! eventEditable"
+                                            expanded
+                                            :placeholder="translations.core.view_placeholder_select_option"
+                                            required
                                         >
-                                            {{ event_type.text }}
-                                        </option>
-                                    </b-select> 
+                                            <option
+                                                v-for="event_type in options.event_types"
+                                                :value="event_type.value"
+                                                :key="event_type.value"
+                                            >
+                                                {{ event_type.text }}
+                                            </option>
+                                        </b-select> 
+
+                                        <p class="control">
+                                            <b-button :disabled="loading.options" @click="getOptions">
+                                                <b-icon v-if="loading.options" size="is-small" icon="sync" custom-class="fa-spin"></b-icon>
+                                                <b-icon v-else size="is-small" icon="sync" ></b-icon>
+                                            </b-button>
+                                        </p>
+                                    </b-field>
                                 </b-field>
                             </div>
                         </div>
