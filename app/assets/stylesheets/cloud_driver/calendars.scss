@@ -28,36 +28,62 @@ For more information read the license file including with this software.
 @import "@fullcalendar/timegrid/main";
 
 
-$default-color: lesli-css-color(blue, 100);
 $driver-color: #3689e6;
 $focus-color: #28bca3;
 $help-color: #a56de2;
 
-$grid-color: lighten($default-color, 15);
-
+:root {
+    --fc-today-bg-color: white;
+    --fc-border-color: #{lesli-css-color(silver, 300)};
+}
 
 // · 
 .fc-theme-standard {
-    background-color: white;
 
+    td {
+        border-right: none !important;
+    }
+    
+    // remove outside border of the calendar grid
+    .fc-scrollgrid {
+        border: none !important;
+    }
+
+    // calendar header (day names)
     .fc-scrollgrid-section-header {
 
         .fc-col-header-cell {
             padding: .8rem 0;
             text-align: center;
-            border: 1px solid $grid-color;
-            background-color: $grid-color;
+            border-left-width: 0;
+            border-right-width: 0;
             a {
-                color: lesli-css-get-color(black, 300);
+                color: lesli-css-color(silver, 900)
             }
         }
 
     }
 
+    // grid of days of the month
     .fc-daygrid-day  {
-        border: 1px solid darken(lesli-css-get-color(silver, 100), 4);
-        border: 1px solid $grid-color;
 
+        // change the color of disabled days like past or next month
+        &.fc-day-disabled {
+            background-color: lesli-css-color(silver, 100);
+        }
+
+        // change current day indicator
+        &.fc-day-today .fc-daygrid-day-top .fc-daygrid-day-number {
+            color: lesli-css-color(blue);
+            font-weight: bold;
+        }
+
+        // change color of day numbers
+        .fc-daygrid-day-top .fc-daygrid-day-number {
+            color: lesli-css-color(silver, 900);
+        }
+
+        // event in the calendar
         .fc-daygrid-event {
             display: block;
             padding: .3rem;
@@ -74,6 +100,7 @@ $grid-color: lighten($default-color, 15);
                 font-size: .9rem;
                 font-weight: 600;
                 text-transform: capitalize;
+                font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", sans-serif;
             }
 
             .fc-event-main {
@@ -82,31 +109,30 @@ $grid-color: lighten($default-color, 15);
                 }
             }
 
-            // driver events
+
+            // driver events (applicable to any calendar event)
             border-left: 5px solid $driver-color;
-            background-color: lighten($driver-color, 30);
+            background-color: lighten($driver-color, 40);
             .event-title { color: darken($driver-color, 30) }
+
 
             // ticket events
             &.cloud_help_tickets {
-                border-left: 5px solid $help-color;
-                background-color: lighten($help-color, 30);
+                border-left-color: $help-color;
+                background-color: lighten($help-color, 32);
                 .event-title { color: darken($help-color, 30) }
             }
 
+
             // focus events
             &.cloud_focus_tasks {
-                border-left: 5px solid $focus-color;
-                background-color: lighten($focus-color, 30);
+                border-left-color: $focus-color;
+                background-color: lighten($focus-color, 48  );
                 .event-title { color: darken($focus-color, 30) }
             }
 
-            .fc-event-main-frame {
-                color: lesli-css-get-color(black, 300);
-            }
-
         }
-        
+
     }
 
 }
