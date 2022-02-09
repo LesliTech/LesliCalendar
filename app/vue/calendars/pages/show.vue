@@ -97,6 +97,7 @@ export default {
                 },
                 query: this.filters.query
             }
+
             let url = this.url.driver('calendars/default').filters(filters).dayTimestamp(this.data.agenda_day)
 
             this.http.get(url).then(result => {
@@ -213,8 +214,7 @@ export default {
             v-if="filters_ready"
             :initialValue="filters.text"
             :search-text="translations.calendars.view_placeholder_filter_text"
-            @search="searchEvents"
-        >
+            @search="searchEvents">
             <b-select
                 v-model="filters.event_category"
                 :loading="loading">
@@ -229,18 +229,22 @@ export default {
 
         <div class="columns">
             <div class="column is-one-quarter">
-                <component-agenda
-                    :events="events_day"
-                    :loading="loading_agenda"
-                ></component-agenda>
+                <div class="box pt-0">
+                    <component-agenda
+                        :events="events_day"
+                        :loading="loading_agenda">
+                    </component-agenda>
+                </div>
             </div>
             <div class="column">
-                <component-calendar
-                    :calendar_id="calendar_id"
-                    :filter-query="filters.query"
-                    :filter-event-source="filters.event_category"
-                    :key="calendar_id">
-                </component-calendar>
+                <div class="box pt-0">
+                    <component-calendar
+                        :calendar_id="calendar_id"
+                        :filter-query="filters.query"
+                        :filter-event-source="filters.event_category"
+                        :key="calendar_id">
+                    </component-calendar>
+                </div>
             </div>
         </div>
 
