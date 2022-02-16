@@ -218,18 +218,22 @@ export default {
 
         <div class="columns">
             <div class="column is-one-quarter">
+            <div class="box">
                 <component-agenda
                     :events="events_day"
                     :loading="loading_agenda">
                 </component-agenda>
             </div>
+            </div>
             <div class="column">
+                <div class="box">
                 <component-calendar
                     :calendar_id="calendar_id"
                     :filter-query="filters.query"
                     :filter-event-source="filters.event_category"
                     :key="calendar_id">
                 </component-calendar>
+                </div>
             </div>
         </div>
 

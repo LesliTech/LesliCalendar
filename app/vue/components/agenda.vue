@@ -30,7 +30,6 @@ export default {
                 }
             }
         },
-
         loading: {
             required: false,
             default: true,
@@ -44,7 +43,7 @@ export default {
                     shared: I18n.t('core.shared')
                 }
             },
-            today_events: [],
+            today: [],
             dayjs: null
         }
     },
@@ -53,12 +52,32 @@ export default {
     },
     methods: {
         prepareEvents() {
-            this.today_events = [
-                ...this.events.driver_events.map(event => { event['module'] = 'driver'; return event }), 
-                ...this.events.focus_tasks.map(event => { event['module'] = 'focus'; return event }), 
-                ...this.events.help_tickets.map(event => { event['module'] = 'help'; return event })
-            ]
-            this.today_events = this.today_events.sort(function(a,b){
+
+            this.events.driver_events.forEach(event => {
+                event['module'] = 'driver'
+                if (event.description) { event['description'] = event.description.substring(0, 25) }
+                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                this.today.push(event)
+            })
+
+            this.events.help_tickets.forEach(event => {
+                event['module'] = 'help'
+                if (event.description) { event['description'] = event.description.substring(0, 25) }
+                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                this.today.push(event)
+            })
+
+            this.events.focus_tasks.forEach(event => {
+                event['module'] = 'focus'
+                if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
+                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                this.today.push(event)
+            })
+
+            this.today = this.today.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
             });
         },
@@ -84,53 +103,36 @@ export default {
 <template>
     <section>
         <component-data-loading v-if="loading"></component-data-loading>
-        <div v-else class="card">
-            <div class="card-header">
-                <div class="card-header-title">
-                    {{object_utils.translateEnum(translations.core.shared, 'view_text_month', date.getMonthName(data.agenda_day))}}
-                    -
-                    {{data.agenda_day.getDate()}}
+
+        <h3 class="agenda-title is-size-5 mb-5">Upcoming events</h3>
+
+        <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
+        </component-data-empty>
+
+        <a 
+            class="media"
+            v-for="(event, index) in today"
+            :key="index">
+            <div class="media-left">
+                <span class="icon">
+                    <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
+                    <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
+                    <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
+                </span>
+            </div>
+            <div class="media-content">
+                <div class="content">
+                    <p class="m-0">{{ event.title }}</p>
+                    <p class="description m-0" v-if="event.description">
+                        {{ event.description }}
+                    </p>
+                    <p class="m-0" v-show="false">
+                        <span v-if="event.start">{{ event.start }}</span>
+                        <span v-if="event.end">- {{ event.end }}</span>
+                    </p>
                 </div>
             </div>
-            <div class="card-content">
-                <component-data-empty
-                    v-if="events.driver_events.length == 0 && events.focus_tasks.length == 0 && events.help_tickets.length == 0"
-                    :text="translations.calendars.view_title_no_activity"
-                >
-                </component-data-empty>
-                <div v-else>
-                    <a 
-                        class="media"
-                        v-on:click.prevent.stop="showEvent(event)" 
-                        v-for="(event, index) in today_events" 
-                        :key="index">
-                        <div class="media-left">
-                            <span class="icon">
-                                <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
-                                <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
-                                <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
-                            </span>
-                        </div>
-                        <div class="media-content">
-                            <div class="content">
-                                <p class="mb-0"><b>{{ event.title }}</b></p>
-                                <p class="m-0" v-if="event.description">
-                                    {{ event.description.substring(0, 25) }}..
-                                </p>
-                                <p class="m-0">
-                                    <span v-if="event.start">
-                                        {{ dayjs(event.start).format('HH:mm') }}
-                                    </span>
-                                    <span v-if="event.end">
-                                        - {{ dayjs(event.end).format('HH:mm') }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
+        </a>
     </section>
 </template>
 <style lang="css">
@@ -139,17 +141,12 @@ export default {
     .focus-color { color: #28bca3; }
     .help-color { color: #a56de2; }
 
-    div.box .media .media-left {
-        align-self: center;   
+    .agenda-title {
+        padding-top: 12px;
     }
-    div.box .media .media-content p span {
-        font-size: 1.1rem;
-        line-height: 1.2;
-        display: block;
+
+    .media .media-content p.description {
+        font-size: .9rem;
         color: rgb(60,60,60);
-    }
-    div.box .media .media-content p small {
-        font-size: .8rem;
-        color: rgb(100,100,100);
     }
 </style>
