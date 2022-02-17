@@ -104,7 +104,7 @@ export default {
     <section>
         <component-data-loading v-if="loading"></component-data-loading>
 
-        <h3 class="agenda-title is-size-5 mb-5">Upcoming events</h3>
+        <h3 class="agenda-title is-size-5 mb-5">{{translations.calendars.view_title_upcoming_events}}</h3>
 
         <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
         </component-data-empty>
