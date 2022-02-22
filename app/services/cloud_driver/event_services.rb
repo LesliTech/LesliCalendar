@@ -40,5 +40,17 @@ module CloudDriver
             end
         end
 
+        def self.destroy(current_user, event)
+            return LC::Response.service(false) unless event
+            return LC::Response.service(false, event) unless event.is_editable_by?(current_user)
+
+            if event.destroy
+                Event.log_activity_destroy(current_user, event)
+                return LC::Response.service(true)
+            else
+                return LC::Response.service(false, event)
+            end
+        end
+
     end
 end
