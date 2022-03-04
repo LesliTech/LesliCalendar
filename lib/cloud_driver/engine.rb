@@ -19,6 +19,9 @@ module CloudDriver
     class Engine < ::Rails::Engine
         isolate_namespace CloudDriver
 
+        # register assets manifest
+        config.assets.precompile += %w( cloud_driver_manifest.js )
+
         # register engine migrations path
         initializer :append_migrations do |app|
             unless app.root.to_s.match root.to_s
