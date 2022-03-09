@@ -80,7 +80,8 @@ module CloudDriver
                     name: self.default.name,
                     driver_events: [],
                     focus_tasks: [],
-                    help_tickets: []
+                    help_tickets: [],
+                    integration_events: [],
                 }
             end
 

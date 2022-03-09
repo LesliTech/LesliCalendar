@@ -26,14 +26,16 @@ export default {
                 return {
                     driver_events: [],
                     focus_tasks: [],
-                    help_tickets: []
+                    help_tickets: [],
+                    integration_events: [],
                 }
             }
         },
         loading: {
             required: false,
             default: true,
-        }
+        },
+        agenda_day: null,
     },
     data() {
         return {
@@ -52,7 +54,7 @@ export default {
     },
     methods: {
         prepareEvents() {
-
+            this.today = []
             this.events.driver_events.forEach(event => {
                 event['module'] = 'driver'
                 if (event.description) { event['description'] = event.description.substring(0, 25) }
@@ -77,6 +79,14 @@ export default {
                 this.today.push(event)
             })
 
+            this.events.integration_events.forEach(event => {
+                event['module'] = 'integration'
+                if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
+                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                this.today.push(event)
+            })
+            console.log(this.today)
             this.today = this.today.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
             });
@@ -105,11 +115,12 @@ export default {
         <component-data-loading v-if="loading"></component-data-loading>
 
         <h3 class="agenda-title is-size-5 mb-5">{{translations.calendars.view_title_upcoming_events}}</h3>
+        <h3 class="agenda-title is-size-5 mb-5">{{this.agenda_day}}</h3>
 
         <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
         </component-data-empty>
 
-        <a 
+        <a  @click="showEvent(event)"
             class="media"
             v-for="(event, index) in today"
             :key="index">
@@ -118,6 +129,7 @@ export default {
                     <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
                     <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
                     <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
+                    <i v-if="event.module == 'integration'" class="driver-color far fa-lg fa-calendar-alt"></i>
                 </span>
             </div>
             <div class="media-content">
