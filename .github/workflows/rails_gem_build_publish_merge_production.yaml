@@ -52,14 +52,14 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v2
       with:
-        path: ./Lesli/node_modules
+        path: ./Lesli/lib/vue2/node_modules
         key: ${{ runner.os }}-${{ github.event.repository.name }}-node-${{ hashFiles('./Lesli/package.json') }}
         restore-keys: |
           ${{ runner.os }}-${{ github.event.repository.name }}-node-
     - name: NPM install
       run: |
         cd ./Lesli
-        npm install
+        npm install --prefix ./lib/vue2
         cd ..
     - name: Compile js to production
       run: |
