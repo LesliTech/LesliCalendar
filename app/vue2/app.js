@@ -18,20 +18,17 @@ For more information read the license file including with this software.
 */
 
 // · Import main app from core
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import app from "LesliVue/app"
+import app from "LesliVue/app2"
 
 
 // · Import common apps
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import dashboardShow  from "./dashboards/pages/show.vue"
+import appDashboardShow  from "./dashboards/apps/show.vue"
 
 
 // · 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-app("CloudDriver", "[dashboard]", "/driver", [{
+app("CloudDriver", "/driver", "[dashboard]", [{
     path: "/",
-    component: dashboardShow
+    component: appDashboardShow
 }], {
     event: {
         show: false,
