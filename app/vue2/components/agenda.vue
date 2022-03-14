@@ -86,7 +86,6 @@ export default {
                 if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
                 this.today.push(event)
             })
-            console.log(this.today)
             this.today = this.today.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
             });
@@ -115,7 +114,7 @@ export default {
         <component-data-loading v-if="loading"></component-data-loading>
 
         <h3 class="agenda-title is-size-5 mb-5">{{translations.calendars.view_title_upcoming_events}}</h3>
-        <h3 class="agenda-title is-size-5 mb-5">{{this.agenda_day}}</h3>
+        <h3 class="agenda-title is-size-5 mb-5">{{this.dayjs(this.agenda_day).format('ddd, MMM D YYYY')}}</h3>
 
         <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
         </component-data-empty>

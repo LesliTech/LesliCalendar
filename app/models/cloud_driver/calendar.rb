@@ -131,7 +131,8 @@ module CloudDriver
                 all: "all",
                 driver_events: "driver_events",
                 focus_tasks: "focus_tasks",
-                help_tickets: "help_tickets"
+                help_tickets: "help_tickets",
+                integration_events: "integration_events",
             }
         end
     end
