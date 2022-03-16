@@ -84,7 +84,7 @@ export default {
                     help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
-                    integration_events: (this.filters.event_category === "all" || this.filters.event_category === "integration_events" ) ? true : false,
+                    external_events: (this.filters.event_category === "all" || this.filters.event_category === "external_events" ) ? true : false,
                 },
                 query: this.filters.query
             }

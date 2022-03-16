@@ -81,7 +81,7 @@ module CloudDriver
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    integration_events: [],
+                    external_events: [],
                 }
             end
 
@@ -132,8 +132,21 @@ module CloudDriver
                 driver_events: "driver_events",
                 focus_tasks: "focus_tasks",
                 help_tickets: "help_tickets",
-                integration_events: "integration_events",
+                external_events: "external_events",
             }
+        end
+
+        def create_user_calendar(user, account, calendar_name)
+            calendar = self.create!(
+                account: account,
+                user_main: user,
+                users_id: user
+            )
+            Calendar::Detail.create!(
+                name: calendar_name,
+                default: true,
+                cloud_driver_calendars_id: calendar.id
+            )
         end
     end
 end

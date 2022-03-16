@@ -54,7 +54,7 @@ export default {
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    integration_events: [],
+                    external_events: [],
                 }
             }
         }
@@ -67,7 +67,7 @@ export default {
                 driver_events: [],
                 focus_tasks: [],
                 help_tickets: [],
-                integration_events: [],
+                external_events: [],
             },
             translations: {
                 core: {
@@ -203,7 +203,7 @@ export default {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
-                    integration_events: (this.filterEventSource === "all" || this.filterEventSource === "integration_events" ) ? true : false,
+                    external_events: (this.filterEventSource === "all" || this.filterEventSource === "external_events" ) ? true : false,
                 },
                 query: this.filterQuery
             }

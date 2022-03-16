@@ -27,7 +27,7 @@ export default {
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    integration_events: [],
+                    external_events: [],
                 }
             }
         },
@@ -79,8 +79,8 @@ export default {
                 this.today.push(event)
             })
 
-            this.events.integration_events.forEach(event => {
-                event['module'] = 'integration'
+            this.events.external_events.forEach(event => {
+                event['module'] = 'external'
                 if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
                 if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
                 if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
@@ -128,7 +128,7 @@ export default {
                     <i v-if="event.module == 'driver'" class="driver-color far fa-lg fa-calendar-alt"></i>
                     <i v-if="event.module == 'focus'" class="focus-color far fa-lg fa-check-square"></i>
                     <i v-if="event.module == 'help'" class="help-color far fa-lg fa-life-ring"></i>
-                    <i v-if="event.module == 'integration'" class="driver-color far fa-lg fa-calendar-alt"></i>
+                    <i v-if="event.module == 'external'" class="driver-color far fa-lg fa-calendar-alt"></i>
                 </span>
             </div>
             <div class="media-content">
