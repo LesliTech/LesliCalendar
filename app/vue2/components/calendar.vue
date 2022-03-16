@@ -22,7 +22,7 @@ For more information read the license file including with this software.
 
 // · Import components, libraries and tools
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import { Calendar } from '@fullcalendar/core'
+import { Calendar } from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
@@ -47,6 +47,16 @@ export default {
             required: false,
             type: String,
             default: ''
+        },
+        events: {
+            default() {
+                return {
+                    driver_events: [],
+                    focus_tasks: [],
+                    help_tickets: [],
+                    external_events: [],
+                }
+            }
         }
     },
     data() {
@@ -57,6 +67,7 @@ export default {
                 driver_events: [],
                 focus_tasks: [],
                 help_tickets: [],
+                external_events: [],
             },
             translations: {
                 core: {
@@ -192,6 +203,7 @@ export default {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
+                    external_events: (this.filterEventSource === "all" || this.filterEventSource === "external_events" ) ? true : false,
                 },
                 query: this.filterQuery
             }
@@ -209,19 +221,39 @@ export default {
             this.calendar.prev()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
 
         loadNextMonth() {
             this.calendar.next()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
 
         loadCurrentMonth() {
             this.calendar.today()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
+
+        showEvents() {
+
+            this.calendar.batchRendering(() => {
+                // get rendered events in calendar
+                let events = this.calendar.getEvents()
+
+                // remove events from calendar
+                events.forEach(event => event.remove() )
+
+            })
+            this.events.all_google_events.forEach(
+                (event) => {
+                    this.calendar.addEvent({'title': event.title, 'start': event.date})
+                }
+            )
+        }
     },
 
     beforeDestroy(){
@@ -231,6 +263,11 @@ export default {
     watch: {
         calendarData() {
             this.resetEvents()
+            this.showEvents()
+        },
+
+        events() {
+            this.showEvents()
         },
 
         filterEventSource(){

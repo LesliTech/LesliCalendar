@@ -21,6 +21,41 @@ module CloudDriver
     class EventServices
 
         def self.create(current_user, event_params)
+            #Google calendar event creation
+            google_event = Google::Apis::CalendarV3::Event.new(
+                summary: event_params[:detail_attributes][:title],
+                location: event_params[:detail_attributes][:location],
+                description: event_params[:detail_attributes][:description],
+                start: Google::Apis::CalendarV3::EventDateTime.new(
+                    date_time: event_params[:detail_attributes][:time_start]
+                ),
+                end: Google::Apis::CalendarV3::EventDateTime.new(
+                    date_time: event_params[:detail_attributes][:time_end]
+                ) 
+
+            )
+
+            user_auth_provider = Courier::Lesli::Users::AuthProviders.get_user_provider(current_user.id, 'Google')
+
+            if (user_auth_provider)
+                # Initialize Google Calendar API
+                service = Google::Apis::CalendarV3::CalendarService.new
+                # Use google keys to authorize
+                service.authorization = Google::APIClient::ClientSecrets.new(
+                    { "web" =>
+                        { "access_token" => user_auth_provider.access_token,
+                        "refresh_token" => user_auth_provider.refresh_token,
+                        "client_id" => Rails.application.credentials.dig(:providers, :google, :client_id),
+                        "client_secret" => Rails.application.credentials.dig(:providers, :google, :client_secret),
+                        }
+                    }
+                ).to_authorization
+                # Request for a new aceess token just incase it expired
+                service.authorization.refresh!
+                # Get a list of calendars
+                service.insert_event("primary", google_event)
+            end
+
             event = current_user.account.driver.calendars.default.events.new(event_params)
             event.account = current_user.account
             event.user_creator = current_user

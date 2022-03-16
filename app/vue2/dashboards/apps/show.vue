@@ -84,6 +84,7 @@ export default {
                     help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
+                    external_events: (this.filters.event_category === "all" || this.filters.event_category === "external_events" ) ? true : false,
                 },
                 query: this.filters.query
             }
@@ -221,7 +222,8 @@ export default {
             <div class="box">
                 <component-agenda
                     :events="events_day"
-                    :loading="loading_agenda">
+                    :loading="loading_agenda"
+                    :agenda_day="this.data.agenda_day">
                 </component-agenda>
             </div>
             </div>
@@ -231,7 +233,8 @@ export default {
                     :calendar_id="calendar_id"
                     :filter-query="filters.query"
                     :filter-event-source="filters.event_category"
-                    :key="calendar_id">
+                    :key="calendar_id"
+                    :events="events_day">
                 </component-calendar>
                 </div>
             </div>
