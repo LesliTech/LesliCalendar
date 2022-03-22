@@ -48,16 +48,6 @@ export default {
             type: String,
             default: ''
         },
-        events: {
-            default() {
-                return {
-                    driver_events: [],
-                    focus_tasks: [],
-                    help_tickets: [],
-                    external_events: [],
-                }
-            }
-        }
     },
     data() {
         return {
@@ -142,42 +132,9 @@ export default {
             this.data.calendar.title = title
         },
 
-        resetEvents() {
-
-            this.calendar.batchRendering(() => {
-                // get rendered events in calendar
-                let events = this.calendar.getEvents()
-
-                // remove events from calendar
-                events.forEach(event => event.remove() )
-
-                // events from my calendar
-                this.calendarData.driver_events.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
-                    }
-                )
-
-                // events from CloudFocus tasks
-                this.calendarData.focus_tasks.forEach(
-                    (task) => {
-                        task.url = this.url.focus("tasks/:id", { id: task.id })
-                        this.calendar.addEvent(task)
-                    }
-                )
-
-                // Tickets from CloudHelp tickets with deadline
-                this.calendarData.help_tickets.forEach(
-                    (ticket) => {
-                        ticket.url = this.url.help("tickets/:id", { id: ticket.id })
-                        this.calendar.addEvent(ticket)
-                    }
-                )
-            })
-        },
         onDateSelect: function(arg) {
             this.data.agenda_day = arg.date
+            this.getCalendarEvents()
         },
 
         onEventClick: function(arg) {
@@ -197,7 +154,6 @@ export default {
 
         getCalendarEvents(calendar_endpoint) {
             calendar_endpoint = calendar_endpoint || "default"
-
             let filters = {
                 include: {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
@@ -248,9 +204,33 @@ export default {
                 events.forEach(event => event.remove() )
 
             })
-            this.events.all_google_events.forEach(
+            //events from external calendars
+            this.calendarData.external_events.forEach(
                 (event) => {
-                    this.calendar.addEvent({'title': event.title, 'start': event.date})
+                    this.calendar.addEvent(event)
+                }
+            )
+
+            // events from my calendar
+            this.calendarData.driver_events.forEach(
+                (event) => {
+                    event.url = `${this.main_route}/${event.id}`
+                    this.calendar.addEvent(event)
+                }
+            )
+            // events from CloudFocus tasks
+            this.calendarData.focus_tasks.forEach(
+                (task) => {
+                    task.url = this.url.focus("tasks/:id", { id: task.id })
+                    this.calendar.addEvent(task)
+                }
+            )
+
+            // Tickets from CloudHelp tickets with deadline
+            this.calendarData.help_tickets.forEach(
+                (ticket) => {
+                    ticket.url = this.url.help("tickets/:id", { id: ticket.id })
+                    this.calendar.addEvent(ticket)
                 }
             )
         }
@@ -262,12 +242,12 @@ export default {
 
     watch: {
         calendarData() {
-            this.resetEvents()
             this.showEvents()
         },
 
         events() {
             this.showEvents()
+            this.getCalendarEvents()
         },
 
         filterEventSource(){
@@ -275,6 +255,10 @@ export default {
         },
 
         filterQuery(){
+            this.getCalendarEvents()
+        },
+
+        "data.event"(){
             this.getCalendarEvents()
         }
     }

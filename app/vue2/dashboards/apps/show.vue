@@ -51,6 +51,7 @@ export default {
             loading: true,
             events_day: [],
             loading_agenda: true,
+            synchronized_google: null,
         }
     },
 
@@ -100,6 +101,22 @@ export default {
                 console.log(error)
             }).finally(() => {
                 this.loading_agenda = false
+            })
+        },
+
+        connectGoogle() {
+            this.synchronized_google = true
+            let url = this.url.go('auth/google_oauth2')
+            this.http.post('/google_oauth2').then(result => {
+                if (result.successful) {
+                    this.synnchronized_google = true
+                } else {
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.synchronized_google = false
             })
         },
 
@@ -153,7 +170,7 @@ export default {
 
         "data.agenda_day"(){
             this.getEvents()
-        }
+        },
     }
 }
 </script>
@@ -188,6 +205,12 @@ export default {
                                 <i class="fas fa-calendar-day"></i>
                             </span>
                             <span>{{translations.calendars.view_btn_today}}</span>
+                        </button>
+                        <button class="button" @click="connectGoogle()">
+                            <span class="icon">
+                                <i class="fab fa-google"></i>
+                            </span>
+                            <span>{{'Connect'}}</span>
                         </button>
                         <button class="button" @click="showPanelNew()">
                             <span class="icon">

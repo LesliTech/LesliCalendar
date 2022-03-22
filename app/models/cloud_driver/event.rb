@@ -136,14 +136,6 @@ module CloudDriver
                 or cloud_driver_event_details.public = true", { user: current_user.id }
             )
 
-            if query[:filters][:start_date] && query[:filters][:end_date]
-                driver_events = driver_events.where(
-                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-                ).where(
-                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
-                )
-            end
-
             driver_events.order("event_date")
         end
 
