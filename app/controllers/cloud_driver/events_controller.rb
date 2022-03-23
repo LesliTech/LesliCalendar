@@ -15,6 +15,22 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 
+
+Registro de participantes
+Confirmacion de participantes
+monthly budget of event
+budget of the event
+location
+
+
+privacy 
+    public      -> account calendar privacy as public
+    private     -> user calendar privacy as private
+    internal    -> account calendar privacy as private
+
+budget 
+
+
 =end
 require_dependency "cloud_driver/application_controller"
 require 'google/api_client/client_secrets.rb'
