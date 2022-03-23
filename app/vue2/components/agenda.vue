@@ -56,35 +56,44 @@ export default {
         prepareEvents() {
             this.today = []
             this.events.driver_events.forEach(event => {
-                event['module'] = 'driver'
-                if (event.description) { event['description'] = event.description.substring(0, 25) }
-                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
-                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                this.today.push(event)
+                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                    event['module'] = 'driver'
+                    if (event.description) { event['description'] = event.description.substring(0, 25) }
+                    if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                    if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                    this.today.push(event)
+                }
             })
 
             this.events.help_tickets.forEach(event => {
-                event['module'] = 'help'
-                if (event.description) { event['description'] = event.description.substring(0, 25) }
-                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
-                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                this.today.push(event)
+                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                    event['module'] = 'help'
+                    if (event.description) { event['description'] = event.description.substring(0, 25) }
+                    if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                    if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                    this.today.push(event)
+                }
             })
 
             this.events.focus_tasks.forEach(event => {
-                event['module'] = 'focus'
-                if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
-                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
-                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                this.today.push(event)
+                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                    event['module'] = 'focus'
+                    if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
+                    if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                    if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                    this.today.push(event)
+                }
             })
 
             this.events.external_events.forEach(event => {
-                event['module'] = 'external'
-                if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
-                if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
-                if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                this.today.push(event)
+                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == event.date) {
+                    
+                    event['module'] = 'external'
+                    if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
+                    if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
+                    if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
+                    this.today.push(event)
+                }
             })
             this.today = this.today.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
@@ -134,12 +143,12 @@ export default {
             <div class="media-content">
                 <div class="content">
                     <p class="m-0">{{ event.title }}</p>
-                    <p class="description m-0" v-if="event.description">
-                        {{ event.description }}
-                    </p>
-                    <p class="m-0" v-show="false">
+                    <p class="m-0" >
                         <span v-if="event.start">{{ event.start }}</span>
                         <span v-if="event.end">- {{ event.end }}</span>
+                    </p>
+                    <p class="description m-0" v-if="event.description">
+                        {{ event.description }}
                     </p>
                 </div>
             </div>
