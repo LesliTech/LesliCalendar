@@ -49,12 +49,10 @@ export default {
             dayjs: null
         }
     },
-    mounted() {
-        this.dayjs = dayjs
-    },
     methods: {
         prepareEvents() {
             this.today = []
+            //this.dayjs(this.agenda_day).format('ddd, MMM D YYYY')
             this.events.driver_events.forEach(event => {
                 if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
                     event['module'] = 'driver'
@@ -123,7 +121,7 @@ export default {
         <component-data-loading v-if="loading"></component-data-loading>
 
         <h3 class="agenda-title is-size-5 mb-5">{{translations.calendars.view_title_upcoming_events}}</h3>
-        <h3 class="agenda-title is-size-5 mb-5">{{this.dayjs(this.agenda_day).format('ddd, MMM D YYYY')}}</h3>
+        <h3 class="agenda-title is-size-5 mb-5">{{this.agenda_day}}</h3>
 
         <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
         </component-data-empty>

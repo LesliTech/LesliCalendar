@@ -20,6 +20,7 @@ import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 import componentCloudObjectDiscussionSimple from 'LesliCoreVue/cloud_objects/discussion-simple.vue'
 import componentCloudObjectFile from 'LesliCoreVue/cloud_objects/file.vue'
 import componentSidebarView from 'LesliVue/components/views/sidebar-view.vue'
+import componentPanel from 'LesliVue/panels/panel.vue'
 import componentAttendants from './attendants.vue'
 
 
@@ -29,7 +30,8 @@ export default {
         'component-cloud-object-file': componentCloudObjectFile,
         "component-sidebar-view": componentSidebarView,
         'component-attendants': componentAttendants,
-        'vc-date-picker': DatePicker
+        'vc-date-picker': DatePicker,
+        'component-panel': componentPanel
     },
 
     data(){
@@ -258,29 +260,14 @@ export default {
 }
 </script>
 <template>
-    <component-sidebar-view :open.sync="data.event.show" size="medium" :can-cancel="['escape']">
-        <div class="box is-shadowless has-background-primary">
-            <div class="columns">
-                <div class="column is-11">
-                    <h4 class="title is-4 has-text-white">
-                        <span v-if="data.event.id">
-                            {{event.detail_attributes.title}}
-                        </span>
-                        <span v-else>
-                            {{translations.events.view_title_new}}
-                        </span>
-                    </h4>
-                </div>
-                <div class="column is-1">
-                    <span class="delete is-pulled-right" @click="() => data.event.show = false">
-                    </span>
-                </div>
-            </div>
-        </div>
+    <component-panel 
+        size="medium"
+        :open.sync="data.event.show"
+        :title="(data.event.id ? event.detail_attributes.title : translations.events.view_title_new) || ''">
         <component-data-loading v-if="loading.event">
         </component-data-loading>
-        <b-tabs v-else expanded v-model="active_tab">
-            <b-tab-item :label="translations.core.view_tab_title_general_information">
+        <b-tabs v-show="!loading.event" expanded v-model="active_tab">
+            <b-tab-item class="p-5" :label="translations.core.view_tab_title_general_information">
                 <form @submit.prevent="submitEvent()">
                     <fieldset :disabled="submit.event">
                         <b-field v-if="data.event.id" :label="translations.events.column_user_main_id">
@@ -482,5 +469,5 @@ export default {
                     </b-field>
                 </b-tab-item>
         </b-tabs>
-    </component-sidebar-view>
+    </component-panel>
 </template>
