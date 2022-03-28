@@ -258,7 +258,7 @@ export default {
             this.getCalendarEvents()
         },
 
-        "data.event"(){
+        "data.event.id"(){
             this.getCalendarEvents()
         }
     }

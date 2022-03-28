@@ -33,7 +33,7 @@ budget
 
 =end
 require_dependency "cloud_driver/application_controller"
-require 'google/api_client/client_secrets.rb'
+require 'google/api_client/client_secrets'
 require 'google/apis/calendar_v3'
 module CloudDriver
     class EventsController < ApplicationLesliController
