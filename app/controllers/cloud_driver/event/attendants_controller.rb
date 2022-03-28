@@ -20,7 +20,7 @@ For more information read the license file including with this software.
 
 =end
     class Event::AttendantsController < ApplicationController
-        before_action :set_event, only: [:create, :destroy]
+        before_action :set_event, only: [:create, :destroy, :update]
 
 =begin
 @return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of 
@@ -102,6 +102,12 @@ For more information read the license file including with this software.
             end
         end
 
+        def update 
+            attendant = @event.attendants.find_by(users_id: params["id"])
+            attendant.confirm_attendance
+            respond_with_successful(attendant)
+        end
+
         private
         
 =begin
@@ -139,9 +145,7 @@ For more information read the license file including with this software.
     #}
 =end
         def event_attendant_params
-            params.fetch(:event_attendant, {}).permit(
-                :users_id
-            )
+            params.fetch(:event_attendant, {}).permit(:users_id,:confirmed_at)
         end
     end
 end

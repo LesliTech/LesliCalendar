@@ -389,6 +389,14 @@ export default {
                                 </b-field>
                             </div>
                         </div>
+                        <div class="columns">
+                            <div class="column is-4">
+                                <b-field :label="translations.events.column_budget">
+                                    <b-input type="text" name="budget" v-model="event.detail_attributes.budget" :readonly="!eventEditable">
+                                    </b-input>
+                                </b-field>
+                            </div>
+                        </div>
                         <div class="field">
                             <label class="label">{{translations.events.column_description}}</label>
                             <div class="control">
@@ -430,10 +438,10 @@ export default {
                     </fieldset>
                 </form>
             </b-tab-item>
-            <b-tab-item v-if="data.event.id" :label="translations.events.view_tab_title_attendants">
-                <component-attendants :event-id="data.event.id" :event-editable="event.editable" custom-table-class="box" />
+            <b-tab-item :visible="!!data.event.id" :label="translations.events.view_tab_title_attendants">
+                <component-attendants v-if="data.event.id" :event-id="data.event.id" :event-editable="event.editable" custom-table-class="box" />
             </b-tab-item>
-            <b-tab-item :label="translations.core.view_text_discussions" v-if="data.event.id">
+            <b-tab-item :visible="!!data.event.id" :label="translations.core.view_text_discussions">
                 <div class="box">
                     <component-cloud-object-discussion-simple
                         cloud-module="driver/event"
@@ -443,7 +451,7 @@ export default {
                     </component-cloud-object-discussion-simple>
                 </div>
             </b-tab-item>
-            <b-tab-item :label="translations.core.view_text_files" v-if="data.event.id">
+            <b-tab-item :visible="!!data.event.id" :label="translations.core.view_text_files">
                 <component-cloud-object-file
                     cloud-module="driver/event"
                     :cloud-id="data.event.id"
@@ -451,7 +459,7 @@ export default {
                     translations-file-types-path="driver.event/files"
                 />
             </b-tab-item>
-            <b-tab-item :label="translations.core.view_tab_title_delete_section" v-if="data.event.id">
+            <b-tab-item :visible="!!data.event.id" :label="translations.core.view_tab_title_delete_section">
                     <span class="has-text-danger">
                         {{translations.events.view_text_delete_confirmation}}
                     </span>

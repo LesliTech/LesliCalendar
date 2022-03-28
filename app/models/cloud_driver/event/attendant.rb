@@ -20,5 +20,9 @@ module CloudDriver
     class Event::Attendant < ApplicationRecord
         belongs_to :event,  foreign_key: "cloud_driver_events_id"
         belongs_to :user,   foreign_key: "users_id"
+
+        def confirm_attendance
+            self.update(confirmed_at: Time.current)
+        end
     end
 end

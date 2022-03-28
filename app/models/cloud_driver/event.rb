@@ -27,7 +27,7 @@ module CloudDriver
         def show(current_user = nil)
             data = Event
             .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -56,7 +56,8 @@ module CloudDriver
                     roles: user.roles.map(&:name),
                     email: user.email,
                     users_id: user.id,
-                    id: attendant.id
+                    id: attendant.id,
+                    confirmed_at: attendant.confirmed_at
                 }
             end
         end
@@ -145,22 +146,15 @@ module CloudDriver
 
         # sends an web to the assigned user when the attendant is created
         def self.send_notification_create_attendant(attendant)
-            receipt = attendant.user.email
-            event = attendant.event
 
-            data = {
-                name: attendant.user.full_name,
-                title: event.detail.title,
-                href: "/crm/calendar?event_id=#{attendant.event.id}"
-            }
+            url = "/driver/events/#{attendant.event.id}"
 
-            ::Courier::Bell::Notification.new(
-                attendant.user,
-                "event_attendant_created",
-                body: {
-                    href: "/crm/calendar?event_id=#{attendant.event.id}"
-                }
-            )
+            if defined?(DeutscheLeibrenten)
+                url = "/crm/calendar?event_id=#{attendant.event.id}"
+            end 
+
+            attendant.user.notification("event_attendant_created", body: "", url: url)
+
         end
 
         protected
