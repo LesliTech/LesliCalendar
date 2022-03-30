@@ -21,7 +21,7 @@ export default {
 
     data(){
         return {
-            active_tab: 1,
+            active_tab: 2,
             main_route: `/${this.engineEndpoint}/events`,
             users_route: '/administration/users/list.json?role=kop,callcenter,api,support&type=exclude',
             translations: {
@@ -49,7 +49,9 @@ export default {
             attendant_options: {
                 users: []
             },
-            attendants: []
+            guest: { name: "", email: "" },
+            attendants: [],
+            guests: []
         }
     },
 
@@ -146,17 +148,11 @@ export default {
             this.http.post(url, data).then(result => {
                 this.$set(user, 'submitting', false)
                 if (result.successful) {
-                    let user_roles = []
-                    user.roles.forEach((role)=>{
-                        user_roles.push(role.name)
-                    })
-
                     this.$set(user, 'attendant_id', result.data.id)
                     this.attendants.push({
                         id: result.data.id,
                         name: user.name || user.email,
                         email: user.email,
-                        roles: user_roles,
                         users_id: user.id
                     })
                     this.msg.success(this.translations.main.messages_success_attendant_created)
@@ -200,30 +196,70 @@ export default {
             })
         },
 
-        extractInitials(name){
-            return name.split(" ").map((word)=>{
-                if(word){
-                    return word[0].toUpperCase()
-                }else{
-                    return ''
-                }
-            }).join("")
-        },
-
         clearOptions(){
             this.attendant_options.users.forEach((user)=>{
                 this.$set(user, 'checked', false)
             })
         },
 
-        translateUserRole(role){
-            let new_role = this.translations.users[`enum_role_${role}`] || this.translations.users[`column_enum_role_${role}`]
-            if(new_role){
-                return new_role
-            }
 
-            return role
-        }
+        postGuest() {
+            let url = `${this.main_route}/${this.eventId}/guests`
+
+            this.http.post(url, {
+                event_guest: this.guest
+            }).then(result => {
+
+                if (!result.successful) {
+                    return this.msg.error(result.error.message)
+                }
+
+                this.attendants.push({
+                    id: result.data.id,
+                    name: this.guest.name || this.guest.email,
+                    email: this.guest.email
+                })
+
+                this.guest = {}
+                this.msg.success(this.translations.main.messages_success_attendant_created)
+
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
+        deleteGuest(attendant){
+            // If it is clicked from the main tab, the attendant object received will have the id in the 'attendant_id' field
+            let attendant_id = attendant.attendant_id
+            // However, if it is not clicked from the main tab, the object received will have the id in the 'id' field
+            if(! attendant_id){
+                attendant_id = attendant.id
+            }
+            let url = `${this.main_route}/${this.eventId}/attendants/${attendant_id}`
+            this.$set(attendant, 'submitting', true)
+
+            this.http.delete(url).then(result => {
+                this.$set(attendant, 'submitting', false)
+                if (result.successful) {
+                    this.msg.success(this.translations.main.messages_success_attendant_deleted)
+                    
+                    this.attendants = this.attendants.filter((attendant)=>{
+                        return attendant.id != attendant_id
+                    })
+
+                    let user = this.attendant_options.users.find((user)=>{
+                        return user.attendant_id == attendant_id
+                    })
+                    user.attendant_id = null
+                    user.checked = false
+                }else{
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
     },
 
     computed: {
@@ -277,7 +313,7 @@ export default {
 </script>
 <template>
     <b-tabs expanded v-model="active_tab">
-        <b-tab-item :label="translations.main.view_tab_title_new_attendants" :visible="eventEditable">
+        <b-tab-item :label="translations.main.view_tab_title_users" :visible="eventEditable">
             <b-field>
                 <b-input :placeholder="translations.main.form_attendants_filter_placeholder"
                     v-model="search"
@@ -297,16 +333,6 @@ export default {
                     </b-table-column>
                     <b-table-column field="email" :label="translations.core.view_text_email">
                         {{ props.row.email }}
-                    </b-table-column>
-                    <b-table-column field="role_name" :label="translations.core_users.view_text_role">
-                        <span>
-                            <span v-for="(role, index) in props.row.roles" :key="`employee-${props.row.id}-${role}-${index}`">
-                                <b-tooltip type="is-white" :label="translateUserRole(role.name)">
-                                    <b-tag type="is-white">{{extractInitials(translateUserRole(role.name))}}</b-tag>
-                                    &nbsp;
-                                </b-tooltip>
-                            </span>
-                        </span>
                     </b-table-column>
                     <b-table-column field="actions" label="">
                         <b-checkbox :disabled="props.row.submitting" size="is-small" v-model="props.row.checked" @input="submitAttendant(props.row)" />
@@ -330,6 +356,27 @@ export default {
                 aria-current-label="Current page"
             >
             </b-pagination>
+        </b-tab-item>
+        <b-tab-item :label="translations.main.view_tab_title_guests" :visible="eventEditable">
+            <form v-on:submit.prevent="postGuest">
+                <div class="field">
+                    <label class="label">{{translations.core.view_text_name}}</label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="guest.name">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">{{translations.core.view_text_email}}</label>
+                    <div class="control">
+                        <input class="input" type="email" v-model="guest.email">
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary">{{translations.core.view_btn_save}}</button>
+                    </div>
+                </div>
+            </form>
         </b-tab-item>
         <b-tab-item :label="translations.main.view_tab_title_attendants_list">
             <component-data-loading v-if="loading.attendants" />
