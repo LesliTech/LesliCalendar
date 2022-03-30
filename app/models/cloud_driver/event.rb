@@ -49,17 +49,13 @@ module CloudDriver
         end
 
         def attendant_list
-            attendants.map do |attendant|
-                user = attendant.user
-                {
-                    name: user.full_name,
-                    roles: user.roles.map(&:name),
-                    email: user.email,
-                    users_id: user.id,
-                    id: attendant.id,
-                    confirmed_at: attendant.confirmed_at
-                }
-            end
+            attendants.joins(:user).select(
+                :id, 
+                :users_id,
+                :email, 
+                :name, 
+                LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
+            )
         end
 
         def download

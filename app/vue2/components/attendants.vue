@@ -342,18 +342,15 @@ export default {
                     <b-table-column field="email" :label="translations.core.view_text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="role" :label="translations.core_users.view_text_role">
-                        <span>
-                            <span v-for="role in props.row.roles" :key="`attendance-${props.row.id}-${role}`">
-                                <b-tooltip type="is-white" :label="role">
-                                    <b-tag type="is-white">{{extractInitials(translateUserRole(role))}}</b-tag>
-                                    &nbsp;
-                                </b-tooltip>
-                            </span>
-                        </span>
+                    <b-table-column field="confirmed_at" :label="translations.main.confirmed_at" class="has-text-centered">
+                        {{ props.row.confirmed_at || "not confirmed" }}
                     </b-table-column>
-                    <b-table-column field="actions" label="">
-                        <a v-if="eventEditable" class="delete is-pulled-right" role="button" @click="deleteAttendant(props.row)">
+                    <b-table-column field="actions" class="has-text-centered">
+                        <a 
+                            role="button" 
+                            class="delete is-pulled-right" 
+                            v-if="eventEditable" 
+                            @click="deleteAttendant(props.row)">
                         </a>
                     </b-table-column>
                 </template>
