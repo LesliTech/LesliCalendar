@@ -22,7 +22,7 @@ For more information read the license file including with this software.
 
 // · Import components, libraries and tools
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import { Calendar } from '@fullcalendar/core'
+import { Calendar } from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
@@ -47,7 +47,7 @@ export default {
             required: false,
             type: String,
             default: ''
-        }
+        },
     },
     data() {
         return {
@@ -57,6 +57,7 @@ export default {
                 driver_events: [],
                 focus_tasks: [],
                 help_tickets: [],
+                external_events: [],
             },
             translations: {
                 core: {
@@ -131,42 +132,9 @@ export default {
             this.data.calendar.title = title
         },
 
-        resetEvents() {
-
-            this.calendar.batchRendering(() => {
-                // get rendered events in calendar
-                let events = this.calendar.getEvents()
-
-                // remove events from calendar
-                events.forEach(event => event.remove() )
-
-                // events from my calendar
-                this.calendarData.driver_events.forEach(
-                    (event) => {
-                        event.url = `${this.main_route}/${event.id}`
-                        this.calendar.addEvent(event)
-                    }
-                )
-
-                // events from CloudFocus tasks
-                this.calendarData.focus_tasks.forEach(
-                    (task) => {
-                        task.url = this.url.focus("tasks/:id", { id: task.id })
-                        this.calendar.addEvent(task)
-                    }
-                )
-
-                // Tickets from CloudHelp tickets with deadline
-                this.calendarData.help_tickets.forEach(
-                    (ticket) => {
-                        ticket.url = this.url.help("tickets/:id", { id: ticket.id })
-                        this.calendar.addEvent(ticket)
-                    }
-                )
-            })
-        },
         onDateSelect: function(arg) {
             this.data.agenda_day = arg.date
+            this.getCalendarEvents()
         },
 
         onEventClick: function(arg) {
@@ -186,12 +154,12 @@ export default {
 
         getCalendarEvents(calendar_endpoint) {
             calendar_endpoint = calendar_endpoint || "default"
-
             let filters = {
                 include: {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
+                    external_events: (this.filterEventSource === "all" || this.filterEventSource === "external_events" ) ? true : false,
                 },
                 query: this.filterQuery
             }
@@ -209,19 +177,63 @@ export default {
             this.calendar.prev()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
 
         loadNextMonth() {
             this.calendar.next()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
 
         loadCurrentMonth() {
             this.calendar.today()
             this.setTitle()
             this.getCalendarEvents()
+            this.showEvents()
         },
+
+        showEvents() {
+
+            this.calendar.batchRendering(() => {
+                // get rendered events in calendar
+                let events = this.calendar.getEvents()
+
+                // remove events from calendar
+                events.forEach(event => event.remove() )
+
+            })
+            //events from external calendars
+            this.calendarData.external_events.forEach(
+                (event) => {
+                    this.calendar.addEvent(event)
+                }
+            )
+
+            // events from my calendar
+            this.calendarData.driver_events.forEach(
+                (event) => {
+                    event.url = `${this.main_route}/${event.id}`
+                    this.calendar.addEvent(event)
+                }
+            )
+            // events from CloudFocus tasks
+            this.calendarData.focus_tasks.forEach(
+                (task) => {
+                    task.url = this.url.focus("tasks/:id", { id: task.id })
+                    this.calendar.addEvent(task)
+                }
+            )
+
+            // Tickets from CloudHelp tickets with deadline
+            this.calendarData.help_tickets.forEach(
+                (ticket) => {
+                    ticket.url = this.url.help("tickets/:id", { id: ticket.id })
+                    this.calendar.addEvent(ticket)
+                }
+            )
+        }
     },
 
     beforeDestroy(){
@@ -230,7 +242,12 @@ export default {
 
     watch: {
         calendarData() {
-            this.resetEvents()
+            this.showEvents()
+        },
+
+        events() {
+            this.showEvents()
+            this.getCalendarEvents()
         },
 
         filterEventSource(){
@@ -238,6 +255,10 @@ export default {
         },
 
         filterQuery(){
+            this.getCalendarEvents()
+        },
+
+        "data.event.id"(){
             this.getCalendarEvents()
         }
     }

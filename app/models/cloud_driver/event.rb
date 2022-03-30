@@ -12,8 +12,9 @@ module CloudDriver
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
-        has_many :attendants,   foreign_key: "cloud_driver_events_id"
         has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :guests,       foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
         has_many :activities,   foreign_key: "cloud_driver_events_id"
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
@@ -27,7 +28,7 @@ module CloudDriver
         def show(current_user = nil)
             data = Event
             .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :url, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -49,16 +50,19 @@ module CloudDriver
         end
 
         def attendant_list
-            attendants.map do |attendant|
-                user = attendant.user
-                {
-                    name: user.full_name,
-                    roles: user.roles.map(&:name),
-                    email: user.email,
-                    users_id: user.id,
-                    id: attendant.id
-                }
-            end
+            attendants.joins(:user).select(
+                :id, 
+                :users_id,
+                :email, 
+                :name, 
+                LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
+            ) + guests.select(
+                :id, 
+                "id as users_id",
+                :name, 
+                :email, 
+                LC::Date2.new.date.db_column(:confirmed_at)
+            )
         end
 
         def download
@@ -136,14 +140,6 @@ module CloudDriver
                 or cloud_driver_event_details.public = true", { user: current_user.id }
             )
 
-            if query[:filters][:start_date] && query[:filters][:end_date]
-                driver_events = driver_events.where(
-                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-                ).where(
-                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
-                )
-            end
-
             driver_events.order("event_date")
         end
 
@@ -153,22 +149,15 @@ module CloudDriver
 
         # sends an web to the assigned user when the attendant is created
         def self.send_notification_create_attendant(attendant)
-            receipt = attendant.user.email
-            event = attendant.event
 
-            data = {
-                name: attendant.user.full_name,
-                title: event.detail.title,
-                href: "/crm/calendar?event_id=#{attendant.event.id}"
-            }
+            url = "/driver/events/#{attendant.event.id}"
 
-            ::Courier::Bell::Notification.new(
-                attendant.user,
-                "event_attendant_created",
-                body: {
-                    href: "/crm/calendar?event_id=#{attendant.event.id}"
-                }
-            )
+            if defined?(DeutscheLeibrenten)
+                url = "/crm/calendar?event_id=#{attendant.event.id}"
+            end 
+
+            attendant.user.notification("event_attendant_created", body: "", url: url)
+
         end
 
         protected

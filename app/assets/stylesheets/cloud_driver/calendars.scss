@@ -70,6 +70,7 @@ $help-color: #a56de2;
         // change the color of disabled days like past or next month
         &.fc-day-disabled {
             background-color: lesli-css-color(silver, 100);
+            background-color: white;
         }
 
         // change current day indicator

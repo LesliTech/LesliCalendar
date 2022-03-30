@@ -1,6 +1,6 @@
-/*
+=begin
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -14,34 +14,16 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
-*/
-
-// · Import main app from core
-import app from "LesliVue/app2"
-
-
-// · Import common apps
-import appDashboardShow  from "./dashboards/apps/show.vue"
-import appEventShow from "./events/apps/show.vue"
-
-
-// · 
-app("CloudDriver", "/driver", "[dashboard]", [{
-    path: "/",
-    component: appDashboardShow
-}, {
-    path: "/events/:id",
-    component: appEventShow
-}], {
-    event: {
-        show: false,
-        id: null,
-        details: {}
-    },
-    calendar: {
-        title: '',
-        selected_date: null
-    },
-    agenda_day: new Date()
-})
+=end
+class CreateCloudDriverEventGuests < ActiveRecord::Migration[7.0]
+    def change
+        create_table :cloud_driver_event_guests do |t|
+            t.string    :name
+            t.string    :email
+            t.string    :token
+            t.datetime  :confirmed_at, index: true
+            t.timestamps
+        end
+        add_reference :cloud_driver_event_guests, :cloud_driver_events, foreign_key: true
+    end
+end

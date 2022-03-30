@@ -1,6 +1,6 @@
-/*
+=begin
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -14,34 +14,12 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
+=end
 
-*/
-
-// · Import main app from core
-import app from "LesliVue/app2"
-
-
-// · Import common apps
-import appDashboardShow  from "./dashboards/apps/show.vue"
-import appEventShow from "./events/apps/show.vue"
-
-
-// · 
-app("CloudDriver", "/driver", "[dashboard]", [{
-    path: "/",
-    component: appDashboardShow
-}, {
-    path: "/events/:id",
-    component: appEventShow
-}], {
-    event: {
-        show: false,
-        id: null,
-        details: {}
-    },
-    calendar: {
-        title: '',
-        selected_date: null
-    },
-    agenda_day: new Date()
-})
+class AlterCloudDriverEventDetails < ActiveRecord::Migration[7.0]
+    def change
+        add_column :cloud_driver_event_details, :privacy, :string
+        add_column :cloud_driver_event_details, :budget, :string
+        add_column :cloud_driver_event_details, :region, :string
+    end
+end

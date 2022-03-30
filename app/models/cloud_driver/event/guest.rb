@@ -1,6 +1,5 @@
-/*
-
-Copyright (c) 2020, all rights reserved.
+=begin
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -15,33 +14,12 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 
-*/
-
-// · Import main app from core
-import app from "LesliVue/app2"
-
-
-// · Import common apps
-import appDashboardShow  from "./dashboards/apps/show.vue"
-import appEventShow from "./events/apps/show.vue"
-
-
-// · 
-app("CloudDriver", "/driver", "[dashboard]", [{
-    path: "/",
-    component: appDashboardShow
-}, {
-    path: "/events/:id",
-    component: appEventShow
-}], {
-    event: {
-        show: false,
-        id: null,
-        details: {}
-    },
-    calendar: {
-        title: '',
-        selected_date: null
-    },
-    agenda_day: new Date()
-})
+=end
+module CloudDriver
+    class Event::Guest < ApplicationRecord
+        belongs_to :event,  foreign_key: "cloud_driver_events_id"
+        def confirm_attendance
+            self.update(confirmed_at: Time.current)
+        end
+    end
+end

@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 // · List of Imported Components
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
-import componentEventPanel from "../../components/event-panel.vue"
+import componentEventPanel from "../../components/panel-event.vue"
 
 
 
@@ -51,6 +51,7 @@ export default {
             loading: true,
             events_day: [],
             loading_agenda: true,
+            synchronized_google: null,
         }
     },
 
@@ -84,6 +85,7 @@ export default {
                     help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
+                    external_events: (this.filters.event_category === "all" || this.filters.event_category === "external_events" ) ? true : false,
                 },
                 query: this.filters.query
             }
@@ -99,6 +101,22 @@ export default {
                 console.log(error)
             }).finally(() => {
                 this.loading_agenda = false
+            })
+        },
+
+        connectGoogle() {
+            this.synchronized_google = true
+            let url = this.url.go('auth/google_oauth2')
+            this.http.post('/google_oauth2').then(result => {
+                if (result.successful) {
+                    this.synnchronized_google = true
+                } else {
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.synchronized_google = false
             })
         },
 
@@ -152,7 +170,7 @@ export default {
 
         "data.agenda_day"(){
             this.getEvents()
-        }
+        },
     }
 }
 </script>
@@ -188,6 +206,12 @@ export default {
                             </span>
                             <span>{{translations.calendars.view_btn_today}}</span>
                         </button>
+                        <button class="button" @click="connectGoogle()">
+                            <span class="icon">
+                                <i class="fab fa-google"></i>
+                            </span>
+                            <span>{{'Connect'}}</span>
+                        </button>
                         <button class="button" @click="showPanelNew()">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
@@ -221,7 +245,8 @@ export default {
             <div class="box">
                 <component-agenda
                     :events="events_day"
-                    :loading="loading_agenda">
+                    :loading="loading_agenda"
+                    :day="this.data.agenda_day">
                 </component-agenda>
             </div>
             </div>
@@ -231,7 +256,8 @@ export default {
                     :calendar_id="calendar_id"
                     :filter-query="filters.query"
                     :filter-event-source="filters.event_category"
-                    :key="calendar_id">
+                    :key="calendar_id"
+                    :events="events_day">
                 </component-calendar>
                 </div>
             </div>

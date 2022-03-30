@@ -15,9 +15,26 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 
+
+Registro de participantes
+Confirmacion de participantes
+monthly budget of event
+budget of the event
+location
+
+
+privacy 
+    public      -> account calendar privacy as public
+    private     -> user calendar privacy as private
+    internal    -> account calendar privacy as private
+
+budget 
+
+
 =end
 require_dependency "cloud_driver/application_controller"
-
+require 'google/api_client/client_secrets'
+require 'google/apis/calendar_v3'
 module CloudDriver
     class EventsController < ApplicationLesliController
         before_action :set_event, only: [:update, :destroy, :show]
@@ -60,7 +77,14 @@ module CloudDriver
         # POST /events
         def create
             event_create_response = CloudDriver::EventServices.create(current_user, event_params)
+
             event = event_create_response.payload
+
+            user_auth_provider = Courier::Lesli::Users::AuthProviders.get_user_provider(current_user.id, 'Google')
+
+            if user_auth_provider
+                CloudDriver::EventServices.create_external_event(current_user, event_params)
+            end
 
             if event_create_response.successful?
                 respond_with_successful(event.show(current_user))
@@ -126,6 +150,7 @@ module CloudDriver
                     :time_start, 
                     :time_end, 
                     :location, 
+                    :budget,
                     :url, 
                     :public
                 ]
