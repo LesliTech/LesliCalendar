@@ -35,7 +35,7 @@ export default {
             required: false,
             default: true,
         },
-        agenda_day: null,
+        day: null,
     },
     data() {
         return {
@@ -45,55 +45,57 @@ export default {
                     shared: I18n.t('core.shared')
                 }
             },
-            today: [],
-            dayjs: null
+            today_events: [],
+            today: null
         }
     },
     methods: {
         prepareEvents() {
-            this.today = []
-            //this.dayjs(this.agenda_day).format('ddd, MMM D YYYY')
+            this.today_events = []
+            this.today = dayjs(this.day).format('dddd D')
+
+            const today_iso = dayjs(this.day).format('YYYY-MM-DD')
+
             this.events.driver_events.forEach(event => {
-                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
                     event['module'] = 'driver'
                     if (event.description) { event['description'] = event.description.substring(0, 25) }
                     if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
                     if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                    this.today.push(event)
+                    this.today_events.push(event)
                 }
             })
 
             this.events.help_tickets.forEach(event => {
-                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
                     event['module'] = 'help'
                     if (event.description) { event['description'] = event.description.substring(0, 25) }
                     if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
                     if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                    this.today.push(event)
+                    this.today_events.push(event)
                 }
             })
 
             this.events.focus_tasks.forEach(event => {
-                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == dayjs(event.date).format('YYYY-MM-DD')) {
+                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
                     event['module'] = 'focus'
                     if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
                     if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
                     if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                    this.today.push(event)
+                    this.today_events.push(event)
                 }
             })
 
             this.events.external_events.forEach(event => {
-                if (dayjs(this.agenda_day).format('YYYY-MM-DD') == event.date) {
-                    
+                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
                     event['module'] = 'external'
                     if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
                     if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
                     if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                    this.today.push(event)
+                    this.today_events.push(event)
                 }
             })
-            this.today = this.today.sort(function(a,b){
+            this.today_events = this.today_events.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
             });
         },
@@ -118,17 +120,17 @@ export default {
 </script>
 <template>
     <section>
+
+        <h3 class="agenda-title is-size-5 mb-0">{{translations.calendars.view_title_upcoming_events}}</h3>
+        <p class="agenda-title is-size-6 pt-0 mt-0 mb-5" v-if="!loading">{{this.today}}</p>
+
         <component-data-loading v-if="loading"></component-data-loading>
-
-        <h3 class="agenda-title is-size-5 mb-5">{{translations.calendars.view_title_upcoming_events}}</h3>
-        <h3 class="agenda-title is-size-5 mb-5">{{this.agenda_day}}</h3>
-
-        <component-data-empty class="my-6" v-if="!today.length" :text="translations.calendars.view_title_no_activity">
+        <component-data-empty class="my-6" v-if="!today_events.length && !loading" :text="translations.calendars.view_title_no_activity">
         </component-data-empty>
 
         <a  @click="showEvent(event)"
             class="media"
-            v-for="(event, index) in today"
+            v-for="(event, index) in today_events"
             :key="index">
             <div class="media-left">
                 <span class="icon">

@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 // · List of Imported Components
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
-import componentEventPanel from "../../components/event-panel.vue"
+import componentEventPanel from "../../components/panel-event.vue"
 
 
 
@@ -246,7 +246,7 @@ export default {
                 <component-agenda
                     :events="events_day"
                     :loading="loading_agenda"
-                    :agenda_day="this.data.agenda_day">
+                    :day="this.data.agenda_day">
                 </component-agenda>
             </div>
             </div>
