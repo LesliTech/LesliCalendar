@@ -150,6 +150,7 @@ module CloudDriver
                     :time_start, 
                     :time_end, 
                     :location, 
+                    :budget,
                     :url, 
                     :public
                 ]

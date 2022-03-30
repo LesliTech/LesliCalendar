@@ -23,12 +23,16 @@ import app from "LesliVue/app2"
 
 // · Import common apps
 import appDashboardShow  from "./dashboards/apps/show.vue"
+import appEventShow from "./events/apps/show.vue"
 
 
 // · 
 app("CloudDriver", "/driver", "[dashboard]", [{
     path: "/",
     component: appDashboardShow
+}, {
+    path: "/events/:id",
+    component: appEventShow
 }], {
     event: {
         show: false,
