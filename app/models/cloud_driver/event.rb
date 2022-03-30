@@ -12,8 +12,9 @@ module CloudDriver
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
-        has_many :attendants,   foreign_key: "cloud_driver_events_id"
         has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :guests,       foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
         has_many :activities,   foreign_key: "cloud_driver_events_id"
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
@@ -49,17 +50,19 @@ module CloudDriver
         end
 
         def attendant_list
-            attendants.map do |attendant|
-                user = attendant.user
-                {
-                    name: user.full_name,
-                    roles: user.roles.map(&:name),
-                    email: user.email,
-                    users_id: user.id,
-                    id: attendant.id,
-                    confirmed_at: attendant.confirmed_at
-                }
-            end
+            attendants.joins(:user).select(
+                :id, 
+                :users_id,
+                :email, 
+                :name, 
+                LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
+            ) + guests.select(
+                :id, 
+                "id as users_id",
+                :name, 
+                :email, 
+                LC::Date2.new.date.db_column(:confirmed_at)
+            )
         end
 
         def download

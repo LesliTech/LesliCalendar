@@ -28,4 +28,5 @@
     11.06. driver/event/files 
     11.07. driver/event/subscribers
     11.10. driver/event/attendants
+    11.11. driver/event/guests
 ```

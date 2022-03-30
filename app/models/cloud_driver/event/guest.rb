@@ -1,5 +1,4 @@
 =begin
-
 Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
@@ -14,10 +13,13 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-=end
 
-class AlterCloudDriverEventAttendants < ActiveRecord::Migration[7.0]
-    def change
-        add_column :cloud_driver_event_attendants, :confirmed_at, :datetime
+=end
+module CloudDriver
+    class Event::Guest < ApplicationRecord
+        belongs_to :event,  foreign_key: "cloud_driver_events_id"
+        def confirm_attendance
+            self.update(confirmed_at: Time.current)
+        end
     end
 end

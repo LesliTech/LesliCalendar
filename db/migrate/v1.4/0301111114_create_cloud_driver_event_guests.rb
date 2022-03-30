@@ -15,9 +15,15 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 =end
-
-class AlterCloudDriverEventAttendants < ActiveRecord::Migration[7.0]
+class CreateCloudDriverEventGuests < ActiveRecord::Migration[7.0]
     def change
-        add_column :cloud_driver_event_attendants, :confirmed_at, :datetime
+        create_table :cloud_driver_event_guests do |t|
+            t.string    :name
+            t.string    :email
+            t.string    :token
+            t.datetime  :confirmed_at, index: true
+            t.timestamps
+        end
+        add_reference :cloud_driver_event_guests, :cloud_driver_events, foreign_key: true
     end
 end
