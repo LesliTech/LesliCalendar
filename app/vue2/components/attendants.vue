@@ -260,6 +260,39 @@ export default {
             })
         },
 
+         confirmAttendance(attendant) {
+
+             let url, data;
+
+
+            // working with attendants
+            if (attendant.users_id) {
+                url = `${this.main_route}/${this.eventId}/attendants/${attendant.id}`
+                data = { event_attendant: attendant }
+            }
+
+            // working with guests
+            if (!attendant.users_id) {
+                url = `${this.main_route}/${this.eventId}/guests/${attendant.id}`
+                data = { event_guest: attendant }
+            }
+
+            this.http.put(url, data).then(result => {
+
+                if (!result.successful) {
+                    return this.msg.error(result.error.message)
+                }
+
+                attendant.confirmed_at_string = this.date.today()
+
+            }).catch(error => {
+                console.log(error)
+            })
+
+            console.log(JSON.stringify(attendant))
+
+        }
+
     },
 
     computed: {
@@ -389,8 +422,13 @@ export default {
                     <b-table-column field="email" :label="translations.core.view_text_email">
                         {{ props.row.email }}
                     </b-table-column>
-                    <b-table-column field="confirmed_at" :label="translations.main.confirmed_at" class="has-text-centered">
-                        {{ props.row.confirmed_at || "not confirmed" }}
+                    <b-table-column field="confirmed_at" :label="translations.main.column_confirmed_at" :centered="true">
+                        <button 
+                            :class="['button', {'is-success': props.row.confirmed_at_string}]" 
+                            :disabled="!!props.row.confirmed_at_string"
+                            @click="confirmAttendance(props.row)">
+                            {{ props.row.confirmed_at_string || translations.main.view_text_confirmed }}
+                        </button>
                     </b-table-column>
                     <b-table-column field="actions" class="has-text-centered">
                         <a 

@@ -58,7 +58,7 @@ module CloudDriver
                 LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
             ) + guests.select(
                 :id, 
-                "id as users_id",
+                "NULL as users_id",
                 :name, 
                 :email, 
                 LC::Date2.new.date.db_column(:confirmed_at)

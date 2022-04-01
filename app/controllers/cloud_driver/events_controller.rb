@@ -78,6 +78,8 @@ module CloudDriver
         def create
             event_create_response = CloudDriver::EventServices.create(current_user, event_params)
 
+            return respond_with_error(event_create_response.error) if !event_create_response.successful?
+
             event = event_create_response.payload
 
             user_auth_provider = Courier::Lesli::Users::AuthProviders.get_user_provider(current_user.id, 'Google')
@@ -138,7 +140,7 @@ module CloudDriver
 
         # Only allow a trusted parameter "white list" through.
         def event_params
-            params.require(:event).permit(
+            params.fetch(:event, {}).permit(
                 :model_id,
                 :model_type,
                 :user_main_id,

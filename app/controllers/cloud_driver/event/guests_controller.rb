@@ -54,7 +54,7 @@ module CloudDriver
         # PATCH/PUT /event/guests/1
         def update
             guest = @event.guests.find_by(id: params["id"])
-            guest.confirm_guest
+            guest.confirm_attendance
             respond_with_successful(guest)
         end
 
