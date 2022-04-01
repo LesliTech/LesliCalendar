@@ -78,6 +78,13 @@ For more information read the license file including with this software.
             end
         end
 
+
+        def update 
+            attendant = @event.attendants.find_by(id: params["id"])
+            attendant.confirm_attendance
+            respond_with_successful(attendant)
+        end
+
 =begin
 @return [Json] Json that contains wheter the event attendant was successfully deleted or not. 
     If it it not successful, it returns an error message
@@ -100,12 +107,6 @@ For more information read the license file including with this software.
             else
                 responseWithError(attendant.errors.full_messages.to_sentence)
             end
-        end
-
-        def update 
-            attendant = @event.attendants.find_by(users_id: params["id"])
-            attendant.confirm_attendance
-            respond_with_successful(attendant)
         end
 
         private
