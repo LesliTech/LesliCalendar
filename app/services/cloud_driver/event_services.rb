@@ -21,6 +21,14 @@ module CloudDriver
     class EventServices
 
         def self.create(current_user, event_params)
+
+            # Validate event includes minimum required data
+            if (
+                event_params.dig(:detail_attributes, :title).blank? || 
+                event_params.dig(:detail_attributes, :event_date).blank?)
+                return LC::Response.service(false, "Missing event data")
+            end
+
             event = current_user.account.driver.calendars.default.events.new(event_params)
             event.account = current_user.account
             event.user_creator = current_user
