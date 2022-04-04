@@ -100,7 +100,7 @@ CloudDriver::Engine.routes.draw do
             resources :files
 
             resources :attendants
-            resources :guests, only: [:create, :destory, :update]
+            resources :guests, only: [:create, :destroy, :update]
         end
 
     end

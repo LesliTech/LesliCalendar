@@ -35,12 +35,17 @@ module CloudDriver
             model_global_identifier = nil
             model_global_identifier = model.global_identifier if model
 
+            total_invites_count = attendants.count + guests.count
+            confirmed_invites_count = attendants.where("confirmed_at is not ?", nil).count + guests.where("confirmed_at is not ?", nil).count
+
             {
                 id: id,
                 model_id: model_id,
                 model_type: model_type,
                 editable: self.is_editable_by?(current_user),
                 model_global_identifier: model_global_identifier,
+                total_invites_count: total_invites_count,
+                confirmed_invites_count: confirmed_invites_count,
                 users_id: users_id,
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
@@ -54,12 +59,14 @@ module CloudDriver
                 :id, 
                 :users_id,
                 :email, 
-                :name, 
+                :name,
+                "'attendant' as type",
                 LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
             ) + guests.select(
                 :id, 
                 "NULL as users_id",
                 :name, 
+                "'guest' as type",
                 :email, 
                 LC::Date2.new.date.db_column(:confirmed_at)
             )
