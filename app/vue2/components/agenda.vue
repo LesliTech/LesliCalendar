@@ -57,7 +57,7 @@ export default {
             const today_iso = dayjs(this.day).format('YYYY-MM-DD')
 
             this.events.driver_events.forEach(event => {
-                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
+                if (today_iso == dayjs(event.start).format('YYYY-MM-DD')) {
                     event['module'] = 'driver'
                     if (event.description) { event['description'] = event.description.substring(0, 25) }
                     if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }

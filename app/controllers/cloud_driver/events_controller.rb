@@ -143,6 +143,8 @@ module CloudDriver
                 :model_type,
                 :user_main_id,
                 :cloud_driver_catalog_event_types_id,
+                :source,
+                :external_uid,
                 detail_attributes: [
                     :title, 
                     :description, 

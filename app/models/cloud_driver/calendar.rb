@@ -111,6 +111,10 @@ module CloudDriver
             }
         end
 
+        def self.sync(current_user)
+            Courier::One::IntegrationEventsService.google_sync(current_user)
+        end
+
         protected
 
         # @return [Hash] A hash containing a list of event categories

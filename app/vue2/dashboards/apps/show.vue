@@ -104,12 +104,13 @@ export default {
             })
         },
 
-        connectGoogle() {
+        syncEvents() {
             this.synchronized_google = true
-            let url = this.url.go('auth/google_oauth2')
-            this.http.post('/google_oauth2').then(result => {
+            let url = this.url.driver('calendars/sync')
+            this.http.get(url).then(result => {
                 if (result.successful) {
-                    this.synnchronized_google = true
+                    this.synchronized_google = false
+                    this.msg.success('Events synchronized')
                 } else {
                     this.msg.error(result.error.message)
                 }
@@ -117,6 +118,7 @@ export default {
                 console.log(error)
             }).finally(() => {
                 this.synchronized_google = false
+                this.getEvents()
             })
         },
 
@@ -206,11 +208,11 @@ export default {
                             </span>
                             <span>{{translations.calendars.view_btn_today}}</span>
                         </button>
-                        <button class="button" @click="connectGoogle()">
+                        <button class="button" @click="syncEvents()">
                             <span class="icon">
                                 <i class="fab fa-google"></i>
                             </span>
-                            <span>{{'Connect'}}</span>
+                            <span>{{ translations.calendars.view_btn_sync }}</span>
                         </button>
                         <button class="button" @click="showPanelNew()">
                             <span class="icon">
