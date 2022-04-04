@@ -88,6 +88,10 @@ module CloudDriver
             respond_with_successful(Calendar.options(current_user, @query))
         end
 
+        def sync
+            respond_with_successful(Calendar.sync(current_user))
+        end
+
         private
 
         # @return [void]
