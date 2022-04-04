@@ -72,7 +72,9 @@ export default {
             this.http.put(url, {
                 confirmed_at: new Date()
             }).then(result => {
-                console.log(result)
+                if (!result.successful) {
+                    return this.msg.error(result.error.message)
+                }
             }).catch(error => {
                 console.log(error)
             })

@@ -35,12 +35,17 @@ module CloudDriver
             model_global_identifier = nil
             model_global_identifier = model.global_identifier if model
 
+            total_invites_count = attendants.count + guests.count
+            confirmed_invites_count = attendants.where("confirmed_at is not ?", nil).count + guests.where("confirmed_at is not ?", nil).count
+
             {
                 id: id,
                 model_id: model_id,
                 model_type: model_type,
                 editable: self.is_editable_by?(current_user),
                 model_global_identifier: model_global_identifier,
+                total_invites_count: total_invites_count,
+                confirmed_invites_count: confirmed_invites_count,
                 users_id: users_id,
                 user_main_id: user_main_id,
                 organizer_name: user_main.full_name,
@@ -54,12 +59,14 @@ module CloudDriver
                 :id, 
                 :users_id,
                 :email, 
-                :name, 
+                :name,
+                "'attendant' as type",
                 LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
             ) + guests.select(
                 :id, 
                 "NULL as users_id",
                 :name, 
+                "'guest' as type",
                 :email, 
                 LC::Date2.new.date.db_column(:confirmed_at)
             )
@@ -108,6 +115,88 @@ module CloudDriver
                     }
                     ::Courier::House::Project.create_activity(activity_params)
             end
+        end
+
+        def self.log_activity_update(current_user, event, old_attributes, new_attributes)
+
+            if old_attributes["user_main_id"] != new_attributes["user_main_id"]
+                event.activities.create(
+                    user_creator: current_user,
+                    category: "action_update",
+                    field_name: "user_main_id",
+                    value_from: ::User.with_deleted.find(old_attributes["user_main_id"]).full_name,
+                    value_to:   ::User.with_deleted.find(new_attributes["user_main_id"]).full_name
+                )
+            end
+
+            if old_attributes["cloud_driver_workflow_statuses_id"] != new_attributes["cloud_driver_workflow_statuses_id"]
+                old_status = Workflow::Status.with_deleted.find(old_attributes["cloud_driver_workflow_statuses_id"]).name
+                new_status = Workflow::Status.with_deleted.find(new_attributes["cloud_driver_workflow_statuses_id"]).name
+                event.activities.create(
+                    user_creator: current_user,
+                    description: new_status,
+                    category: "action_update",
+                    field_name: "cloud_driver_workflow_statuses_id",
+                    value_from: old_status,
+                    value_to: new_status
+                )
+            end
+
+            if old_attributes["cloud_driver_catalog_event_types_id"] != new_attributes["cloud_driver_catalog_event_types_id"]
+                old_value = nil
+                new_value = nil
+
+                if old_attributes["cloud_driver_catalog_event_types_id"]
+                    old_value = CloudDriver::Catalog::EventType.with_deleted.find(old_attributes["cloud_driver_catalog_event_types_id"]).name
+                end
+
+                if new_attributes["cloud_driver_catalog_event_types_id"]
+                    new_value = CloudDriver::Catalog::EventType.with_deleted.find(new_attributes["cloud_driver_catalog_event_types_id"]).name
+                end
+
+                event.activities.create(
+                    user_creator: current_user,
+                    category: "action_update",
+                    field_name: "cloud_driver_catalog_event_types_id",
+                    value_from: old_value,
+                    value_to: new_value
+                )
+            end
+
+            if old_attributes["cloud_driver_calendars_id"] != new_attributes["cloud_driver_calendars_id"]
+                old_calendar = Calendar.with_deleted.find(old_attributes["cloud_driver_calendars_id"]).name
+                new_calendar = Calendar.with_deleted.find(new_attributes["cloud_driver_calendars_id"]).name
+                event.activities.create(
+                    user_creator: current_user,
+                    description: new_calendar,
+                    category: "action_update",
+                    field_name: "cloud_driver_calendars_id",
+                    value_from: old_calendar,
+                    value_to: new_calendar
+                )
+            end
+
+            old_attributes = old_attributes.except(
+                "id", "created_at", "updated_at", "cloud_driver_workflow_statuses_id",
+                 "cloud_driver_catalog_event_types_id", "cloud_driver_calendars_id"
+            )
+            old_attributes.each do |key, value|
+                if value != new_attributes[key]
+                    value_from = value
+                    value_to = new_attributes[key]
+                    value_from = LC::Date.to_string_datetime(value_from) if value_from.is_a?(Time) || value_from.is_a?(Date)
+                    value_to = LC::Date.to_string_datetime(value_to) if value_to.is_a?(Time) || value_to.is_a?(Date)
+
+                    event.activities.create(
+                        user_creator: current_user,
+                        category: "action_update",
+                        field_name: key,
+                        value_from: value_from,
+                        value_to: value_to
+                    )
+                end
+            end
+
         end
 
 
