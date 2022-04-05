@@ -46,10 +46,10 @@ export default {
                 delete: false
             },
             event: {
+                cloud_driver_catalog_event_types_id: null,
                 detail_attributes: {
                     title: null,
                     description: '',
-                    event_type: null,
                     event_date: new Date(),
                     time_start: null,
                     time_end: null,
@@ -68,15 +68,27 @@ export default {
             loading: {
                 event: false,
                 options: false
+            },
+            lesli: {
+                settings: {
+                    currency: {
+                        symbol: null
+                    }
+                }
             }
         }
     },
 
     mounted(){
+        this.setLesliObject()
         this.getOptions()
     },
 
     methods: {
+        setLesliObject(){
+            this.lesli = lesli
+        },
+
         getOptions(){
             let url = this.url.driver('events/options')
             this.loading.options = true
@@ -153,6 +165,7 @@ export default {
             }
 
             this.http.put(url, data).then(result => {
+                console.log(JSON.stringify(result))
                 if (result.successful) {
                     this.bus.publish("put:/driver/event")
                     this.msg.success(this.translations.events.messages_success_event_updated)
@@ -168,8 +181,8 @@ export default {
 
         setEmptyEvent(){
             this.event = {
+                cloud_driver_catalog_event_types_id: null,
                 detail_attributes: {
-                    event_type: null,
                     title: null,
                     description: '',
                     event_date: null,
@@ -219,7 +232,7 @@ export default {
                     this.msg.success(this.translations.events.messages_success_event_destroyed)
                     this.bus.publish("action:/driver/calendars/components/calendar#reload_events")
                 } else {
-                    this.msg.error(result.error.message, 'danger')
+                    this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
@@ -358,13 +371,13 @@ export default {
                                         </a>
                                     </template>
                                     <template v-slot:label>
-                                        {{ translations.events.column_event_type }}
+                                        {{ translations.events.column_cloud_driver_catalog_event_types_id }}
                                         <sup class="has-text-danger">*</sup>
                                     </template>
                                     <b-field grouped>
                                         <b-select
                                             name="event_type"
-                                            v-model="event.detail_attributes.event_type"
+                                            v-model="event.cloud_driver_catalog_event_types_id"
                                             :disabled="! eventEditable"
                                             expanded
                                             :placeholder="translations.core.view_placeholder_select_option"
@@ -390,9 +403,35 @@ export default {
                             </div>
                         </div>
                         <div class="columns">
-                            <div class="column is-4">
-                                <b-field :label="translations.events.column_budget">
-                                    <b-input type="text" name="budget" v-model="event.detail_attributes.budget" :readonly="!eventEditable">
+                            <div class="column is-6">
+                                <b-field>
+                                    <template v-slot:label>
+                                        {{translations.events.column_budget}} ({{lesli.settings.currency.symbol}})
+                                    </template>
+                                    <b-input type="number" min="0" step="0.01" name="budget" v-model="event.detail_attributes.budget" :readonly="!eventEditable">
+                                    </b-input>
+                                </b-field>
+                            </div>
+                            <div class="column is-6">
+                                <b-field>
+                                    <template v-slot:label>
+                                        {{translations.events.column_real_cost}} ({{lesli.settings.currency.symbol}})
+                                    </template>
+                                    <b-input type="number" min="0" step="0.01" name="real_cost" v-model="event.detail_attributes.real_cost" :readonly="!eventEditable">
+                                    </b-input>
+                                </b-field>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column is-6">
+                                <b-field :label="translations.events.column_signed_up_count">
+                                    <b-input type="number" step="1" min="0" name="signed_up_count" v-model="event.detail_attributes.signed_up_count" :readonly="!eventEditable">
+                                    </b-input>
+                                </b-field>
+                            </div>
+                            <div class="column is-6">
+                                <b-field :label="translations.events.column_showed_up_count">
+                                    <b-input type="number" step="1" min="0" name="showed_up_count" v-model="event.detail_attributes.showed_up_count" :readonly="!eventEditable">
                                     </b-input>
                                 </b-field>
                             </div>
