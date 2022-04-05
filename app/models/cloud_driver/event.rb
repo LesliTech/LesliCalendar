@@ -2,7 +2,7 @@ module CloudDriver
     class Event < CloudObject
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
         belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
-        belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User"
+        belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User", optional: true
         belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id",   class_name: "Workflow::Status", optional: true
         belongs_to  :type,           foreign_key: "cloud_driver_catalog_event_types_id", class_name: "Catalog::EventType", optional: true
 
@@ -28,7 +28,7 @@ module CloudDriver
         def show(current_user = nil)
             data = Event
             .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public)
+            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
             .where("cloud_driver_events.id = ?", id)
             .first
 
@@ -48,7 +48,7 @@ module CloudDriver
                 confirmed_invites_count: confirmed_invites_count,
                 users_id: users_id,
                 user_main_id: user_main_id,
-                organizer_name: user_main.full_name,
+                organizer_name: (user_main ? user_main.full_name : ""),
                 cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
                 detail_attributes: data
             }
@@ -228,6 +228,14 @@ module CloudDriver
                 or cloud_driver_events.users_id = :user
                 or cloud_driver_event_details.public = true", { user: current_user.id }
             )
+
+            if query[:filters][:start_date] && query[:filters][:end_date]
+                driver_events = driver_events.where(
+                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
+                ).where(
+                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+                )
+            end
 
             driver_events.order("event_date")
         end

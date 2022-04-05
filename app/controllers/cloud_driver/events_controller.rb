@@ -103,7 +103,7 @@ module CloudDriver
             if @event.update(event_params)
                 respond_with_successful(@event)
             else
-                respond_with_error(@event.errors)
+                respond_with_error(@event.errors.full_messages.to_sentence)
             end
         end
 
@@ -155,6 +155,9 @@ module CloudDriver
                     :time_end, 
                     :location, 
                     :budget,
+                    :real_cost,
+                    :signed_up_count,
+                    :showed_up_count,
                     :url, 
                     :public
                 ]

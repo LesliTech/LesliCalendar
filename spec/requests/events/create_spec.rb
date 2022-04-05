@@ -35,7 +35,10 @@ RSpec.describe "POST:/driver/events", type: :request do
             "time_start": Time.current,
             "time_end": Time.current + 30.hours,
             "location": Faker::Address.full_address,
-            "budget":"3000"
+            "budget": Faker::Number.decimal(l_digits: 2),
+            "real_cost": Faker::Number.decimal(l_digits: 2),
+            "signed_up_count": Faker::Number.number(digits: 3),
+            "showed_up_count": Faker::Number.number(digits: 3)
         }
 
         post("/driver/events.json", params: { "event": { "detail_attributes": event }})
@@ -46,7 +49,10 @@ RSpec.describe "POST:/driver/events", type: :request do
         expect(response_data["detail_attributes"]["title"]).to eq(event[:title])
         expect(response_data["detail_attributes"]["description"]).to eq(event[:description])
         expect(response_data["detail_attributes"]["location"]).to eq(event[:location])
-        expect(response_data["detail_attributes"]["budget"]).to eq(event[:budget])
+        expect(response_data["detail_attributes"]["budget"].to_f).to eq(event[:budget])
+        expect(response_data["detail_attributes"]["real_cost"].to_f).to eq(event[:real_cost])
+        expect(response_data["detail_attributes"]["signed_up_count"].to_i).to eq(event[:signed_up_count])
+        expect(response_data["detail_attributes"]["showed_up_count"].to_i).to eq(event[:showed_up_count])
 
     end
 
