@@ -140,17 +140,5 @@ module CloudDriver
             }
         end
 
-        def create_user_calendar(user, account, calendar_name)
-            calendar = self.create!(
-                account: account,
-                user_main: user,
-                users_id: user
-            )
-            Calendar::Detail.create!(
-                name: calendar_name,
-                default: true,
-                cloud_driver_calendars_id: calendar.id
-            )
-        end
     end
 end
