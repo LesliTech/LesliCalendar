@@ -32,28 +32,29 @@ RSpec.describe "GET:/calendars/default", type: :request do
             event = FactoryBot.create(
                 :cloud_driver_event,
                 users_id: @user.id,
+                user_main_id: @user.id,
                 cloud_driver_accounts_id: @user.account.id,
                 detail_attributes: {
                     event_date: event_date,
                     time_start: event_date,
+                    public: true,
                     time_end: event_date,
                     title: Faker::Sports::Football.competition
                 }
             )
         end
 
-        get("/driver/calendars/default.json?filters[start_date]=#{LC::Date.now.beginning_of_year}&filters[end_date]=#{LC::Date.now.end_of_year}")
-        expect_json_response_successful
+        start_date = LC::Date.now.beginning_of_year
+        end_date = LC::Date.now.end_of_year
 
-        personal_events = response_data["driver_events"].select do |event|
-            event["is_attendant"]
-        end
+        get("/driver/calendars/default.json?filters[start_date]=#{start_date}&filters[end_date]=#{end_date}")
+        expect_json_response_successful
 
         expect(response_data).to have_key("driver_events")
         expect(response_data).to have_key("help_tickets")
         expect(response_data).to have_key("focus_tasks")
         expect(response_data).to have_key("external_events")
-        expect(personal_events.length).to be >= 12
+        expect(response_data["driver_events"].length).to be >= 12
     end
 
 
