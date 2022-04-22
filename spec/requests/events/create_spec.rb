@@ -1,21 +1,21 @@
-=begin
+# =begin
 
-Copyright (c) 2021, all rights reserved.
+# Copyright (c) 2021, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to
-industrial property, intellectual property, copyright and relative international laws.
-All intellectual or industrial property rights of the code, texts, trade mark, design,
-pictures and any other information belongs to the owner of this platform.
+# All the information provided by this platform is protected by international laws related  to
+# industrial property, intellectual property, copyright and relative international laws.
+# All intellectual or industrial property rights of the code, texts, trade mark, design,
+# pictures and any other information belongs to the owner of this platform.
 
-Without the written permission of the owner, any replication, modification,
-transmission, publication is strictly forbidden.
+# Without the written permission of the owner, any replication, modification,
+# transmission, publication is strictly forbidden.
 
-For more information read the license file including with this software.
+# For more information read the license file including with this software.
 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// ·
+# // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+# // ·
 
-=end
+# =end
 
 
 # include helpers, configuration & initializers for request tests
@@ -28,57 +28,52 @@ RSpec.describe "POST:/driver/events", type: :request do
 
     it "is expected to create an event with all the data" do
 
-        event = {
-            "title": Faker::Sports::Football.competition,
-            "description": Faker::Lorem.sentence(word_count: 10, supplemental: true),
-            "event_date": Time.current,
-            "time_start": Time.current,
-            "time_end": Time.current + 30.hours,
-            "location": Faker::Address.full_address,
-            "budget": Faker::Number.decimal(l_digits: 2),
-            "real_cost": Faker::Number.decimal(l_digits: 2),
-            "signed_up_count": Faker::Number.number(digits: 3),
-            "showed_up_count": Faker::Number.number(digits: 3)
-        }
+        event = FactoryBot.attributes_for(:cloud_driver_event, {
+            users_id: @current_user.id,
+            user_main_id: @current_user.id,
+            cloud_driver_accounts_id: @current_user.account.id
+        })
 
-        post("/driver/events.json", params: { "event": { "detail_attributes": event }})
-
+        post("/driver/events.json", params: {event: event})
         expect_json_response_successful
 
         expect(response_data["organizer_name"]).to eq(@current_user.full_name)
-        expect(response_data["detail_attributes"]["title"]).to eq(event[:title])
-        expect(response_data["detail_attributes"]["description"]).to eq(event[:description])
-        expect(response_data["detail_attributes"]["location"]).to eq(event[:location])
-        expect(response_data["detail_attributes"]["budget"].to_f).to eq(event[:budget])
-        expect(response_data["detail_attributes"]["real_cost"].to_f).to eq(event[:real_cost])
-        expect(response_data["detail_attributes"]["signed_up_count"].to_i).to eq(event[:signed_up_count])
-        expect(response_data["detail_attributes"]["showed_up_count"].to_i).to eq(event[:showed_up_count])
+        expect(response_data["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
+        expect(response_data["detail_attributes"]["description"]).to eq(event[:detail_attributes][:description])
+        expect(response_data["detail_attributes"]["location"]).to eq(event[:detail_attributes][:location])
+        expect(response_data["detail_attributes"]["budget"].to_f).to eq(event[:detail_attributes][:budget])
+        expect(response_data["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
+        expect(response_data["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
+        expect(response_data["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
 
     end
 
 
     it "is expected to create an event with the minimum data" do
 
+        event = FactoryBot.attributes_for(:cloud_driver_event)
+        event.slice(:detail_attributes)
+        event[:detail_attributes] = event[:detail_attributes].slice(:title, :event_date)
+
         event = {
-            "title": Faker::Sports::Football.competition,
-            "event_date": Time.current
+            detail_attributes: {
+                "title": Faker::Sports::Football.competition,
+                "event_date": Time.current
+            }
         }
 
-        post("/driver/events.json", params: { "event": { "detail_attributes": event }})
+        post("/driver/events.json", params: { "event": event})
 
         expect_json_response_successful
 
         expect(response_data["organizer_name"]).to eq(@current_user.full_name)
-        expect(response_data["detail_attributes"]["title"]).to eq(event[:title])
+        expect(response_data["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
 
     end
 
 
     it "is expected to respond with error if event is empty" do
-
-        event = { }
-
-        post("/driver/events.json", params: { "event": { "detail_attributes": event }})
+        post("/driver/events.json", params: { "event": { "detail_attributes": {} }})
 
         expect_json_response_error
 
@@ -89,10 +84,12 @@ RSpec.describe "POST:/driver/events", type: :request do
     it "is expected to respond with error if event title is empty" do
 
         event = {
-            "event_date": Time.current
-         }
+            detail_attributes: {
+                "event_date": Faker::Time.between(from: DateTime.now, to: DateTime.now + 3.days)
+            }
+        }
 
-        post("/driver/events.json", params: { "event": { "detail_attributes": event }})
+        post("/driver/events.json", params: { "event": event})
 
         expect_json_response_error
 
@@ -103,10 +100,12 @@ RSpec.describe "POST:/driver/events", type: :request do
     it "is expected to respond with error if event date is empty" do
 
         event = {
-            "title": Faker::Sports::Football.competition,
-         }
+            detail_attributes: {
+                "title": Faker::Sports::Football.competition,
+            }
+        }
 
-        post("/driver/events.json", params: { "event": { "detail_attributes": event }})
+        post("/driver/events.json", params: { "event": event})
 
         expect_json_response_error
 

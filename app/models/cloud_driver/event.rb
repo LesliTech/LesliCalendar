@@ -9,6 +9,9 @@ module CloudDriver
         belongs_to  :calendar,       foreign_key: "cloud_driver_calendars_id"
         belongs_to  :model,          polymorphic: true, optional: true
 
+        # In case the main user is deleted
+        belongs_to :user_main_including_deleted, foreign_key: "user_main_id",   class_name: "::User", optional: true, with_deleted: true
+
         has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
         accepts_nested_attributes_for :detail, update_only: true
 
@@ -19,6 +22,7 @@ module CloudDriver
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
+        before_validation :set_workflow, on: :create
         after_create :verify_date
 
         def self.index(current_user, query)
@@ -48,7 +52,7 @@ module CloudDriver
                 confirmed_invites_count: confirmed_invites_count,
                 users_id: users_id,
                 user_main_id: user_main_id,
-                organizer_name: (user_main ? user_main.full_name : ""),
+                organizer_name: (user_main_including_deleted ? user_main_including_deleted.full_name : ""),
                 cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
                 detail_attributes: data
             }
@@ -73,9 +77,9 @@ module CloudDriver
         end
 
         def download
-            url = "#{Rails.configuration.default_url}/crm/calendar?event_id=#{id}"
+            url = "#{Rails.configuration.lesli_settings["env"]["default_url"]}/crm/calendar?event_id=#{id}"
             event_template = IO.binread("#{Rails.root}/storage/keep/mails/event.ics")
-            organizer = self.user_main
+            organizer = self.user_main_including_deleted
 
             event_template = event_template
             .sub("{{organizer_name}}", ( organizer.full_name || "").strip )
