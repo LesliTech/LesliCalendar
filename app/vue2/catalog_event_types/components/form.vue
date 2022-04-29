@@ -27,6 +27,11 @@ export default {
     props: {
         event_type: {
             required: true
+        },
+
+        appMountPath: {
+            type: String,
+            required: true
         }
     },
 
@@ -90,7 +95,7 @@ export default {
                 if (result.successful) {
                     this.msg.success(this.translations.main.messages_success_event_type_created)
 
-                    this.$router.push(`/${result.data.id}`)
+                    this.$router.push(`${this.appMountPath}/${result.data.id}`)
                 }else{
                     this.msg.error(result.error.message)
                 }
@@ -129,7 +134,7 @@ export default {
                 if (result.successful) {
                     this.msg.success(this.translations.main.messages_success_event_type_deleted)
 
-                    this.$router.push('/')
+                    this.$router.push(`${this.appMountPath}/`)
                 }else{
                     this.msg.error(result.error.message)
                 }

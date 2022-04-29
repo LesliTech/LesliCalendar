@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 // · List of Imported Components
 import componentCalendar from "../../components/calendar.vue"
 import componentAgenda from "../../components/agenda.vue"
-import componentEventPanel from "../../components/event-panel.vue"
+import componentEventPanel from "../../components/panel-event.vue"
 
 
 
@@ -51,6 +51,7 @@ export default {
             loading: true,
             events_day: [],
             loading_agenda: true,
+            synchronized_google: null,
         }
     },
 
@@ -94,10 +95,10 @@ export default {
                     help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
+                    external_events: (this.filters.event_category === "all" || this.filters.event_category === "external_events" ) ? true : false,
                 },
                 query: this.filters.query
             }
-
             let url = this.url.driver('calendars/default').filters(filters).dayTimestamp(this.data.agenda_day)
 
             this.http.get(url).then(result => {
@@ -110,6 +111,24 @@ export default {
                 console.log(error)
             }).finally(() => {
                 this.loading_agenda = false
+            })
+        },
+
+        syncEvents() {
+            this.synchronized_google = true
+            let url = this.url.driver('calendars/sync')
+            this.http.get(url).then(result => {
+                if (result.successful) {
+                    this.synchronized_google = false
+                    this.msg.success(this.translations.calendars.messages_success_events_synchronized)
+                } else {
+                    this.msg.error(result.error.message)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.synchronized_google = false
+                this.getEvents()
             })
         },
 
@@ -163,7 +182,7 @@ export default {
 
         "data.agenda_day"(){
             this.getEvents()
-        }
+        },
     }
 }
 </script>
@@ -199,6 +218,12 @@ export default {
                             </span>
                             <span>{{translations.calendars.view_btn_today}}</span>
                         </button>
+                        <button class="button" @click="syncEvents()">
+                            <span class="icon">
+                                <i class="fab fa-google"></i>
+                            </span>
+                            <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
+                        </button>
                         <button class="button" @click="showPanelNew()">
                             <span class="icon">
                                 <i class="fas fa-plus"></i>
@@ -229,21 +254,23 @@ export default {
 
         <div class="columns">
             <div class="column is-one-quarter">
-                <div class="box pt-0">
-                    <component-agenda
-                        :events="events_day"
-                        :loading="loading_agenda">
-                    </component-agenda>
-                </div>
+            <div class="box">
+                <component-agenda
+                    :events="events_day"
+                    :loading="loading_agenda"
+                    :day="this.data.agenda_day">
+                </component-agenda>
+            </div>
             </div>
             <div class="column">
-                <div class="box pt-0">
-                    <component-calendar
-                        :calendar_id="calendar_id"
-                        :filter-query="filters.query"
-                        :filter-event-source="filters.event_category"
-                        :key="calendar_id">
-                    </component-calendar>
+                <div class="box">
+                <component-calendar
+                    :calendar_id="calendar_id"
+                    :filter-query="filters.query"
+                    :filter-event-source="filters.event_category"
+                    :key="calendar_id"
+                    :events="events_day">
+                </component-calendar>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <template>
     <% if @tabs_granted["calendars"] %>
-        <%= nav_link("/driver") do %>
+        <%= navigation_vue_item("/driver") do %>
                 <i class="fas fa-calendar-alt"></i>
                 <span><%= I18n.t("driver.shared.sidebar_nav_calendar") %></span>
         <% end %>
@@ -14,7 +14,7 @@
             </template>
             <% if @tabs_granted["event_types"]%>
                 <li>
-                    <%= link_to cloud_driver.event_types_path, class: "" do %>
+                    <%= navigation_vue_item(cloud_driver.event_types_path) do %>
                         <i class="fas fa-list"></i>
                         <span><%= I18n.t("driver.shared.sidebar_nav_event_types") %></span>
                     <% end %>

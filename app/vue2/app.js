@@ -21,11 +21,13 @@ For more information read the license file including with this software.
 import app from 'LesliVue/app2'
 
 // · Import apps and components
-import calendarsRoutes from './calendars/routes.js'
+import catalogEventTypesRoutes from './catalog_event_types/routes.js'
+import dashboardsRoutes from './dashboards/routes.js'
 import eventRoutes from './events/routes.js'
 
 app('CloudDriver', '/driver', '[calendars|events]',
-    calendarsRoutes
+    dashboardsRoutes
+    .concat(catalogEventTypesRoutes)
     .concat(eventRoutes)   
 ,{
     event: {
