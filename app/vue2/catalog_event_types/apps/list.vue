@@ -25,11 +25,10 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 export default {
     props: {
-
-    },
-
-    components: {
-
+        appMountPath: {
+            type: String,
+            default: '/driver/catalog/event_types'
+        }
     },
 
     data(){
@@ -112,7 +111,7 @@ export default {
         },
 
         showEventType(event_type) {
-            this.$router.push(`/${event_type.id}`)
+            this.$router.push(`${this.appMountPath}/${event_type.id}`)
         },
 
         reloadEventTypes(){
@@ -165,7 +164,7 @@ export default {
                     <b-icon icon="sync" size="is-small" :custom-class="loading ? 'fa-spin' : ''" />
                     <span> {{ translations.core.view_text_btn_reload }}</span>
                 </button>
-                <router-link class="button" tag="button" to="/new" v-if="index_abilities.create">
+                <router-link class="button" tag="button" :to="`${appMountPath}/new`" v-if="index_abilities.create">
                     <b-icon icon="plus" size="is-small" />
                     <span>{{ translations.main.view_btn_create }}</span>
                 </router-link>

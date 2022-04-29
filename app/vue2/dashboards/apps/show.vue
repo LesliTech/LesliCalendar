@@ -60,9 +60,19 @@ export default {
         this.getEventsType()
         this.getEvents()
         this.setSessionStorageFilters()
+        this.openEventFromParams()
     },
 
     methods: {
+        openEventFromParams(){
+            if(this.$route.query.event_id){
+                this.data.event.id = this.$route.query.event_id
+                this.$nextTick(()=>{
+                    this.showEvent()
+                })
+            }
+        },
+
         getEventsType() {
             this.http.get('/driver/calendars/options.json').then(result => {
                 if (result.successful) {
@@ -110,7 +120,7 @@ export default {
             this.http.get(url).then(result => {
                 if (result.successful) {
                     this.synchronized_google = false
-                    this.msg.success('Events synchronized')
+                    this.msg.success(this.translations.calendars.messages_success_events_synchronized)
                 } else {
                     this.msg.error(result.error.message)
                 }
@@ -212,7 +222,7 @@ export default {
                             <span class="icon">
                                 <i class="fab fa-google"></i>
                             </span>
-                            <span>{{ translations.calendars.view_btn_sync }}</span>
+                            <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
                         </button>
                         <button class="button" @click="showPanelNew()">
                             <span class="icon">
