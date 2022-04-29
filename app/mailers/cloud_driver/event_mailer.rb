@@ -27,7 +27,7 @@ module CloudDriver
             self.build_data_from_params(params, {
                 event_id: event.id,
                 event_title: event.detail.title,
-                organizer_name: event.user_main.full_name,
+                organizer_name: event.user_main_including_deleted.full_name,
                 title: I18n.t("driver.events.mailer_event_attendant_subject"),
                 link_information: I18n.t("driver.events.mailer_event_attendant_link_information"),
                 link_text: I18n.t("driver.events.mailer_event_attendant_link_text"),

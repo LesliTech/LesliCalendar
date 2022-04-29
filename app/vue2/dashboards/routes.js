@@ -1,6 +1,5 @@
 /*
-
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -14,30 +13,17 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 */
 
-// · Import main app from core
-import app from 'LesliVue/app2'
 
 // · Import apps and components
-import catalogEventTypesRoutes from './catalog_event_types/routes.js'
-import dashboardsRoutes from './dashboards/routes.js'
-import eventRoutes from './events/routes.js'
+import appShow from './apps/show.vue'
 
-app('CloudDriver', '/driver', '[calendars|events]',
-    dashboardsRoutes
-    .concat(catalogEventTypesRoutes)
-    .concat(eventRoutes)   
-,{
-    event: {
-        show: false,
-        id: null,
-        details: {}
-    },
-    calendar: {
-        title: '',
-        selected_date: null
-    },
-    agenda_day: new Date()
-})
+const routes = [
+    {
+        path: '/',
+        component: appShow
+    }
+]
+
+export default routes

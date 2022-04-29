@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -22,19 +22,21 @@ import app from 'LesliVue/app'
 
 // · Import common apps
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-import appList  from './apps/list.vue'
-import appEdit  from './apps/edit.vue'
-import appNew   from './apps/new.vue'
+import eventTypesList  from './apps/list.vue'
+import eventTypesEdit  from './apps/edit.vue'
+import eventTypesNew   from './apps/new.vue'
 
-// ·
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-app("CloudFocus", "[list|new|edit]", "/driver/catalog/event_types", [{
-    path: "/",
-    component: appList
-},{
-    path: "/new",
-    component: appNew
-},{
-    path: "/:id",
-    component: appEdit
-}])
+const routes = [
+    {
+        path: '/catalog/event_types',
+        component: eventTypesList
+    },{
+        path: '/catalog/event_types/new',
+        component: eventTypesNew
+    },{
+        path: '/catalog/event_types/:id',
+        component: eventTypesEdit
+    }
+]
+
+export default routes

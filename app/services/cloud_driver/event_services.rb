@@ -32,7 +32,6 @@ module CloudDriver
             event = current_user.account.driver.calendars.default.events.new(event_params)
             event.account = current_user.account
             event.user_creator = current_user
-            event.set_workflow
 
             unless event_params[:user_main_id]
                 event.user_main = current_user

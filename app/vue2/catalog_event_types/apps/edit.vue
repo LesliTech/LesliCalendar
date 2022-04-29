@@ -28,7 +28,10 @@ import componentForm from '../components/form.vue'
 
 export default {
     props: {
-
+        appMountPath: {
+            type: String,
+            default: '/driver/catalog/event_types'
+        }
     },
 
     components: {
@@ -78,13 +81,13 @@ export default {
             :title="event_type ? event_type.name : ''"
         >
             <div class="buttons">
-                <router-link class="button" to="/">
+                <router-link class="button" :to="`${appMountPath}/`">
                     <b-icon icon="list" size="is-small"></b-icon>
                     <span>{{ translations.core.view_btn_list }}</span>
                 </router-link>
             </div>
         </component-header>
-        <component-form v-if="event_type" :event_type="event_type"/>
+        <component-form v-if="event_type" :app-mount-path="appMountPath" :event_type="event_type"/>
         <component-data-loading v-else size="is-medium" />
     </section>
 </template>
