@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -16,29 +16,15 @@ For more information read the license file including with this software.
 */
 
 
-// · Import main app
-import app from "LesliVue/app"
-
-
-
 // · Import apps and components
-import pageShow from "./pages/show.vue"
+import eventsShow from './apps/show.vue'
 
+const routes = [
+    {
+        path: '/events/:id',
+        component: eventsShow
+    }
+]
 
+export default routes
 
-// · Cloud app
-app("CloudDriver", "[show]", "/driver/", [{
-    path: "/",
-    component: pageShow
-}], {
-    event: {
-        show: false,
-        id: null,
-        details: {}
-    },
-    calendar: {
-        title: '',
-        selected_date: null
-    },
-    agenda_day: new Date()
-})
