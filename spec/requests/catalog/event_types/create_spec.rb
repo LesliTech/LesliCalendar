@@ -46,15 +46,4 @@ RSpec.describe "POST:/driver/catalog/event_types", type: :request do
 
         expect(response_error["message"]).to eq("Name can't be blank")
     end
-
-    it "is expected to receive an error if the event type name is duplicated" do
-        event_type = FactoryBot.create(:cloud_driver_catalog_event_type, cloud_driver_accounts_id: @current_user.account.id)
-
-        duplicated_params = event_type.attributes
-
-        post("/driver/catalog/event_types.json", params: {event_type: duplicated_params})
-        expect_json_response_error
-
-        expect(response_error["message"]).to eq("Name has already been taken")
-    end
 end
