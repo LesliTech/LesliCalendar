@@ -20,8 +20,7 @@ module CloudDriver
         belongs_to  :account, class_name: "CloudDriver::Account", foreign_key: "cloud_driver_accounts_id"
         has_many    :events, class_name:  "CloudDriver::Event",   foreign_key: "cloud_driver_catalog_event_types_id"
 
-        validates :name, presence: true, uniqueness: true
-
+        validates :name, presence: true
         def self.index(current_user, query)
             # Parsing filters
             filters = query[:filters]
