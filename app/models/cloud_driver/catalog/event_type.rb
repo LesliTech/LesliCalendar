@@ -21,6 +21,7 @@ module CloudDriver
         has_many    :events, class_name:  "CloudDriver::Event",   foreign_key: "cloud_driver_catalog_event_types_id"
 
         validates :name, presence: true
+        
         def self.index(current_user, query)
             # Parsing filters
             filters = query[:filters]
