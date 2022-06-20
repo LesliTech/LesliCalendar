@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "Tests for DeutschLeibrenten", :if => defined?(DeutscheLeibrenten) do
     describe "POST:/driver/catalog/event_types", type: :request do
         include_context "request user authentication"
 
@@ -30,12 +30,9 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             event_type = FactoryBot.attributes_for(:cloud_driver_catalog_event_type)
 
             post("/driver/catalog/event_types.json", params: {event_type: event_type})
+            expect_json_response_successful
 
-            # shared examples
-            expect_response_with_successful
-
-            # custom examples
-            expect(response_json["data"]["name"]).to eq(event_type[:name])
+            expect(response_data["name"]).to eq(event_type[:name])
         end
 
         it "is expected to receive an error if the event type name is empty" do
@@ -44,12 +41,9 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             event_type[:name] = nil
 
             post("/driver/catalog/event_types.json", params: {event_type: event_type})
+            expect_json_response_error
 
-            # shared examples
-            expect_response_with_error
-
-            # custom examples
-            expect(response_json["error"]["message"]).to eq("Name can't be blank")
+            expect(response_error["message"]).to eq("Name can't be blank")
         end
     end
 end
