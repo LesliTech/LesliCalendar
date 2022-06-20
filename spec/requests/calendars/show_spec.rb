@@ -18,7 +18,7 @@ For more information read the license file including with this software.
 =end
 require "lesli_request_helper"
 
-RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
     describe "GET:/calendars/default", type: :request do
         include_context "request user authentication"
 
@@ -53,11 +53,11 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_successful
 
             # custom examples
-            expect(response_json["data"]).to have_key("driver_events")
-            expect(response_json["data"]).to have_key("help_tickets")
-            expect(response_json["data"]).to have_key("focus_tasks")
-            expect(response_json["data"]).to have_key("external_events")
-            expect(response_json["data"]["driver_events"].length).to be >= 12
+            expect(response_body).to have_key("driver_events")
+            expect(response_body).to have_key("help_tickets")
+            expect(response_body).to have_key("focus_tasks")
+            expect(response_body).to have_key("external_events")
+            expect(response_body["driver_events"].length).to be >= 12
         end
 
 
@@ -89,9 +89,9 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_successful
 
             # custom examples
-            expect(response_data).to have_key("driver_events")
+            expect(response_body).to have_key("driver_events")
 
-            response_json["data"]["driver_events"].each do |event|
+            response_body["driver_events"].each do |event|
                 event_date = LC::Date.datetime(event["date"].to_datetime)
 
                 expect(event_date.month).to eq(current_time.month)

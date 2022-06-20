@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
     describe "POST:/driver/events", type: :request do
         include_context "request user authentication"
 
@@ -39,14 +39,14 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_successful
 
             # custom examples
-            expect(response_json["data"]["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_json["data"]["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
-            expect(response_json["data"]["detail_attributes"]["description"]).to eq(event[:detail_attributes][:description])
-            expect(response_json["data"]["detail_attributes"]["location"]).to eq(event[:detail_attributes][:location])
-            expect(response_json["data"]["detail_attributes"]["budget"].to_f).to eq(event[:detail_attributes][:budget])
-            expect(response_json["data"]["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
-            expect(response_json["data"]["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
-            expect(response_json["data"]["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
+            expect(response_body["organizer_name"]).to eq(@current_user.full_name)
+            expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
+            expect(response_body["detail_attributes"]["description"]).to eq(event[:detail_attributes][:description])
+            expect(response_body["detail_attributes"]["location"]).to eq(event[:detail_attributes][:location])
+            expect(response_body["detail_attributes"]["budget"].to_f).to eq(event[:detail_attributes][:budget])
+            expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
+            expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
+            expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
         end
 
 
@@ -69,8 +69,8 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_successful
 
             # custom examples
-            expect(response_json["data"]["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_json["data"]["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
+            expect(response_body["organizer_name"]).to eq(@current_user.full_name)
+            expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
 
         end
 
@@ -82,7 +82,7 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_error
 
             # custom examples
-            expect(response_error["message"]).to eq("Missing event data")
+            expect(response_body["message"]).to eq("Missing event data")
         end
 
         it "is expected to respond with error if event title is empty" do
@@ -99,7 +99,7 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_error
 
             # custom examples
-            expect(response_json["error"]["message"]).to eq("Missing event data")
+            expect(response_body["message"]).to eq("Missing event data")
         end
 
         it "is expected to respond with error if event date is empty" do
@@ -113,10 +113,10 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             post("/driver/events.json", params: { "event": event})
 
             # shared examples
-            expect_response_with_errorr
+            expect_response_with_error
 
             # custom examples
-            expect(response_["error"]["message"]).to eq("Missing event data")
+            expect(response_body["message"]).to eq("Missing event data")
         end
     end
 end

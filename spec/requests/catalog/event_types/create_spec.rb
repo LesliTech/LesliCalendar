@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
     describe "POST:/driver/catalog/event_types", type: :request do
         include_context "request user authentication"
 
@@ -35,7 +35,7 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_successful
 
             # custom examples
-            expect(response_json["data"]["name"]).to eq(event_type[:name])
+            expect(response_body["name"]).to eq(event_type[:name])
         end
 
         it "is expected to receive an error if the event type name is empty" do
@@ -49,7 +49,7 @@ RSpec.describe "Tests for DeutschLeibrenten", :unless => defined?(DeutscheLeibre
             expect_response_with_error
 
             # custom examples
-            expect(response_json["error"]["message"]).to eq("Name can't be blank")
+            expect(response_body["message"]).to eq("Name can't be blank")
         end
     end
 end
