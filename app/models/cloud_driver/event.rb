@@ -96,6 +96,10 @@ module CloudDriver
             event_template
         end
 
+        def global_identifier
+            return detail.title
+        end
+
         #############################
         # Activities log methods
         #############################
