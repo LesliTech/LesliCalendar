@@ -96,7 +96,7 @@ module CloudDriver
             event_template
         end
 
-        def global_identifier
+        def global_identifier(extended: false)
             return detail.title
         end
 
