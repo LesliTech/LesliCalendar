@@ -18,7 +18,7 @@ For more information read the license file including with this software.
 // ·
 
 =end
-    class Catalog::EventTypesController < ApplicationLesliController
+    class Catalog::EventTypesController < ApplicationController
         before_action :set_event_type, only: [:update, :destroy]
 
 =begin

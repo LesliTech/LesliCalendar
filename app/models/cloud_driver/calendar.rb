@@ -2,9 +2,9 @@
 
 Copyright (c) 2021, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,7 +13,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 =end
 module CloudDriver
@@ -37,21 +37,19 @@ module CloudDriver
         #         new_account = Account.create!({}) # This method should initialize a new CloudDriver::Account
         #         # The instance of CloudDriver::Account should call this method in an after_create()
         def self.initialize_data(account)
-            default_calendar = self.create!(
-                account: account
-            )
-            Calendar::Detail.create!(
-                name: "Default Calendar",
-                default: true,
-                cloud_driver_calendars_id: default_calendar.id
+            account.calendars.create!(
+                detail_attributes: {
+                    name: "Default Calendar",
+                    default: true,
+                }
             )
         end
-        
+
         # @return [Array] Array of CloudObjects that can be ordered within a calendar as events or an empty array if
         #     query[:filters][:start_date] and query[:filters][:end_date] are not set.
         # @param current_user [User] The user that requested this method to be executed
         # @param query [Hash] Hash containing important information like wether to include help_tickets and focus_tasks,
-        #     and start_date and end_date 
+        #     and start_date and end_date
         # @description Retrieves a list of cloud_objects that can be arranged into a calendar. At the time, driver_events,
         #     focus_tasks and help_tickets are the only cloud_objects included. Uses the courier to retrieve this information.
         # @example
@@ -68,7 +66,7 @@ module CloudDriver
         #         }
         #     }
         #     puts CloudDriver::Calendar.index(current_user, query)
-        #     # this will display something like 
+        #     # this will display something like
         #     # {
         #         help_tickets: [...],
         #         driver_events: [...],
@@ -104,7 +102,7 @@ module CloudDriver
         #     #         focus_tasks: "focus_tasks",
         #     #         help_tickets: "help_tickets"
         #     #     }
-        #     # } 
+        #     # }
         def self.options(current_user, query)
             {
                 event_categories: Calendar.event_categories
@@ -120,7 +118,7 @@ module CloudDriver
         # @return [Hash] A hash containing a list of event categories
         # @description Returns a list of event categories. An event category is a class that represents a cloud_object
         #     that can be added to a calendar as an event. Current event categories are all, driver_events, focus_tasks
-        #     and help_tickets 
+        #     and help_tickets
         # @example
         #     puts CloudDriver::Calendar.event_categories
         #     # This will display something like
