@@ -37,11 +37,13 @@ module CloudDriver
         #         new_account = Account.create!({}) # This method should initialize a new CloudDriver::Account
         #         # The instance of CloudDriver::Account should call this method in an after_create()
         def self.initialize_data(account)
-            account.calendars.create!(
+            account.calendars.create_with(
                 detail_attributes: {
                     name: "Default Calendar",
                     default: true,
                 }
+            ).find_or_create_by!(
+                account: account
             )
         end
 
