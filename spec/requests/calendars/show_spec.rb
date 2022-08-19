@@ -47,7 +47,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             start_date = LC::Date.now.beginning_of_year
             end_date = LC::Date.now.end_of_year
 
-            get("/driver/calendars/default.json?filters[start_date]=#{start_date}&filters[end_date]=#{end_date}")
+            get("/driver/calendars/default.json?f[start_date]=#{start_date}&f[end_date]=#{end_date}")
 
             # shared examples
             expect_response_with_successful
@@ -83,7 +83,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             
             current_time = LC::Date.now
 
-            get("/driver/calendars/default.json?filters[start_date]=#{current_time.beginning_of_month}&filters[end_date]=#{current_time.end_of_month}")
+            get("/driver/calendars/default.json?f[start_date]=#{current_time.beginning_of_month}&f[end_date]=#{current_time.end_of_month}")
 
             # shared examples
             expect_response_with_successful

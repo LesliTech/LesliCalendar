@@ -36,7 +36,7 @@ require_dependency "cloud_driver/application_controller"
 require 'google/api_client/client_secrets'
 require 'google/apis/calendar_v3'
 module CloudDriver
-    class EventsController < ApplicationLesliController
+    class EventsController < ApplicationController
         before_action :set_event, only: [:update, :destroy, :show]
         before_action :parse_query_params, only: :index
 

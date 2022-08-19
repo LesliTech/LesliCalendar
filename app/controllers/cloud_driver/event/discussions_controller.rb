@@ -19,7 +19,7 @@ For more information read the license file including with this software.
 require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
-    class Event::DiscussionsController < ApplicationLesliController
+    class Event::DiscussionsController < ApplicationController
         include Interfaces::Controllers::Discussions
     end
 end

@@ -17,7 +17,8 @@ For more information read the license file including with this software.
 
 %>
 <% @current_path = request.env['PATH_INFO'] %>
-<% @tabs_granted = {}
+<%
+    @tabs_granted = {}
     [
         {name: "dashboard", route: "cloud_driver/dashboards", privilege: "show"},
         {name: "event_types", route: "cloud_driver/catalog/event_types"},
@@ -28,7 +29,7 @@ For more information read the license file including with this software.
         if tab[:route]
             privilege = @account[:current_user][:abilities][tab[:route]]
         else
-            privilege = @account[:current_user][:abilities]["#{lesli_engine_or_instance}/#{tab[:name]}"]
+            privilege = @account[:current_user][:abilities]["#{lesli_engine[:code]}/#{tab[:name]}"]
         end
 
         unless privilege.blank?
