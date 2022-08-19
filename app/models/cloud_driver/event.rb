@@ -54,6 +54,7 @@ module CloudDriver
                 user_main_id: user_main_id,
                 organizer_name: (user_main_including_deleted ? user_main_including_deleted.full_name : ""),
                 cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
+                cloud_driver_calendars_id: cloud_driver_calendars_id,
                 detail_attributes: data
             }
         end

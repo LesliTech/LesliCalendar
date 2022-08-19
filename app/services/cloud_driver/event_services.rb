@@ -20,7 +20,7 @@ require 'google/apis/calendar_v3'
 module CloudDriver
     class EventServices
 
-        def self.create(current_user, event_params)
+        def self.create(current_user, event_params, calendar=nil)
 
             # Validate event includes minimum required data
             if (
@@ -29,7 +29,12 @@ module CloudDriver
                 return LC::Response.service(false, "Missing event data")
             end
 
-            event = current_user.account.driver.calendars.default.events.new(event_params)
+            if calendar.blank?
+                event = current_user.account.driver.calendars.default.events.new(event_params)
+            else
+                event = calendar.events.new(event_params)
+            end
+
             event.account = current_user.account
             event.user_creator = current_user
 

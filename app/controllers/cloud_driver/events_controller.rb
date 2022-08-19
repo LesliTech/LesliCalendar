@@ -67,7 +67,6 @@ module CloudDriver
 
         # GET /events/new
         def new
-            @event = Event.new
         end
 
         # GET /events/1/edit
@@ -76,7 +75,11 @@ module CloudDriver
 
         # POST /events
         def create
-            event_create_response = CloudDriver::EventServices.create(current_user, event_params)
+
+            calendar = nil
+            calendar = current_user.account.driver.calendars.find_by_id(calendar_params[:id]) unless calendar_params[:id].blank?
+
+            event_create_response = CloudDriver::EventServices.create(current_user, event_params, calendar)
 
             return respond_with_error(event_create_response.error) if !event_create_response.successful?
 
@@ -162,6 +165,10 @@ module CloudDriver
                     :public
                 ]
             )
+        end
+
+        def calendar_params
+            params.fetch(:calendar, {}).permit(:id)
         end
 
         def parse_query_params

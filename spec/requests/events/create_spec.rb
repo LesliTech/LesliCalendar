@@ -47,6 +47,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
             expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
             expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
+
         end
 
 
@@ -71,6 +72,28 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             # custom examples
             expect(response_body["organizer_name"]).to eq(@current_user.full_name)
             expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
+
+        end
+
+
+        it "is expected to create an event for a specific calendar" do
+
+            event = FactoryBot.attributes_for(:cloud_driver_event, {
+                users_id: @current_user.id,
+                user_main_id: @current_user.id,
+                cloud_driver_accounts_id: @current_user.account.id
+            })
+
+            calendar = @current_user.account.driver.calendars.find_or_create_by!(user_main: @current_user, user_creator: @current_user)
+
+            post("/driver/events.json", params: { event: event, calendar: { id: calendar.id} })
+
+            # shared examples
+            expect_response_with_successful
+
+            # custom examples
+            expect(response_body["organizer_name"]).to eq(@current_user.full_name)
+            expect(response_body["cloud_driver_calendars_id"]).to eq(calendar.id)
 
         end
 
