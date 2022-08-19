@@ -20,7 +20,7 @@ module CloudDriver
     class Calendar < CloudObject
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
         belongs_to  :user_creator,   foreign_key: "users_id",        class_name: "::User", optional: true
-        belongs_to  :user_main,      foreign_key: "user_main_id",   class_name: "::User", optional: true
+        belongs_to  :user_main,      foreign_key: "user_main_id",    class_name: "::User", optional: true
         belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
         has_one     :detail, foreign_key: "cloud_driver_calendars_id", dependent: :delete, inverse_of: :calendar, autosave: true

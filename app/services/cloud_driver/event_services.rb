@@ -24,7 +24,7 @@ module CloudDriver
 
             # Validate event includes minimum required data
             if (
-                event_params.dig(:detail_attributes, :title).blank? || 
+                event_params.dig(:detail_attributes, :title).blank? ||
                 event_params.dig(:detail_attributes, :event_date).blank?)
                 return LC::Response.service(false, "Missing event data")
             end
@@ -52,7 +52,7 @@ module CloudDriver
             user_auth_provider = Courier::Lesli::Users::AuthProviders.get_user_provider(current_user.id, 'Google')
 
             if (user_auth_provider)
-                 #Google calendar event creation
+                # Google calendar event creation
                 google_event = Google::Apis::CalendarV3::Event.new(
                     summary: event_params[:detail_attributes][:title],
                     location: event_params[:detail_attributes][:location],
@@ -62,20 +62,22 @@ module CloudDriver
                     ),
                     end: Google::Apis::CalendarV3::EventDateTime.new(
                         date_time: event_params[:detail_attributes][:time_end]
-                    ) 
+                    )
                 )
+
                 # Initialize Google Calendar API
                 service = Google::Apis::CalendarV3::CalendarService.new
+
                 # Use google keys to authorize
-                service.authorization = Google::APIClient::ClientSecrets.new(
-                    { "web" =>
-                        { "access_token" => user_auth_provider.access_token,
+                service.authorization = Google::APIClient::ClientSecrets.new({
+                    "web" => {
+                        "access_token" => user_auth_provider.access_token,
                         "refresh_token" => user_auth_provider.refresh_token,
                         "client_id" => Rails.application.credentials.dig(:providers, :google, :client_id),
                         "client_secret" => Rails.application.credentials.dig(:providers, :google, :client_secret),
-                        }
                     }
-                ).to_authorization
+                }).to_authorization
+
                 # Request for a new aceess token just incase it expired
                 service.authorization.refresh!
                 # Get a list of calendars
