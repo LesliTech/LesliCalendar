@@ -28,7 +28,7 @@ module CloudDriver
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
-        scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
+        scope :default, -> { joins(:detail).where(cloud_driver_calendar_details: { default: true }, users_id: nil, user_main_id: nil).select(:id, :name).first }
 
         # @return [void]
         # @param account [CloudDriver::Account] The account to be initialized
