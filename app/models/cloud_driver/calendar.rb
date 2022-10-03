@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2021, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -81,7 +81,6 @@ module CloudDriver
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    external_events: [],
                 }
             end
 
@@ -136,7 +135,6 @@ module CloudDriver
                 driver_events: "driver_events",
                 focus_tasks: "focus_tasks",
                 help_tickets: "help_tickets",
-                external_events: "external_events",
             }
         end
 

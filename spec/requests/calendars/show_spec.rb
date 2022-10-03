@@ -56,7 +56,6 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect(response_body).to have_key("driver_events")
             expect(response_body).to have_key("help_tickets")
             expect(response_body).to have_key("focus_tasks")
-            expect(response_body).to have_key("external_events")
             expect(response_body["driver_events"].length).to be >= 12
         end
 
@@ -80,7 +79,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                     }
                 )
             end
-            
+
             current_time = LC::Date.now
 
             get("/driver/calendars/default.json?f[start_date]=#{current_time.beginning_of_month}&f[end_date]=#{current_time.end_of_month}")

@@ -1,3 +1,22 @@
+=begin
+
+Copyright (c) 2022, all rights reserved.
+
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
+pictures and any other information belongs to the owner of this platform.
+
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
+
+For more information read the license file including with this software.
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// ·
+
+=end
+
 module CloudDriver
     class Event < CloudObject
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
@@ -24,6 +43,7 @@ module CloudDriver
 
         before_validation :set_workflow, on: :create
         after_create :verify_date
+        after_create :create_on_integrations
 
         def self.index(current_user, query)
             Calendar.show(current_user, query)
@@ -61,18 +81,18 @@ module CloudDriver
 
         def attendant_list
             attendants.joins(:user).select(
-                :id, 
+                :id,
                 :users_id,
-                :email, 
+                :email,
                 :name,
                 "'attendant' as type",
                 LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
             ) + guests.select(
-                :id, 
+                :id,
                 "NULL as users_id",
-                :name, 
+                :name,
                 "'guest' as type",
-                :email, 
+                :email,
                 LC::Date2.new.date.db_column(:confirmed_at)
             )
         end
@@ -260,7 +280,7 @@ module CloudDriver
 
             if defined?(DeutscheLeibrenten)
                 url = "/crm/calendar?event_id=#{attendant.event.id}"
-            end 
+            end
 
             attendant.user.notification("event_attendant_created", body: "", url: url)
 
@@ -276,6 +296,11 @@ module CloudDriver
         #     # This will display the creation time of the event
         def verify_date
             detail.update(event_date: self.created_at) unless detail.event_date
+        end
+
+
+        def create_on_integrations
+            Courier::One::IntegrationEventsService.create_event(current_user, self)
         end
 
     end
