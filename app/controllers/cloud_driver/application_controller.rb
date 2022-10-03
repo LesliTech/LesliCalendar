@@ -20,7 +20,7 @@ For more information read the license file including with this software.
 module CloudDriver
     class ApplicationController < ApplicationLesliController
         include Interfaces::Application::Responder
-        include Interfaces::Application::Requester
+        # include Interfaces::Application::Requester
 
         protect_from_forgery with: :exception
     end

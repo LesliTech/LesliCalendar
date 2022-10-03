@@ -98,6 +98,7 @@ export default {
                 },
                 query: this.filters.query
             }
+
             let url = this.url.driver('calendars/default').filters(filters).dayTimestamp(this.data.agenda_day)
 
             this.http.get(url).then(result => {
