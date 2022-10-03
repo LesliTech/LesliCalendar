@@ -46,6 +46,8 @@ module CloudDriver
                 Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: event.user_main.id)
 
+                Courier::One::IntegrationEventsService.create_event(current_user, self)
+
                 return LC::Response.service(true, event)
             end
 

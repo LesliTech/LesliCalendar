@@ -43,7 +43,6 @@ module CloudDriver
 
         before_validation :set_workflow, on: :create
         after_create :verify_date
-        after_create :create_on_integrations
 
         def self.index(current_user, query)
             Calendar.show(current_user, query)
@@ -296,11 +295,6 @@ module CloudDriver
         #     # This will display the creation time of the event
         def verify_date
             detail.update(event_date: self.created_at) unless detail.event_date
-        end
-
-
-        def create_on_integrations
-            Courier::One::IntegrationEventsService.create_event(current_user, self)
         end
 
     end
