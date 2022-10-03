@@ -16,9 +16,8 @@ For more information read the license file including with this software.
 // ·
 =end
 
-class AlterCloudDriverEvents < ActiveRecord::Migration[7.0]
+class AlterCloudDriverCalendars < ActiveRecord::Migration[7.0]
     def change
-        add_column :cloud_driver_events, :source, :string
-        add_column :cloud_driver_events, :external_uid, :string
+        add_column :cloud_driver_calendars, :source_code, :string
     end
 end

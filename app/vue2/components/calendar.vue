@@ -160,7 +160,6 @@ export default {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
-                    external_events: (this.filterEventSource === "all" || this.filterEventSource === "external_events" ) ? true : false,
                 },
                 query: this.filterQuery
             }
