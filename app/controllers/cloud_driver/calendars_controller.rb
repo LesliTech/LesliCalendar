@@ -28,6 +28,7 @@ module CloudDriver
             {
                 show: [
                     "options",
+                    "sync",
                     "CloudDriver::EventsController#options",
                     "CloudDriver::Event::DiscussionsController#index",
                     "CloudDriver::Event::FilesController#index",

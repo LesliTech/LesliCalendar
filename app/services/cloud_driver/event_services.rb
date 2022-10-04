@@ -29,12 +29,9 @@ module CloudDriver
                 return LC::Response.service(false, "Missing event data")
             end
 
-            if calendar.blank?
-                event = current_user.account.driver.calendars.default.events.new(event_params)
-            else
-                event = calendar.events.new(event_params)
-            end
+            calendar = current_user.account.driver.calendars.default if calendar.blank?
 
+            event = calendar.events.new(event_params)
             event.account = current_user.account
             event.user_creator = current_user
 
@@ -45,8 +42,6 @@ module CloudDriver
             if event.save
                 Event.log_activity_create(current_user, event)
                 event.attendants.create(users_id: event.user_main.id)
-
-                Courier::One::IntegrationEventsService.create_event(current_user, self)
 
                 return LC::Response.service(true, event)
             end

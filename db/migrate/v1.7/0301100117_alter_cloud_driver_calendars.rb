@@ -18,6 +18,6 @@ For more information read the license file including with this software.
 
 class AlterCloudDriverCalendars < ActiveRecord::Migration[7.0]
     def change
-        add_column :cloud_driver_calendars, :source_code, :string
+        add_column :cloud_driver_calendars, :source_code, :string, default: :lesli
     end
 end
