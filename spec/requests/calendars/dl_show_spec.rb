@@ -56,7 +56,6 @@ RSpec.describe "Tests for DeutschLeibrenten", :if => defined?(DeutscheLeibrenten
             expect(response_data).to have_key("driver_events")
             expect(response_data).to have_key("help_tickets")
             expect(response_data).to have_key("focus_tasks")
-            expect(response_data).to have_key("external_events")
             expect(response_data["driver_events"].length).to be >= 12
         end
 
@@ -80,11 +79,11 @@ RSpec.describe "Tests for DeutschLeibrenten", :if => defined?(DeutscheLeibrenten
                     }
                 )
             end
-            
+
             current_time = LC::Date.now
 
             get("/driver/calendars/default.json?filters[start_date]=#{current_time.beginning_of_month}&filters[end_date]=#{current_time.end_of_month}")
-            
+
             # shared examples
             expect_json_response_successful
 
