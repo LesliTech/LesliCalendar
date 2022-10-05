@@ -1,10 +1,10 @@
 <script>
 /*
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,12 +13,12 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 */
 
 import dayjs from 'dayjs'
 
-// · 
+// ·
 export default {
     props: {
         events: {
@@ -27,7 +27,6 @@ export default {
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    external_events: [],
                 }
             }
         },
@@ -86,15 +85,6 @@ export default {
                 }
             })
 
-            this.events.external_events.forEach(event => {
-                if (today_iso == dayjs(event.date).format('YYYY-MM-DD')) {
-                    event['module'] = 'external'
-                    if (event.description) { event['description'] = event.description.substring(0, 40) + '...' }
-                    if (event.start) { event['start'] = dayjs(event.start).format('HH:mm') }
-                    if (event.end) { event['end'] = dayjs(event.end).format('HH:mm') }
-                    this.today_events.push(event)
-                }
-            })
             this.today_events = this.today_events.sort(function(a,b){
                 return new Date(b.start) - new Date(a.start);
             });

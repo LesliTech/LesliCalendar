@@ -5,3 +5,4 @@
 
 //= link cloud_driver/application.css
 //= link cloud_driver/application.js
+//= link cloud_driver/application-2.js

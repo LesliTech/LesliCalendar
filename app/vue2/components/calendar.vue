@@ -1,11 +1,11 @@
 <script>
 /*
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -14,7 +14,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 */
 
@@ -27,7 +27,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
 
-// · 
+// ·
 export default {
     props: {
         calendar_id: {
@@ -58,7 +58,6 @@ export default {
                 driver_events: [],
                 focus_tasks: [],
                 help_tickets: [],
-                external_events: [],
             },
             translations: {
                 core: {
@@ -160,7 +159,6 @@ export default {
                     focus_tasks: (this.filterEventSource === "all" || this.filterEventSource === "focus_tasks" ) ? true : false,
                     help_tickets:  (this.filterEventSource === "all" || this.filterEventSource === "help_tickets" ) ? true : false,
                     driver_events: (this.filterEventSource === "all" || this.filterEventSource === "driver_events" ) ? true : false,
-                    external_events: (this.filterEventSource === "all" || this.filterEventSource === "external_events" ) ? true : false,
                 },
                 query: this.filterQuery
             }
@@ -205,12 +203,6 @@ export default {
                 events.forEach(event => event.remove() )
 
             })
-            //events from external calendars
-            this.calendarData.external_events.forEach(
-                (event) => {
-                    this.calendar.addEvent(event)
-                }
-            )
 
             // events from my calendar
             this.calendarData.driver_events.forEach(
@@ -219,6 +211,7 @@ export default {
                     this.calendar.addEvent(event)
                 }
             )
+
             // events from CloudFocus tasks
             this.calendarData.focus_tasks.forEach(
                 (task) => {

@@ -142,7 +142,7 @@ export default {
         },
 
         postAttendant(user){
-            let url = `${this.main_route}/${this.eventId}/attendants`
+            let url = this.url.driver("events/:event_id/attendants", { event_id: this.eventId })
             let data = {
                 event_attendant: {
                     users_id: user.id
@@ -178,11 +178,11 @@ export default {
             if(! attendant_id){
                 attendant_id = attendant.id
             }
-            let url = `${this.main_route}/${this.eventId}/attendants/${attendant_id}`
+            let url = `${this.main_route}/${this.eventId}/attendants/${attendant_id}.json`
 
             // If this is a guest, we have a different endpoint
             if(attendant.type == 'guest'){
-                url = `${this.main_route}/${this.eventId}/guests/${attendant_id}`
+                url = `${this.main_route}/${this.eventId}/guests/${attendant_id}.json`
             }
             this.$set(attendant, 'deleting', true)
 
@@ -219,7 +219,7 @@ export default {
 
 
         postGuest() {
-            let url = `${this.main_route}/${this.eventId}/guests`
+            let url = this.url.driver("events/:event_id/guests", { event_id: this.eventId })
             this.submit.guest = true
 
             this.http.post(url, {
@@ -256,13 +256,19 @@ export default {
 
             // working with attendants
             if (attendant.users_id) {
-                url = `${this.main_route}/${this.eventId}/attendants/${attendant.id}`
+                url = this.url.driver("events/:event_id/attendants/:attendant_id", {
+                    event_id: this.eventId,
+                    attendant_id: attendant.id
+                })
                 data = { event_attendant: attendant }
             }
 
             // working with guests
             if (!attendant.users_id) {
-                url = `${this.main_route}/${this.eventId}/guests/${attendant.id}`
+                url = this.url.driver("events/:event_id/guests/:attendant_id", {
+                    event_id: this.eventId,
+                    attendant_id: attendant.id
+                })
                 data = { event_guest: attendant }
             }
 

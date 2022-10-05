@@ -18,8 +18,17 @@ For more information read the license file including with this software.
 // ·
 
 =end
-    class Catalog::EventTypesController < ApplicationLesliController
+    class Catalog::EventTypesController < ApplicationController
         before_action :set_event_type, only: [:update, :destroy]
+
+        def privileges
+            {
+                index: [],
+                new: ["options"],
+                show: [],
+                destroy: [],
+            }
+        end
 
 =begin
 @return [HTML|JSON] HTML view for listing all event priorities or a Json that contains a list

@@ -1,36 +1,36 @@
-<template>
-    <% if @tabs_granted["calendars"] %>
-        <%= navigation_vue_item("/driver") do %>
-                <i class="fas fa-calendar-alt"></i>
-                <span><%= I18n.t("driver.shared.sidebar_nav_calendar") %></span>
-        <% end %>
-    <% end %>
-    <% if @tabs_granted["event_types"] %>
-        <b-menu-item>
-            <template slot="label" slot-scope="props">
-                <i class="fas fa-book-open"></i>
-                <span><%= I18n.t("driver.shared.sidebar_nav_catalogs") %></span>
-                <b-icon class="is-pulled-right" :icon="props.expanded ? 'caret-down' : 'caret-right'"></b-icon>
-            </template>
-            <% if @tabs_granted["event_types"]%>
-                <li>
-                    <%= navigation_vue_item(cloud_driver.event_types_path) do %>
-                        <i class="fas fa-list"></i>
-                        <span><%= I18n.t("driver.shared.sidebar_nav_event_types") %></span>
-                    <% end %>
-                </li>
-            <% end %>
-        </b-menu-item>
-    <% end %>
-</template>
+<%#
 
-<template v-slot:settings>
-    <% if @tabs_granted["workflows"]%>
-        <li>
-            <%= navigation_vue_item(cloud_driver.workflows_path) do %>
-                <i class="fas fa-project-diagram"></i>
-                <span><%= I18n.t("core.shared.sidebar_nav_workflows") %></span>
-            <% end %>
-        </li>
+Lesli
+
+Copyright (c) 2022, all rights reserved.
+
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
+pictures and any other information belongs to the owner of this platform.
+
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
+
+For more information read the license file including with this software.
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// ·
+
+%>
+
+<% if @tabs_granted["calendars"] %>
+    <%= navigation_lesli_item(cloud_driver.root_path, I18n.t("driver.shared.sidebar_nav_calendar"), "ri-dashboard-3-line", reload: true) %>
+<% end %>
+
+<lesli-navigation-list label="<%= I18n.t("driver.shared.sidebar_nav_catalogs") %>" icon="ri-book-open-line">
+    <% if @tabs_granted["event_types"] %>
+        <%= navigation_lesli_item(cloud_driver.event_types_path, I18n.t("driver.shared.sidebar_nav_event_types"), "ri-bookmark-line", reload: true) %>
     <% end %>
-</template>
+</lesli-navigation-list>
+
+<lesli-navigation-list label="<%= I18n.t("core.shared.sidebar_nav_settings") %>" icon="ri-home-gear-line">
+    <% if @tabs_granted["workflows"]%>
+        <%= navigation_lesli_item(cloud_driver.workflows_path, I18n.t("core.shared.sidebar_nav_workflows"), "ri-flow-chart", reload: true) %>
+    <% end %>
+</lesli-navigation-list>

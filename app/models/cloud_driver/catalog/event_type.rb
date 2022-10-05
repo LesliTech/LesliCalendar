@@ -1,5 +1,5 @@
 =begin
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -21,7 +21,7 @@ module CloudDriver
         has_many    :events, class_name:  "CloudDriver::Event",   foreign_key: "cloud_driver_catalog_event_types_id"
 
         validates :name, presence: true
-        
+
         def self.index(current_user, query)
             # Parsing filters
             filters = query[:filters]
@@ -50,7 +50,7 @@ module CloudDriver
             event_types = event_types
             .page(query[:pagination][:page])
             .per(query[:pagination][:perPage])
-            .order("#{query[:pagination][:orderBy]} #{query[:pagination][:order]} NULLS LAST")
+            .order("#{query[:pagination][:orderBy]} #{query[:pagination][:order]}")
 
             # We format the response
 

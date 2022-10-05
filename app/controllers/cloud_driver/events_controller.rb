@@ -1,10 +1,10 @@
 =begin
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,7 +13,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 
 Registro de participantes
@@ -23,22 +23,35 @@ budget of the event
 location
 
 
-privacy 
+privacy
     public      -> account calendar privacy as public
     private     -> user calendar privacy as private
     internal    -> account calendar privacy as private
 
-budget 
+budget
 
 
 =end
 require_dependency "cloud_driver/application_controller"
 require 'google/api_client/client_secrets'
 require 'google/apis/calendar_v3'
+
 module CloudDriver
-    class EventsController < ApplicationLesliController
+    class EventsController < ApplicationController
         before_action :set_event, only: [:update, :destroy, :show]
         before_action :parse_query_params, only: :index
+
+        def privileges
+            {
+                new: [],
+                show: [
+                    "CloudDriver::Event::AttendantsController#index",
+                    "CloudDriver::Event::DiscussionsController#create",
+                    "CloudDriver::Event::FilesController#create",
+                ],
+                destroy: [],
+            }
+        end
 
         # GET /events
         def index
@@ -54,7 +67,7 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json do 
+                format.json do
                     return responseWithNotFound unless @event
                     respond_with_successful(@event.show(current_user))
                 end
@@ -67,7 +80,6 @@ module CloudDriver
 
         # GET /events/new
         def new
-            @event = Event.new
         end
 
         # GET /events/1/edit
@@ -76,22 +88,17 @@ module CloudDriver
 
         # POST /events
         def create
-            event_create_response = CloudDriver::EventServices.create(current_user, event_params)
 
-            return respond_with_error(event_create_response.error) if !event_create_response.successful?
+            calendar = nil
+            calendar = current_user.account.driver.calendars.find_by_id(calendar_params[:id]) unless calendar_params[:id].blank?
 
-            event = event_create_response.payload
-
-            user_auth_provider = Courier::Lesli::Users::AuthProviders.get_user_provider(current_user.id, 'Google')
-
-            if user_auth_provider
-                CloudDriver::EventServices.create_external_event(current_user, event_params)
-            end
+            event_create_response = CloudDriver::EventServices.create(current_user, event_params, calendar)
 
             if event_create_response.successful?
+                event = event_create_response.payload
                 respond_with_successful(event.show(current_user))
             else
-                respond_with_error(event.errors.full_messages.to_sentence)
+                respond_with_error(event_create_response.error)
             end
         end
 
@@ -145,23 +152,26 @@ module CloudDriver
                 :model_type,
                 :user_main_id,
                 :cloud_driver_catalog_event_types_id,
-                :source,
                 :external_uid,
                 detail_attributes: [
-                    :title, 
-                    :description, 
+                    :title,
+                    :description,
                     :event_date,
-                    :time_start, 
-                    :time_end, 
-                    :location, 
+                    :time_start,
+                    :time_end,
+                    :location,
                     :budget,
                     :real_cost,
                     :signed_up_count,
                     :showed_up_count,
-                    :url, 
+                    :url,
                     :public
                 ]
             )
+        end
+
+        def calendar_params
+            params.fetch(:calendar, {}).permit(:id)
         end
 
         def parse_query_params

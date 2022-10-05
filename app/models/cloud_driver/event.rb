@@ -1,3 +1,22 @@
+=begin
+
+Copyright (c) 2022, all rights reserved.
+
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
+pictures and any other information belongs to the owner of this platform.
+
+Without the written permission of the owner, any replication, modification,
+transmission, publication is strictly forbidden.
+
+For more information read the license file including with this software.
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// ·
+
+=end
+
 module CloudDriver
     class Event < CloudObject
         belongs_to  :account,        foreign_key: "cloud_driver_accounts_id"
@@ -54,24 +73,25 @@ module CloudDriver
                 user_main_id: user_main_id,
                 organizer_name: (user_main_including_deleted ? user_main_including_deleted.full_name : ""),
                 cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
+                cloud_driver_calendars_id: cloud_driver_calendars_id,
                 detail_attributes: data
             }
         end
 
         def attendant_list
             attendants.joins(:user).select(
-                :id, 
+                :id,
                 :users_id,
-                :email, 
+                :email,
                 :name,
                 "'attendant' as type",
                 LC::Date2.new.date.db_column(:confirmed_at, "cloud_driver_event_attendants")
             ) + guests.select(
-                :id, 
+                :id,
                 "NULL as users_id",
-                :name, 
+                :name,
                 "'guest' as type",
-                :email, 
+                :email,
                 LC::Date2.new.date.db_column(:confirmed_at)
             )
         end
@@ -259,7 +279,7 @@ module CloudDriver
 
             if defined?(DeutscheLeibrenten)
                 url = "/crm/calendar?event_id=#{attendant.event.id}"
-            end 
+            end
 
             attendant.user.notification("event_attendant_created", body: "", url: url)
 

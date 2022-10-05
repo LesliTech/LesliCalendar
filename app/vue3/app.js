@@ -1,4 +1,4 @@
-=begin
+/*
 
 Copyright (c) 2022, all rights reserved.
 
@@ -15,17 +15,16 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // ·
 
-=end
-require_dependency "cloud_driver/application_controller"
+*/
 
-module CloudDriver
-    class WorkflowsController < Shared::WorkflowsController
 
-        def privileges
-            {
-                index: [],
-            }
-        end
+// · Import main app
+import app from "LesliVue/app"
 
-    end
-end
+
+// · Import apps and components
+
+
+// · Cloud app
+app("CloudDriver", [])
+
