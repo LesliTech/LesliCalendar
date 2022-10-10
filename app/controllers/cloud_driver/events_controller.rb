@@ -44,6 +44,7 @@ module CloudDriver
         def privileges
             {
                 new: [],
+                edit: [],
                 show: [
                     "CloudDriver::Event::AttendantsController#index",
                     "CloudDriver::Event::DiscussionsController#create",

@@ -26,6 +26,7 @@ module CloudDriver
 
         def privileges
             {
+                index: [],
                 show: [
                     "options",
                     "sync",
