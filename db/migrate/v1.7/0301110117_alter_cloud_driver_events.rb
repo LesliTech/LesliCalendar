@@ -14,18 +14,10 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // ·
-
 =end
-require_dependency "cloud_driver/application_controller"
 
-module CloudDriver
-    class WorkflowsController < Shared::WorkflowsController
-
-        def privileges
-            {
-                index: [],
-            }
-        end
-
+class AlterCloudDriverEvents < ActiveRecord::Migration[7.0]
+    def change
+        remove_column :cloud_driver_events, :source, :string
     end
 end

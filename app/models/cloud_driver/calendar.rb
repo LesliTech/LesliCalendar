@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2021, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -28,7 +28,7 @@ module CloudDriver
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
-        scope :default, -> { joins(:detail).where("cloud_driver_calendar_details.default = ?", true).select(:id, :name).first }
+        scope :default, -> { joins(:detail).where(cloud_driver_calendar_details: { default: true }, users_id: nil, user_main_id: nil).select(:id, :name, :source_code).first }
 
         # @return [void]
         # @param account [CloudDriver::Account] The account to be initialized
@@ -81,7 +81,6 @@ module CloudDriver
                     driver_events: [],
                     focus_tasks: [],
                     help_tickets: [],
-                    external_events: [],
                 }
             end
 
@@ -136,7 +135,6 @@ module CloudDriver
                 driver_events: "driver_events",
                 focus_tasks: "focus_tasks",
                 help_tickets: "help_tickets",
-                external_events: "external_events",
             }
         end
 

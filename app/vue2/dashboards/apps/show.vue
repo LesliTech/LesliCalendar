@@ -1,10 +1,10 @@
 <script>
 /*
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2022, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,7 +13,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 */
 
 
@@ -25,7 +25,7 @@ import componentEventPanel from "../../components/panel-event.vue"
 
 
 
-// · 
+// ·
 export default {
     components: {
         "component-calendar": componentCalendar,
@@ -95,10 +95,10 @@ export default {
                     help_tickets:  (this.filters.event_category === "all" || this.filters.event_category === "help_tickets" ) ? true : false,
                     focus_tasks: (this.filters.event_category === "all" || this.filters.event_category === "focus_tasks" ) ? true : false,
                     driver_events: (this.filters.event_category === "all" || this.filters.event_category === "driver_events" ) ? true : false,
-                    external_events: (this.filters.event_category === "all" || this.filters.event_category === "external_events" ) ? true : false,
                 },
                 query: this.filters.query
             }
+
             let url = this.url.driver('calendars/default').filters(filters).dayTimestamp(this.data.agenda_day)
 
             this.http.get(url).then(result => {
