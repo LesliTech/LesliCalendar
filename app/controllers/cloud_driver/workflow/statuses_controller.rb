@@ -20,5 +20,10 @@ For more information read the license file including with this software.
 
 =end
     class Workflow::StatusesController < Shared::Workflow::StatusesController
+        def privileges
+            {
+                new: []
+            }
+        end
     end
 end
