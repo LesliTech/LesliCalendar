@@ -20,12 +20,13 @@ require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
     class WorkflowsController < Shared::WorkflowsController
-
         def privileges
             {
                 index: [],
+                show: [],
+                edit: [],
+                destroy: []
             }
         end
-
     end
 end
