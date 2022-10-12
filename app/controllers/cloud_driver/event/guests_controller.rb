@@ -21,6 +21,14 @@ module CloudDriver
     class Event::GuestsController < ApplicationController
         before_action :set_event, only: [:create, :destroy, :update]
 
+        def privileges
+            {
+                new: [],
+                edit: [],
+                destroy: [],
+            }
+        end
+
         # GET /event/guests
         def index
             respond_to do |format|

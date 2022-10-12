@@ -21,5 +21,15 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
     class Event::DiscussionsController < ApplicationController
         include Interfaces::Controllers::Discussions
+
+        def privileges
+            {
+                new: [],
+                edit: [],
+                index: [],
+                destroy: []
+            }
+        end
+
     end
 end

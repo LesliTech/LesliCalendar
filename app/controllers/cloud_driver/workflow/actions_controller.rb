@@ -20,5 +20,14 @@ For more information read the license file including with this software.
 
 =end
     class Workflow::ActionsController < Shared::Workflow::ActionsController
+        def privileges
+            {
+                index: [],
+                show: ["options"],
+                new: [],
+                edit: [],
+                destroy: []
+            }
+        end
     end
 end

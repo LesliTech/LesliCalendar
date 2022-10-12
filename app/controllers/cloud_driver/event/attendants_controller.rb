@@ -22,6 +22,15 @@ For more information read the license file including with this software.
     class Event::AttendantsController < ApplicationController
         before_action :set_event, only: [:create, :destroy, :update]
 
+        def privileges
+            {
+                new: [],
+                edit: [],
+                index: [],
+                destroy: [],
+            }
+        end
+
 =begin
 @return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of 
     all attendants associated to certain event 
