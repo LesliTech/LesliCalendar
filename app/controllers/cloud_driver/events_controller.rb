@@ -47,8 +47,6 @@ module CloudDriver
                 edit: [],
                 show: [
                     "CloudDriver::Event::AttendantsController#index",
-                    "CloudDriver::Event::DiscussionsController#create",
-                    "CloudDriver::Event::FilesController#create",
                 ],
                 destroy: [],
             }
