@@ -49,6 +49,8 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             start_date = LC::Date.now.beginning_of_year
             end_date = LC::Date.now.end_of_year
 
+            LC::Debug.msg start_date, end_date
+
             get("/driver/calendars/default.json?filters[start_date]=#{start_date}&filters[end_date]=#{end_date}")
 
             # shared examples
