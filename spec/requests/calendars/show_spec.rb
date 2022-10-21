@@ -27,7 +27,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
 
             # We create 1 event each month
             (1..12).each do |month|
-                event_date = Date.new(DateTime.now.year, month, 1)
+                event_date = Date.new(DateTime.now.year, month, 15)
 
                 event = FactoryBot.create(
                     :cloud_driver_event,
@@ -42,6 +42,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                         title: Faker::Sports::Football.competition
                     }
                 )
+
             end
 
             start_date = LC::Date.now.beginning_of_year
