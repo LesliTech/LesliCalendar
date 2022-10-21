@@ -43,7 +43,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                     }
                 )
 
-                LC::Debug.msg event
+                LC::Debug.msg month, event, event.detail
             end
 
             start_date = LC::Date.now.beginning_of_year
