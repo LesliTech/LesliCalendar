@@ -42,6 +42,8 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                         title: Faker::Sports::Football.competition
                     }
                 )
+
+                LC::Debug.msg event
             end
 
             start_date = LC::Date.now.beginning_of_year
