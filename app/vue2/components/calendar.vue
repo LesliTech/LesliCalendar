@@ -146,7 +146,6 @@ export default {
                 return
             }
 
-
             this.bus.publish("show:/driver/component/event-quickview", arg.event.id)
             this.data.event.show = true
             this.data.event.id = arg.event.id
