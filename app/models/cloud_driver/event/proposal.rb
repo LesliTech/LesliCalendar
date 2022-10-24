@@ -17,6 +17,7 @@ For more information read the license file including with this software.
 =end
 module CloudDriver
     class Event::Proposal < ApplicationRecord
+
         def self.index(current_user, query)
             []
         end
@@ -24,5 +25,6 @@ module CloudDriver
         def show(current_user, query)
             self
         end
+
     end
 end

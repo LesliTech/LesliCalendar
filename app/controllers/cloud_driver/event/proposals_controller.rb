@@ -18,80 +18,73 @@ For more information read the license file including with this software.
 require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
-  class Event::ProposalsController < ApplicationController
-      before_action :set_event_proposal, only: [:show, :update, :destroy]
+    class Event::ProposalsController < ApplicationController
+        before_action :set_event, only: [:create]
+        before_action :set_event_proposal, only: [:show]
 
-      # GET /event/proposals
-      def index
-          respond_to do |format|
-              format.html {}
-              format.json do
-                  respond_with_successful(Event::Proposal.index(current_user, @query))
-              end
-          end
-      end
+        def privileges
+            {
+                new: [],
+            }
+        end
 
-      # GET /event/proposals/1
-      def show
-          respond_to do |format|
-              format.html {}
-              format.json do
-                  return respond_with_not_found unless @event_proposal
-                  return respond_with_successful(@event_proposal.show(current_user, @query))
-              end
-          end
-      end
+        # GET /event/proposals
+        def index
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    respond_with_successful(Event::Proposal.index(current_user, @query))
+                end
+            end
+        end
 
-      # GET /event/proposals/new
-      def new
-      end
+        # GET /event/proposals/1
+        def show
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    return respond_with_not_found unless @event_proposal
+                    return respond_with_successful(@event_proposal.show(current_user, @query))
+                end
+            end
+        end
 
-      # GET /event/proposals/1/edit
-      def edit
-      end
+        # POST /event/proposals
+        def create
+            return respond_with_error unless @event.is_proposal
 
-      # POST /event/proposals
-      def create
-          event_proposal = Event::Proposal.new(event_proposal_params)
-          if event_proposal.save
-              respond_with_successful(event_proposal)
-          else
-              respond_with_error(event_proposal.errors.full_messages.to_sentence)
-          end
-      end
+            event_proposal = @event.proposals.new(event_proposal_params)
+            event_proposal.rejected = false
 
-      # PATCH/PUT /event/proposals/1
-      def update
-          return respond_with_not_found unless @event_proposal
+            if event_proposal.save
+                respond_with_successful(event_proposal)
+            else
+                respond_with_error(event_proposal.errors.full_messages.to_sentence)
+            end
+        end
 
-          if @event_proposal.update(event_proposal_params)
-              respond_with_successful(@event_proposal.show(current_user, @query))
-          else
-              respond_with_error(@event_proposal.errors.full_messages.to_sentence)
-          end
-      end
+        private
 
-      # DELETE /event/proposals/1
-      def destroy
-          return respond_with_not_found unless @event_proposal
+        def set_event
+            @event = Event.find_by(
+                id: params[:event_id],
+                cloud_driver_accounts_id: current_user.account.id
+            )
+        end
 
-          if @event_proposal.destroy
-              respond_with_successful
-          else
-              respond_with_error(@event_proposal.errors.full_messages.to_sentence)
-          end
-      end
+        # Use callbacks to share common setup or constraints between actions.
+        def set_event_proposal
+            @event_proposal = current_user.account.event_proposals.find_by_id(params[:id])
+        end
 
-      private
-
-      # Use callbacks to share common setup or constraints between actions.
-      def set_event_proposal
-          @event_proposal = current_user.account.event_proposals.find_by_id(params[:id])
-      end
-
-      # Only allow a list of trusted parameters through.
-      def event_proposal_params
-          params.fetch(:event_proposal, {}).permit(:id, :name)
-      end
-  end
+        # Only allow a list of trusted parameters through.
+        def event_proposal_params
+            params.fetch(:event_proposal, {}).permit(
+                :id,
+                :event_date,
+                :time_start,
+                :time_end,
+            )
+        end
+    end
 end

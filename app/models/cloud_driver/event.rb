@@ -37,6 +37,7 @@ module CloudDriver
         has_many :files,        foreign_key: "cloud_driver_events_id"
         has_many :guests,       foreign_key: "cloud_driver_events_id"
         has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :proposals,    foreign_key: "cloud_driver_events_id"
         has_many :activities,   foreign_key: "cloud_driver_events_id"
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
@@ -66,6 +67,8 @@ module CloudDriver
                 model_id: model_id,
                 model_type: model_type,
                 editable: self.is_editable_by?(current_user),
+                is_proposal: self.is_proposal,
+                estimated_mins_durations: self.estimated_mins_durations,
                 model_global_identifier: model_global_identifier,
                 total_invites_count: total_invites_count,
                 confirmed_invites_count: confirmed_invites_count,
