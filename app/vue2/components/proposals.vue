@@ -69,14 +69,14 @@ export default {
 
     methods: {
         getProposals() {
-            // let url = `${this.main_route}/${this.eventId}/attendants.json`
-            // this.loading.attendants = true
+            // const url = `${this.main_route}/${this.eventId}/proposals.json`
+            // this.loading.proposals = true
 
             // this.http.get(url).then(result => {
-            //     this.loading.attendants = false
+            //     this.loading.proposals = false
             //     if (result.successful) {
-            //         this.attendants = result.data
-            //         this.loaded.attendants = true
+            //         this.proposals = result.data
+            //         this.loaded.proposals = true
             //         this.syncLists()
             //     }else{
             //         this.msg.error(result.error.message)
@@ -87,21 +87,24 @@ export default {
         },
 
         postProposal() {
-            let url = this.url.driver("events/:event_id/proposals", { event_id: this.eventId })
+            this.proposal_submit = true
+            const url = this.url.driver("events/:event_id/proposals", { event_id: this.eventId })
 
-            let data = {
+            const data = {
                 event_proposal: this.proposal
             }
 
             this.http.post(url, data).then(result => {
                 if (result.successful) {
-                    this.proposals.push(result.data)
                     this.msg.success(this.translations.driver.events.messages_success_proposal_created)
                 } else {
                     this.msg.error(result.error.message)
                 }
             }).catch(error => {
                 console.log(error)
+            }).finally(() => {
+                this.proposal_submit = false
+                this.getProposals()
             })
         },
 
@@ -192,10 +195,10 @@ export default {
                     </fieldset>
                 </form>
             </b-tab-item>
-            <b-tab-item :label="translations.driver.events.view_tab_title_attendants_list">
-                <!-- <component-data-loading v-if="loading.attendants" />
-                <component-data-empty v-if="!loading.attendants && attendants.length == 0" />
-                <b-table v-if="!loading.attendants && attendants.length > 0" :data="attendants" narrowed :class="customTableClass">
+            <b-tab-item :label="translations.driver.events.view_tab_title_proposals_list">
+                <!-- <component-data-loading v-if="loading.proposals" />
+                <component-data-empty v-if="!loading.proposals && proposals.length == 0" />
+                <b-table v-if="!loading.proposals && proposals.length > 0" :data="proposals" narrowed :class="customTableClass">
                     <template slot-scope="props">
                         <b-table-column field="name" :label="translations.core.shared.view_text_name">
                             <small>{{ props.row.name }}</small>
