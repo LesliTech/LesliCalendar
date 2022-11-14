@@ -454,9 +454,9 @@ export default {
                                     </label>
                                 </div>
                             </div>
-                            <div class="column is-6" v-if="event.is_proposal">
+                            <div class="column is-6" v-show="event.is_proposal">
                                 <b-field label="Estimated duration (mins)">
-                                    <b-input type="number" step="10" min="10" name="estimated_mins_durations" v-model="event.estimated_mins_durations" :readonly="!eventEditable" :required="event.is_proposal">
+                                    <b-input type="number" step="10" min="10" name="estimated_mins_durations" v-model="event.estimated_mins_durations" :readonly="!eventEditable">
                                     </b-input>
                                 </b-field>
                             </div>

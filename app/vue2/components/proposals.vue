@@ -181,14 +181,14 @@ export default {
                         <div class="field is-grouped">
                             <div class="control">
                                 <button class="button is-primary">
-                                    <span v-if="loading.proposal_submit">
+                                    <span v-show="loading.proposal_submit">
                                         <b-icon icon="circle-notch" custom-class="fa-spin"></b-icon>
                                         <span>{{ translations.core.shared.view_btn_saving }}</span>
                                     </span>
-                                    <span v-else>
+                                    <!-- <span v-else>
                                         <b-icon icon="save"></b-icon>
                                         <span>{{ translations.core.shared.view_btn_save }}</span>
-                                    </span>
+                                    </span> -->
                                 </button>
                             </div>
                         </div>
