@@ -23,7 +23,6 @@ import { useRouter, useRoute } from 'vue-router'
 
 
 // · Import components
-// import componentActions from "CloudBabel/components/actions.vue"
 
 
 // · initialize/inject plugins
@@ -33,25 +32,20 @@ const url = inject("url")
 
 
 // · import lesli stores
-// import { useStatistics } from "CloudBabel/stores/statistics"
-// import { useStrings } from "CloudBabel/stores/strings"
 
 
 // · implement stores
-// const storeStatistics = useStatistics()
-// const storeStrings = useStrings()
 
 
 // · 
 onMounted(() => {
-    // storeStatistics.fetch()
 })
 
 
 </script>
 <template>
     <section class="application-component">
-        <lesli-header title="Found registered labels">
+        <lesli-header title="Calendar">
         </lesli-header>
 
         <lesli-toolbar @search=""></lesli-toolbar>
