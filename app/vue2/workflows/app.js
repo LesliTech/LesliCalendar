@@ -36,6 +36,8 @@ const props = {
 
 // · 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+app("CloudDriver", "[list|new|edit|show]", "/driver/workflows", [{}])
+/*
 app("CloudDriver", "[list|new|edit|show]", "/driver/workflows", [{
     path: "/",
     component: appList,
@@ -53,3 +55,4 @@ app("CloudDriver", "[list|new|edit|show]", "/driver/workflows", [{
     component: appEdit,
     props: props
 }])
+*/

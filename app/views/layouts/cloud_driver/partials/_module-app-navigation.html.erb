@@ -28,9 +28,3 @@ For more information read the license file including with this software.
         <%= navigation_lesli_item(cloud_driver.event_types_path, I18n.t("driver.shared.sidebar_nav_event_types"), "ri-bookmark-line", reload: true) %>
     <% end %>
 </lesli-navigation-list>
-
-<lesli-navigation-list label="<%= I18n.t("core.shared.sidebar_nav_settings") %>" icon="ri-home-gear-line">
-    <% if @tabs_granted["workflows"]%>
-        <%= navigation_lesli_item(cloud_driver.workflows_path, I18n.t("core.shared.sidebar_nav_workflows"), "ri-flow-chart", reload: true) %>
-    <% end %>
-</lesli-navigation-list>
