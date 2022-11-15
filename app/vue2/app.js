@@ -26,7 +26,8 @@ import dashboardsRoutes from './dashboards/routes.js'
 import eventRoutes from './events/routes.js'
 
 app('CloudDriver', '/driver', '[calendars|events]',
-    catalogEventTypesRoutes
+    dashboardsRoutes
+    .concat(catalogEventTypesRoutes)
     .concat(eventRoutes)   
 ,{
     event: {
