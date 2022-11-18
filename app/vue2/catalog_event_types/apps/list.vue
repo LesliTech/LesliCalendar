@@ -46,7 +46,7 @@ export default {
                 range_after: 3
             },
             filters: {
-                query: '',
+                search: '',
                 per_page: 15
             },
             filters_ready: false,
@@ -85,9 +85,7 @@ export default {
 
             let url = this.url.driver('catalog/event_types')
 
-            url = url.filters({
-                query: this.filters.query
-            }).paginate(
+            url = url.search(this.filters.search).paginate(
                 this.pagination.current_page,
                 this.pagination.per_page
             ).order(
@@ -121,7 +119,7 @@ export default {
 
         searchEventTypes(text) {
             this.pagination.current_page = 1
-            this.filters.query = text
+            this.filters.search = text
             this.getEventTypes()
         },
 
@@ -175,7 +173,7 @@ export default {
             v-if="filters_ready"
             :search-text="translations.main.view_placeholder_text_filter"
             @search="searchEventTypes"
-            :initial-value="filters.query"
+            :initial-value="filters.search"
         >
             <div class="control">
                 <div class="select">
@@ -245,7 +243,7 @@ export default {
                                     <b-icon v-else size="is-small" icon="arrow-down"></b-icon>
                                 </span>
                             </template>
-                            {{props.row.created_at_text}}
+                            {{props.row.created_at_string}}
                         </b-table-column>
                     </template>
                 </b-table>

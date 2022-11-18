@@ -1,7 +1,4 @@
-<%#
-
-Lesli
-
+=begin
 Copyright (c) 2022, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
@@ -17,14 +14,10 @@ For more information read the license file including with this software.
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // ·
 
-%>
-
-<% if @tabs_granted["calendars"] %>
-    <%= navigation_lesli_item(cloud_driver.root_path, I18n.t("driver.shared.sidebar_nav_calendar"), "ri-dashboard-3-line", reload: true) %>
-<% end %>
-
-<lesli-navigation-list label="<%= I18n.t("driver.shared.sidebar_nav_catalogs") %>" icon="ri-book-open-line">
-    <% if @tabs_granted["event_types"] %>
-        <%= navigation_lesli_item(cloud_driver.event_types_path, I18n.t("driver.shared.sidebar_nav_event_types"), "ri-bookmark-line", reload: true) %>
-    <% end %>
-</lesli-navigation-list>
+=end
+class AlterCloudDriverEvents < ActiveRecord::Migration[7.0]
+    def change
+        add_column  :cloud_driver_events, :is_proposal, :boolean
+        add_column  :cloud_driver_events, :estimated_mins_durations, :integer
+    end
+end

@@ -152,6 +152,8 @@ module CloudDriver
                 :user_main_id,
                 :cloud_driver_catalog_event_types_id,
                 :external_uid,
+                :is_proposal,
+                :estimated_mins_durations,
                 detail_attributes: [
                     :title,
                     :description,

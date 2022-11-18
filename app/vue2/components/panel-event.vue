@@ -2,9 +2,9 @@
 /*
 Copyright (c) 2020, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -13,7 +13,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 */
 import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
@@ -22,6 +22,7 @@ import componentCloudObjectFile from 'LesliCoreVue/cloud_objects/file.vue'
 import componentSidebarView from 'LesliVue/components/views/sidebar-view.vue'
 import componentPanel from 'LesliVue/panels/panel.vue'
 import componentAttendants from './attendants.vue'
+import componentProposals from './proposals.vue'
 
 
 export default {
@@ -30,6 +31,7 @@ export default {
         'component-cloud-object-file': componentCloudObjectFile,
         "component-sidebar-view": componentSidebarView,
         'component-attendants': componentAttendants,
+        'component-proposals': componentProposals,
         'vc-date-picker': DatePicker,
         'component-panel': componentPanel
     },
@@ -217,7 +219,7 @@ export default {
                     event.detail_attributes[attribute] = new Date(event.detail_attributes[attribute])
                 }
             })
-            
+
             return event
         },
 
@@ -273,13 +275,14 @@ export default {
 }
 </script>
 <template>
-    <component-panel 
+    <component-panel
         size="medium"
         :open.sync="data.event.show"
         :title="(data.event.id ? event.detail_attributes.title : translations.events.view_title_new) || ''">
         <component-data-loading v-if="loading.event">
         </component-data-loading>
         <b-tabs v-show="!loading.event" expanded v-model="active_tab">
+            <!-- Form -->
             <b-tab-item class="p-5" :label="translations.core.view_tab_title_general_information">
                 <form @submit.prevent="submitEvent()">
                     <fieldset :disabled="submit.event">
@@ -390,7 +393,7 @@ export default {
                                             >
                                                 {{ event_type.text }}
                                             </option>
-                                        </b-select> 
+                                        </b-select>
 
                                         <p class="control">
                                             <b-button :disabled="loading.options" @click="getOptions">
@@ -446,6 +449,22 @@ export default {
                             <div class="column is-6">
                                 <div class="field">
                                     <label class="checkbox">
+                                        <input type="checkbox" name="is_proposal" v-model="event.is_proposal" :disabled="!eventEditable">
+                                        {{ "Is proposal?" }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="column is-6" v-show="event.is_proposal">
+                                <b-field label="Estimated duration (mins)">
+                                    <b-input type="number" step="10" min="10" name="estimated_mins_durations" v-model="event.estimated_mins_durations" :readonly="!eventEditable">
+                                    </b-input>
+                                </b-field>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column is-6">
+                                <div class="field">
+                                    <label class="checkbox">
                                         <input type="checkbox" name="public" v-model="event.detail_attributes.public" :disabled="!eventEditable">
                                         {{ translations.events.view_text_mark_as_public }}
                                     </label>
@@ -477,9 +496,15 @@ export default {
                     </fieldset>
                 </form>
             </b-tab-item>
+            <!-- Attendants -->
             <b-tab-item :visible="!!data.event.id" :label="translations.events.view_tab_title_attendants">
                 <component-attendants v-if="data.event.id" :event-id="data.event.id" :event-editable="event.editable" custom-table-class="box" />
             </b-tab-item>
+            <!-- Proposals -->
+            <b-tab-item :visible="!!data.event.id" :label="translations.events.view_tab_title_proposals">
+                <component-proposals v-if="data.event.id" :event-id="data.event.id" :event-editable="event.editable" custom-table-class="box" />
+            </b-tab-item>
+            <!-- Discussions -->
             <b-tab-item :visible="!!data.event.id" :label="translations.core.view_text_discussions">
                 <div class="box">
                     <component-cloud-object-discussion-simple
@@ -490,6 +515,7 @@ export default {
                     </component-cloud-object-discussion-simple>
                 </div>
             </b-tab-item>
+            <!-- Files -->
             <b-tab-item :visible="!!data.event.id" :label="translations.core.view_text_files">
                 <component-cloud-object-file
                     cloud-module="driver/event"
@@ -498,6 +524,7 @@ export default {
                     translations-file-types-path="driver.event/files"
                 />
             </b-tab-item>
+            <!-- Delete -->
             <b-tab-item :visible="!!data.event.id" :label="translations.core.view_tab_title_delete_section">
                     <span class="has-text-danger">
                         {{translations.events.view_text_delete_confirmation}}
