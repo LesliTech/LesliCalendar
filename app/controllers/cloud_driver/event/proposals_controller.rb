@@ -69,7 +69,7 @@ module CloudDriver
 
         # Only allow a list of trusted parameters through.
         def event_proposal_params
-            params.fetch(:event_proposal, {}).permit(
+            params.require(:event_proposal).permit(
                 :id,
                 :event_date,
                 :time_start,
