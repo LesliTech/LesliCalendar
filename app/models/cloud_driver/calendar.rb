@@ -28,7 +28,10 @@ module CloudDriver
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
-        scope :default, -> { joins(:detail).where(cloud_driver_calendar_details: { default: true }, users_id: nil, user_main_id: nil).select(:id, :name, :source_code).first }
+        # @return [CloudDriver::Calendar] The account shared calendar
+        def self.default(current_user)
+            current_user.account.driver.calendars.joins(:detail).find_by(cloud_driver_calendar_details: { default: true }, user_main_id: nil, users_id: nil)
+        end
 
         # @return [Array] Array of calendars of the current_user
         def self.index(current_user, query)
@@ -69,13 +72,13 @@ module CloudDriver
 
             # Formating the response
             records = records.select(
-                'cloud_driver_calendars.id',
-                'cloud_driver_calendar_details.name',
-                'cloud_driver_calendar_details.default',
-                'cloud_driver_calendars.created_at',
-                'cloud_driver_calendars.updated_at',
-                'cloud_driver_calendars.source_code',
-                'cloud_driver_calendars.user_main_id',
+                "cloud_driver_calendars.id",
+                "cloud_driver_calendar_details.name",
+                "cloud_driver_calendar_details.default",
+                "cloud_driver_calendars.created_at",
+                "cloud_driver_calendars.updated_at",
+                "cloud_driver_calendars.source_code",
+                "cloud_driver_calendars.user_main_id",
                 LC::Date2.new.db_column("created_at", "cloud_driver_calendars"),
                 LC::Date2.new.db_column("updated_at", "cloud_driver_calendars"),
             )
@@ -127,19 +130,8 @@ module CloudDriver
         #         help_tickets: [...],
         #         driver_events: [...],
         #     }
-        def self.show(current_user, query)
-            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
-                return {
-                    id: self.default.id,
-                    name: self.default.name,
-                    driver_events: [],
-                    focus_tasks: [],
-                    help_tickets: [],
-                }
-            end
-
-            calendar = current_user.account.driver.calendars.default
-            Courier::Driver::Calendar.show(current_user, query, calendar)
+        def show(current_user, query)
+            Courier::Driver::Calendar.show(current_user, query, self.id)
         end
 
         # @return [Hash] The required information to create or filter a calendar
