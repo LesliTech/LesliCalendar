@@ -30,6 +30,60 @@ module CloudDriver
 
         scope :default, -> { joins(:detail).where(cloud_driver_calendar_details: { default: true }, users_id: nil, user_main_id: nil).select(:id, :name, :source_code).first }
 
+        # @return [Array] Array of calendars of the current_user
+        def self.index(current_user, query)
+            # Parsing filters
+            filters = query[:filters]
+
+            # Get order params from query
+            unless query.dig(:order, :by).blank?
+                order_by = query.dig(:order, :by)
+                order_dir = query.dig(:order, :dir)
+            end
+
+            # get search string from query params
+            search_string = query[:search].downcase.gsub(" ","%") unless query[:search].blank?
+
+            # Executing the query
+            records = current_user.account.driver.calendars
+
+            # Joining calendar with details
+            records = records.joins(:detail)
+
+            # Filtering by the calendars of the current_user
+            records = records.where(user_main_id: current_user.id)
+
+            # We filter by a text string written by the user
+            unless search_string.blank?
+                records = records.where(
+                    "
+                    (LOWER(source_code) SIMILAR TO :search_string) OR
+                    (LOWER(cloud_driver_calendar_details.name) SIMILAR TO :search_string)
+                    ",
+                    search_string: "%#{sanitize_sql_like(search_string, " ")}%"
+                )
+            end
+
+            # Adding order to the query
+            records = records.order(order_by.concat(" ").concat(order_dir)) unless order_by.blank?
+
+            # Formating the response
+            records = records.select(
+                'cloud_driver_calendars.id',
+                'cloud_driver_calendar_details.name',
+                'cloud_driver_calendar_details.default',
+                'cloud_driver_calendars.created_at',
+                'cloud_driver_calendars.updated_at',
+                'cloud_driver_calendars.source_code',
+                'cloud_driver_calendars.user_main_id',
+                LC::Date2.new.db_column("created_at", "cloud_driver_calendars"),
+                LC::Date2.new.db_column("updated_at", "cloud_driver_calendars"),
+            )
+
+            # Adding pagination
+            records.page(query[:pagination][:page]).per(query[:pagination][:perPage])
+        end
+
         # @return [void]
         # @param account [CloudDriver::Account] The account to be initialized
         # @description Initializes the data required for the calendars to work when a new account is created.
