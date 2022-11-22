@@ -53,8 +53,12 @@ module CloudDriver
             # Joining calendar with details
             records = records.joins(:detail)
 
-            # Filtering by the calendars of the current_user
-            records = records.where(user_main_id: current_user.id)
+            # Filtering by the calendars of the current_user and the shared calendars
+            records = records.where(
+                user_main: current_user
+            ).or(
+                records.where(user_main: nil)
+            )
 
             # We filter by a text string written by the user
             unless search_string.blank?
