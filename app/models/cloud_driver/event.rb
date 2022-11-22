@@ -43,7 +43,8 @@ module CloudDriver
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
         before_validation :set_workflow, on: :create
-        after_create :verify_date
+        validate :required_creation_attributes
+        after_create :initialize_event
 
         # @return [Hash] The default calendar events
         def self.index(current_user, query)
@@ -300,14 +301,19 @@ module CloudDriver
 
         protected
 
-        # @return [void]
-        # @description Sets the default event date if the date was not set during creation
-        # @example
-        #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
-        #     puts new_event.detail.event_date
-        #     # This will display the creation time of the event
-        def verify_date
-            detail.update(event_date: self.created_at) unless detail.event_date
+        # @return [void] adds an error if the event is not valid
+        def required_creation_attributes
+            # Event title is required
+            errors.add(:title, "cannot be empty") unless self.detail.title.present?
+        end
+
+        # @return [void] adds initial values to the event if they are not present
+        def initialize_event
+            # If event date is not provided, the event is a proposal by default
+            self.update(is_proposal: true) if self.detail.event_date.blank?
+
+            # If the event is a proposal and estimated time is not provided, the event estimated time is setted to 1 hour
+            self.update(estimated_mins_durations: 60) if self.is_proposal? && self.estimated_mins_durations.blank?
         end
 
     end
