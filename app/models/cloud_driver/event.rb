@@ -80,24 +80,33 @@ module CloudDriver
             end
 
             # Getting all my events
-            my_calendar_events = calendar.events.joins(:detail).left_joins(:type).where(
+            my_calendar_events = calendar.events.joins(:detail).left_joins(:type).joins(
+                "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+            ).where(
                 "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
             ).where(
                 "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+            ).or(
+                calendar.events.joins(:detail).left_joins(:type).joins(
+                    "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+                ).where("cloud_driver_event_details.event_date is ?", nil)
             ).select(
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "event_date as date",
-                "time_start as start",
-                "time_end + interval '1 second' as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
-                "false as is_attendant",
+                # "false as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",
+                :is_proposal,
             )
 
             # Getting events of the same calendar source of other users where I am an attendant
             my_attendant_events = CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+            ).joins(
                 "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
             ).where(
                 "cloud_driver_calendars.source_code = ?", calendar.source_code
@@ -105,22 +114,35 @@ module CloudDriver
                 "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
             ).where(
                 "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+            ).or(
+                CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                    "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+                ).joins(
+                    "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
+                ).where("cloud_driver_event_details.event_date is ?", nil)
             ).select(
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "event_date as date",
-                "time_start as start",
-                "time_end + interval '1 second' as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
-                "true as is_attendant",
+                # "true as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",
+                :is_proposal,
             )
 
             # Union of my events and the ones I am invited to
             driver_events = my_calendar_events.union(my_attendant_events)
 
-            driver_events.order("date")
+            # Ordering by date
+            driver_events = driver_events.order("date")
+
+            # Removing duplicates
+            driver_events = driver_events.distinct
+
+            driver_events
         end
 
         def attendant_list
