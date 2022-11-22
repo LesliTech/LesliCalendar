@@ -98,12 +98,12 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                :event_date,
-                :time_start,
-                :time_end,
+                "event_date as date",
+                "time_start as start",
+                "time_end + interval '1 second' as end", # The calendar will crash if start and end dates are the same
                 :location,
                 "false as is_attendant",
-                "cloud_driver_catalog_event_types.name as event_type"
+                "cloud_driver_catalog_event_types.name as event_type",
             )
 
             # Getting events of the same calendar source of other users where I am an attendant
@@ -119,18 +119,18 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                :event_date,
-                :time_start,
-                :time_end,
+                "event_date as date",
+                "time_start as start",
+                "time_end + interval '1 second' as end", # The calendar will crash if start and end dates are the same
                 :location,
                 "true as is_attendant",
-                "cloud_driver_catalog_event_types.name as event_type"
+                "cloud_driver_catalog_event_types.name as event_type",
             )
 
             # Union of my events and the ones I am invited to
             driver_events = my_calendar_events.union(my_attendant_events)
 
-            driver_events.order("event_date")
+            driver_events.order("date")
         end
 
         def attendant_list
