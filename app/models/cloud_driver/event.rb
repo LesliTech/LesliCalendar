@@ -50,34 +50,22 @@ module CloudDriver
         end
 
         def show(current_user = nil)
-            data = Event
-            .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
-            .where("cloud_driver_events.id = ?", id)
-            .first
-
-            model_global_identifier = nil
-            model_global_identifier = model.global_identifier if model
-
-            total_invites_count = attendants.count + guests.count
-            confirmed_invites_count = attendants.where("confirmed_at is not ?", nil).count + guests.where("confirmed_at is not ?", nil).count
-
             {
-                id: id,
-                model_id: model_id,
-                model_type: model_type,
+                id: self.id,
+                model_id: self.model_id,
+                model_type: self.model_type,
                 editable: self.is_editable_by?(current_user),
                 is_proposal: self.is_proposal,
                 estimated_mins_durations: self.estimated_mins_durations,
-                model_global_identifier: model_global_identifier,
-                total_invites_count: total_invites_count,
-                confirmed_invites_count: confirmed_invites_count,
-                users_id: users_id,
-                user_main_id: user_main_id,
-                organizer_name: (user_main_including_deleted ? user_main_including_deleted.full_name : ""),
-                cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
-                cloud_driver_calendars_id: cloud_driver_calendars_id,
-                detail_attributes: data
+                model_global_identifier: self.model ? self.model.global_identifier : nil,
+                total_invites_count: self.attendants.count + self.guests.count,
+                confirmed_invites_count: self.attendants.where("confirmed_at is not ?", nil).count + self.guests.where("confirmed_at is not ?", nil).count,
+                users_id: self.users_id,
+                user_main_id: self.user_main_id,
+                organizer_name: self.user_main_including_deleted ? self.user_main_including_deleted.full_name : "",
+                cloud_driver_catalog_event_types_id: self.cloud_driver_catalog_event_types_id,
+                cloud_driver_calendars_id: self.cloud_driver_calendars_id,
+                detail_attributes: self.detail.slice(:id, :title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
             }
         end
 

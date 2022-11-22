@@ -17,7 +17,7 @@ For more information read the license file including with this software.
 =end
 class AlterCloudDriverEvents < ActiveRecord::Migration[7.0]
     def change
-        add_column  :cloud_driver_events, :is_proposal, :boolean
-        add_column  :cloud_driver_events, :estimated_mins_durations, :integer
+        add_column  :cloud_driver_events, :is_proposal, :boolean, default: false
+        add_column  :cloud_driver_events, :estimated_mins_durations, :integer, default: nil
     end
 end
