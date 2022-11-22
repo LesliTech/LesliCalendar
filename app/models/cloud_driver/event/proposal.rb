@@ -37,6 +37,9 @@ module CloudDriver
         def required_creation_attributes
             # Event date is required
             errors.add(:date, "cannot be empty") unless self.event_date.present?
+
+            # Event proposal is only valid if the event is a proposal
+            errors.add(:event, "is not a proposal anymore") unless self.event.is_proposal?
         end
 
         # @return [void] set default values for the event proposal
