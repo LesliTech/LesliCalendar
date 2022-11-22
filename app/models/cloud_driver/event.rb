@@ -326,7 +326,7 @@ module CloudDriver
         # @return [void] adds an error if the event is not valid
         def required_creation_attributes
             # Event title is required
-            errors.add(:title, "cannot be empty") unless self.detail.title.present?
+            errors.add(:title, "cannot be empty") unless self.detail&.title.present?
         end
 
         # @return [void] adds initial values to the event if they are not present
@@ -334,8 +334,17 @@ module CloudDriver
             # If event date is not provided, the event is a proposal by default
             self.update(is_proposal: true) if self.detail.event_date.blank?
 
+            # If event date is not provided, the event date is the current date
+            self.detail.update!(event_date: self.created_at) if self.detail.event_date.blank?
+
             # If the event is a proposal and estimated time is not provided, the event estimated time is setted to 1 hour
             self.update(estimated_mins_durations: 60) if self.is_proposal? && self.estimated_mins_durations.blank?
+
+            # If time start is not provided and event date is provided, the event time start is setted equal to the event date
+            self.detail.update(time_start: self.detail.event_date) if self.detail.time_start.blank? && self.detail.event_date.present?
+
+            # If time end is not provided and time start is setted, the event time end is setted equal to 1 hour later than the time start by default
+            self.detail.update(time_end: self.detail.time_start + 1.hour) if self.detail.time_end.blank? && self.detail.time_start.present?
         end
 
     end
