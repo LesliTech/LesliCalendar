@@ -43,6 +43,7 @@ module CloudDriver
 
         def privileges
             {
+                index: [],
                 new: [],
                 edit: [],
                 show: [
