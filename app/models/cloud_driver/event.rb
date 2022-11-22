@@ -81,6 +81,58 @@ module CloudDriver
             }
         end
 
+        # @return [Array] of events on my calendar and the ones I am invited to of the same calendar source
+        def self.with_deadline(current_user, query, calendar)
+            # If filter dates not provided, force use current month
+            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
+                query[:filters][:start_date] = query[:filters][:start_date] || Time.now.beginning_of_month.to_s
+                query[:filters][:end_date] = query[:filters][:end_date] || Time.parse(query[:filters][:start_date]).end_of_month.to_s
+            end
+
+            # Getting all my events
+            my_calendar_events = calendar.events.joins(:detail).left_joins(:type).where(
+                "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
+            ).where(
+                "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+            ).select(
+                "cloud_driver_events.id",
+                :title,
+                :description,
+                :event_date,
+                :time_start,
+                :time_end,
+                :location,
+                "false as is_attendant",
+                "cloud_driver_catalog_event_types.name as event_type"
+            )
+
+            # Getting events of the same calendar source of other users where I am an attendant
+            my_attendant_events = CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
+            ).where(
+                "cloud_driver_calendars.source_code = ?", calendar.source_code
+            ).where(
+                "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
+            ).where(
+                "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+            ).select(
+                "cloud_driver_events.id",
+                :title,
+                :description,
+                :event_date,
+                :time_start,
+                :time_end,
+                :location,
+                "true as is_attendant",
+                "cloud_driver_catalog_event_types.name as event_type"
+            )
+
+            # Union of my events and the ones I am invited to
+            driver_events = my_calendar_events.union(my_attendant_events)
+
+            driver_events.order("event_date")
+        end
+
         def attendant_list
             attendants.joins(:user).select(
                 :id,
@@ -238,37 +290,6 @@ module CloudDriver
                 description: attendant.user.full_name,
                 value_to: attendant.user.full_name
             )
-        end
-
-        def self.with_deadline(current_user, query, calendar)
-            driver_events = calendar.events.joins(:detail)
-            .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
-            .left_joins(:type)
-            .select(
-                :id,
-                :title,
-                :description,
-                :event_date,
-                :time_start,
-                :time_end,
-                "(cdea.users_id = #{current_user.id}) as is_attendant",
-                "cloud_driver_catalog_event_types.name as event_type"
-            )
-            .where("
-                cloud_driver_events.user_main_id = :user
-                or cloud_driver_events.users_id = :user
-                or cloud_driver_event_details.public = true", { user: current_user.id }
-            )
-
-            if query[:filters][:start_date] && query[:filters][:end_date]
-                driver_events = driver_events.where(
-                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-                ).where(
-                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
-                )
-            end
-
-            driver_events.order("event_date")
         end
 
         #############################
