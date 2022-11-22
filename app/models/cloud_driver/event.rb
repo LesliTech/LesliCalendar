@@ -45,8 +45,9 @@ module CloudDriver
         before_validation :set_workflow, on: :create
         after_create :verify_date
 
+        # @return [Hash] The default calendar events
         def self.index(current_user, query)
-            Calendar.show(current_user, query)
+            Courier::Driver::Calendar.show(current_user, query)
         end
 
         def show(current_user = nil)
