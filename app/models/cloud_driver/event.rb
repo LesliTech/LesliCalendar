@@ -83,13 +83,15 @@ module CloudDriver
             my_calendar_events = calendar.events.joins(:detail).left_joins(:type).joins(
                 "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
             ).where(
-                "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-            ).where(
-                "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
             ).or(
                 calendar.events.joins(:detail).left_joins(:type).joins(
                     "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
-                ).where("cloud_driver_event_details.event_date is ?", nil)
+                ).where(
+                    "cloud_driver_event_details.event_date is ?", nil
+                ).where(
+                    "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                )
             ).select(
                 "cloud_driver_events.id",
                 :title,
@@ -111,15 +113,17 @@ module CloudDriver
             ).where(
                 "cloud_driver_calendars.source_code = ?", calendar.source_code
             ).where(
-                "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-            ).where(
-                "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
+                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
             ).or(
                 CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
                     "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
                 ).joins(
                     "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
-                ).where("cloud_driver_event_details.event_date is ?", nil)
+                ).where(
+                    "cloud_driver_event_details.event_date is ?", nil
+                ).where(
+                    "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                )
             ).select(
                 "cloud_driver_events.id",
                 :title,
