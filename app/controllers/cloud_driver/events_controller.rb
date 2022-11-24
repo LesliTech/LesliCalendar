@@ -90,7 +90,7 @@ module CloudDriver
         def create
             calendar = nil
 
-            # Setting the calendar if id is provided, of not, the default calendar will be used
+            # Setting the calendar if id is provided, if not, the default calendar will be used
             calendar = Courier::Driver::Calendar.find_by_id(@current_user, calendar_params[:id]) unless calendar_params[:id].blank?
 
             # Creating the event
