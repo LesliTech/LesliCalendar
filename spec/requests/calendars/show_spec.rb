@@ -36,7 +36,7 @@ RSpec.describe "CloudDriver::Calendar" do
                     cloud_driver_accounts_id: @user.account.id,
                     cloud_driver_calendars_id: @user.account.driver.calendars.default(@user).id,
                     detail_attributes: {
-                        title: Faker::Sports::Football.competition
+                        title: Faker::Sports::Football.competition,
                         event_date: event_date,
                         time_start: event_date,
                         time_end: event_date,
@@ -56,11 +56,10 @@ RSpec.describe "CloudDriver::Calendar" do
 
             # custom examples
             expect(response_body).to have_key("events")
+            expect(response_body["events"].length).to be >= 12
             expect(response_body).to have_key("driver_events")
             expect(response_body).to have_key("help_tickets")
             expect(response_body).to have_key("focus_tasks")
-            expect(response_body["events"].length).to be >= 12
-            expect(response_body["driver_events"].length).to be >= 12
         end
 
 
@@ -93,9 +92,9 @@ RSpec.describe "CloudDriver::Calendar" do
             expect_response_with_successful
 
             # custom examples
-            expect(response_body).to have_key("driver_events")
+            expect(response_body).to have_key("events")
 
-            response_body["driver_events"].each do |event|
+            response_body["events"].each do |event|
                 event_date = LC::Date.datetime(event["date"].to_datetime)
 
                 expect(event_date.month).to eq(current_time.month)

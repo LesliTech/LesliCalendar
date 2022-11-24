@@ -43,7 +43,7 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    respond_with_successful(CloudDriver::Calendar.index(current_user, @query))
+                    respond_with_pagination(CloudDriver::Calendar.index(current_user, @query))
                 end
             end
         end
