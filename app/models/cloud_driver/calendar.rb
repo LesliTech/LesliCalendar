@@ -28,7 +28,68 @@ module CloudDriver
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
-        scope :default, -> { joins(:detail).where(cloud_driver_calendar_details: { default: true }, users_id: nil, user_main_id: nil).select(:id, :name, :source_code).first }
+        # @return [CloudDriver::Calendar] The account shared calendar
+        def self.default(current_user)
+            current_user.account.driver.calendars.joins(:detail).find_by(cloud_driver_calendar_details: { default: true }, user_main_id: nil, users_id: nil)
+        end
+
+        # @return [Array] Array of calendars of the current_user
+        def self.index(current_user, query)
+            # Parsing filters
+            filters = query[:filters]
+
+            # Get order params from query
+            unless query.dig(:order, :by).blank?
+                order_by = query.dig(:order, :by)
+                order_dir = query.dig(:order, :dir)
+            end
+
+            # get search string from query params
+            search_string = query[:search].downcase.gsub(" ","%") unless query[:search].blank?
+
+            # Executing the query
+            records = current_user.account.driver.calendars
+
+            # Joining calendar with details
+            records = records.joins(:detail)
+
+            # Filtering by the calendars of the current_user and the shared calendars
+            records = records.where(
+                user_main: current_user
+            ).or(
+                records.where(user_main: nil)
+            )
+
+            # We filter by a text string written by the user
+            unless search_string.blank?
+                records = records.where(
+                    "
+                    (LOWER(source_code) SIMILAR TO :search_string) OR
+                    (LOWER(cloud_driver_calendar_details.name) SIMILAR TO :search_string)
+                    ",
+                    search_string: "%#{sanitize_sql_like(search_string, " ")}%"
+                )
+            end
+
+            # Adding order to the query
+            records = records.order(order_by.concat(" ").concat(order_dir)) unless order_by.blank?
+
+            # Formating the response
+            records = records.select(
+                "cloud_driver_calendars.id",
+                "cloud_driver_calendar_details.name",
+                "cloud_driver_calendar_details.default",
+                "cloud_driver_calendars.created_at",
+                "cloud_driver_calendars.updated_at",
+                "cloud_driver_calendars.source_code",
+                "cloud_driver_calendars.user_main_id",
+                LC::Date2.new.db_column("created_at", "cloud_driver_calendars"),
+                LC::Date2.new.db_column("updated_at", "cloud_driver_calendars"),
+            )
+
+            # Adding pagination
+            records.page(query[:pagination][:page]).per(query[:pagination][:perPage])
+        end
 
         # @return [void]
         # @param account [CloudDriver::Account] The account to be initialized
@@ -73,19 +134,98 @@ module CloudDriver
         #         help_tickets: [...],
         #         driver_events: [...],
         #     }
-        def self.show(current_user, query)
+        def show(current_user, query)
+            # Calendar data
+            calendar_data = {
+                id: self.id,
+                name: self.detail.name,
+                users_id: self.user_main_id,
+                user_name: self.user_main_id ? self.user_main.full_name : nil,
+                events: [],
+                driver_events: [],
+                focus_tasks: [],
+                help_tickets: [],
+            }
+
+            # If filter dates not provided, force use current month
             if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
-                return {
-                    id: self.default.id,
-                    name: self.default.name,
-                    driver_events: [],
-                    focus_tasks: [],
-                    help_tickets: [],
-                }
+                query[:filters][:start_date] = query[:filters][:start_date] || Time.now.beginning_of_month.to_s
+                query[:filters][:end_date] = query[:filters][:end_date] || Time.parse(query[:filters][:start_date]).end_of_month.to_s
             end
 
-            calendar = current_user.account.driver.calendars.default
-            Courier::Driver::Calendar.show(current_user, query, calendar)
+            search_text = nil
+
+            # Setting search text
+            if (query[:filters][:search]) && (! query[:filters][:search].empty?)
+                search_text = query[:filters][:search].downcase.split(" ")
+            end
+
+            # Getting calendar events
+            calendar_events = Courier::Driver::Event.with_deadline(current_user, query, self)
+            calendar_events = CloudDriver::Calendar.filter_records_by_text(calendar_events, search_text, fields: ["title", "description", "location"])
+            calendar_data[:events] = calendar_events
+
+            # Events from CloudDriver
+            # This condition is diferent because, by default, driver events are included
+            unless query[:filters][:include] && query[:filters][:include][:driver_events].to_s.downcase == "false"
+                driver_events = calendar_events.map do |event|
+                    {
+                        id: event[:id],
+                        title: event[:title],
+                        description: event[:description],
+                        date: event[:date],
+                        start: event[:start],
+                        end: event[:end],
+                        is_attendant: event[:is_attendant],
+                        event_type: event[:event_type],
+                        classNames: ["cloud_driver_events"],
+                    }
+                end
+
+                calendar_data[:driver_events] = driver_events
+            end
+
+            # Tasks from CloudFocus
+            if query[:filters][:include] && query[:filters][:include][:focus_tasks].to_s.downcase == "true"
+                focus_tasks  = Courier::Focus::Task.with_deadline(current_user, query)
+                focus_tasks = CloudDriver::Calendar.filter_records_by_text(focus_tasks, search_text)
+
+                focus_tasks = focus_tasks.map do |task|
+                    {
+                        id: task[:id],
+                        title: task[:title],
+                        description: task[:description],
+                        date: task[:deadline],
+                        start: task[:deadline],
+                        end: task[:deadline] ? task[:deadline] + 1.second : nil, # The calendar will crash if start and end dates are the same
+                        classNames: ["cloud_focus_tasks"]
+                    }
+                end
+
+                calendar_data[:focus_tasks] = focus_tasks
+            end
+
+            # Tickets from CloudHelp
+            if query[:filters][:include] && query[:filters][:include][:help_tickets].to_s.downcase == "true"
+                help_tickets  = Courier::Help::Ticket.with_deadline(current_user, query)
+                help_tickets = CloudDriver::Calendar.filter_records_by_text(help_tickets, search_text, fields: ["subject", "description"])
+
+                help_tickets = help_tickets.map do |ticket|
+                    {
+                        id: ticket[:id],
+                        title: ticket[:subject],
+                        description: ticket[:description],
+                        date: ticket[:deadline],
+                        start: ticket[:deadline],
+                        end: ticket[:deadline] ? ticket[:deadline] + 1.second : nil, # The calendar will crash if start and end dates are the same
+                        classNames: ["cloud_help_tickets"]
+                    }
+                end
+
+                calendar_data[:help_tickets] = help_tickets
+            end
+
+            calendar_data
         end
 
         # @return [Hash] The required information to create or filter a calendar
@@ -136,6 +276,23 @@ module CloudDriver
                 focus_tasks: "focus_tasks",
                 help_tickets: "help_tickets",
             }
+        end
+
+
+        def self.filter_records_by_text(records, search_text, fields: ["title", "description"])
+
+            if search_text
+                search_text.each do |query_word|
+                    sql = []
+                    fields.each do |field|
+                        sql.push("lower(#{field}) like '%#{query_word}%'")
+                    end
+
+                    records = records.where(sql.join(" or "))
+                end
+            end
+
+            return records
         end
 
     end

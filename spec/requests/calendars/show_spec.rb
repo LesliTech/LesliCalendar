@@ -18,11 +18,11 @@ For more information read the license file including with this software.
 =end
 require "lesli_request_helper"
 
-RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
-    describe "GET:/calendars/default", type: :request do
+RSpec.describe "CloudDriver::Calendar" do
+    describe "GET:/calendars/default.json", type: :request do
         include_context "request user authentication"
 
-        it "is expected to get the default calendar only for that user" do
+        it "is expected to get the default calendar info and events" do
             @user = FactoryBot.create(:user)
 
             # We create 1 event each month
@@ -34,12 +34,13 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                     users_id: @user.id,
                     user_main_id: @user.id,
                     cloud_driver_accounts_id: @user.account.id,
+                    cloud_driver_calendars_id: @user.account.driver.calendars.default(@user).id,
                     detail_attributes: {
+                        title: Faker::Sports::Football.competition,
                         event_date: event_date,
                         time_start: event_date,
-                        public: true,
                         time_end: event_date,
-                        title: Faker::Sports::Football.competition
+                        public: true,
                     }
                 )
 
@@ -54,10 +55,11 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect_response_with_successful
 
             # custom examples
+            expect(response_body).to have_key("events")
+            expect(response_body["events"].length).to be >= 12
             expect(response_body).to have_key("driver_events")
             expect(response_body).to have_key("help_tickets")
             expect(response_body).to have_key("focus_tasks")
-            expect(response_body["driver_events"].length).to be >= 12
         end
 
 
@@ -72,6 +74,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
                     :cloud_driver_event,
                     users_id: @user.id,
                     cloud_driver_accounts_id: @user.account.id,
+                    cloud_driver_calendars_id: @user.account.driver.calendars.default(@user).id,
                     detail_attributes: {
                         event_date: event_date,
                         time_start: event_date,
@@ -89,9 +92,9 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect_response_with_successful
 
             # custom examples
-            expect(response_body).to have_key("driver_events")
+            expect(response_body).to have_key("events")
 
-            response_body["driver_events"].each do |event|
+            response_body["events"].each do |event|
                 event_date = LC::Date.datetime(event["date"].to_datetime)
 
                 expect(event_date.month).to eq(current_time.month)

@@ -27,6 +27,7 @@ class CreateCloudDriverEventProposals < ActiveRecord::Migration[7.0]
             t.datetime :deleted_at, index: true
             t.timestamps
         end
+        add_reference :cloud_driver_event_proposals, :users, foreign_key: true
         add_reference :cloud_driver_event_proposals, :cloud_driver_events, foreign_key: true
     end
 end
