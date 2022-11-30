@@ -95,9 +95,10 @@ RSpec.describe "CloudDriver::Calendar" do
             expect(response_body).to have_key("events")
 
             response_body["events"].each do |event|
-                event_date = LC::Date.datetime(event["date"].to_datetime)
-
-                expect(event_date.month).to eq(current_time.month)
+                if event["date"]
+                    event_date = LC::Date.datetime(event["date"].to_datetime)
+                    expect(event_date.month).to eq(current_time.month)
+                end
             end
         end
     end
