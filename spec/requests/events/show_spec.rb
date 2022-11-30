@@ -27,26 +27,26 @@ RSpec.describe "CloudDriver::Event" do
 
         it "is expected to show the event data" do
 
-            event = FactoryBot.attributes_for(:cloud_driver_event, {
+            event = FactoryBot.create(:cloud_driver_event, {
                 users_id: @current_user.id,
                 user_main_id: @current_user.id,
                 cloud_driver_accounts_id: @current_user.account.id
             })
 
-            get("/driver/events/#{event[:id]}.json")
+            get("/driver/events/#{event.id}.json")
 
             # shared examples
             expect_response_with_successful
 
             # custom examples
             expect(response_body["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
-            expect(response_body["detail_attributes"]["description"]).to eq(event[:detail_attributes][:description])
-            expect(response_body["detail_attributes"]["location"]).to eq(event[:detail_attributes][:location])
-            expect(response_body["detail_attributes"]["budget"].to_f).to eq(event[:detail_attributes][:budget])
-            expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
-            expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
-            expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
+            expect(response_body["detail_attributes"]["title"]).to eq(event.detail.title)
+            expect(response_body["detail_attributes"]["description"]).to eq(event.detail.description)
+            expect(response_body["detail_attributes"]["location"]).to eq(event.detail.location)
+            expect(response_body["detail_attributes"]["budget"].to_f).to eq(event.detail.budget)
+            expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event.detail.real_cost)
+            expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event.detail.signed_up_count)
+            expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event.detail.showed_up_count)
 
         end
 
