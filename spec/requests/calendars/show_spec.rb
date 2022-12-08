@@ -49,7 +49,8 @@ RSpec.describe "CloudDriver::Calendar" do
             start_date = LC::Date.now.beginning_of_year
             end_date = LC::Date.now.end_of_year
 
-            get("/driver/calendars/default.json?f[start_date]=#{start_date}&f[end_date]=#{end_date}")
+            # Temporal sending of both filters for compatibility with DL
+            get("/driver/calendars/default.json?f[start_date]=#{start_date}&f[end_date]=#{end_date}&filters[start_date]=#{start_date}&filters[end_date]=#{end_date}")
 
             # shared examples
             expect_response_with_successful
