@@ -65,7 +65,7 @@ module CloudDriver
                 Event.log_activity_update(current_user, event, old_attributes, new_attributes)
                 Workflow::Action.execute_actions(current_user, event, old_attributes, new_attributes)
 
-                return LC::Response.service(true, event)
+                return LC::Response.service(true, event.show)
             else
                 return LC::Response.service(true, event)
             end
