@@ -1,6 +1,6 @@
 # =begin
 
-# Copyright (c) 2021, all rights reserved.
+# Copyright (c) 2022, all rights reserved.
 
 # All the information provided by this platform is protected by international laws related  to
 # industrial property, intellectual property, copyright and relative international laws.
@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "CloudDriver::Event" do
     describe "POST:/driver/events", type: :request do
         include_context "request user authentication"
 
@@ -105,7 +105,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect_response_with_error
 
             # custom examples
-            expect(response_body["message"]).to eq("Missing event data")
+            expect(response_body["message"]).to eq("Title cannot be empty")
         end
 
         it "is expected to respond with error if event title is empty" do
@@ -122,7 +122,7 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             expect_response_with_error
 
             # custom examples
-            expect(response_body["message"]).to eq("Missing event data")
+            expect(response_body["message"]).to eq("Title cannot be empty")
         end
 
         it "is expected to respond with error if event date is empty" do
@@ -136,10 +136,10 @@ RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
             post("/driver/events.json", params: { "event": event})
 
             # shared examples
-            expect_response_with_error
+            expect_response_with_successful
 
             # custom examples
-            expect(response_body["message"]).to eq("Missing event data")
+            expect(response_body["is_proposal"]).to eq(true)
         end
     end
 end

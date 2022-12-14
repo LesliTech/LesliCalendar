@@ -43,6 +43,7 @@ module CloudDriver
 
         def privileges
             {
+                index: [],
                 new: [],
                 edit: [],
                 show: [
@@ -87,17 +88,21 @@ module CloudDriver
 
         # POST /events
         def create
-
             calendar = nil
-            calendar = current_user.account.driver.calendars.find_by_id(calendar_params[:id]) unless calendar_params[:id].blank?
 
+            # Setting the calendar if id is provided, if not, the default calendar will be used
+            calendar = Courier::Driver::Calendar.find_by_id(@current_user, calendar_params[:id]) unless calendar_params[:id].blank?
+
+            # Creating the event
             event_create_response = CloudDriver::EventServices.create(current_user, event_params, calendar)
 
+            # Getting the new event
+            event = event_create_response.payload
+
             if event_create_response.successful?
-                event = event_create_response.payload
                 respond_with_successful(event.show(current_user))
             else
-                respond_with_error(event_create_response.error)
+                respond_with_error(event_create_response.error.errors.full_messages.to_sentence)
             end
         end
 
@@ -152,6 +157,8 @@ module CloudDriver
                 :user_main_id,
                 :cloud_driver_catalog_event_types_id,
                 :external_uid,
+                :is_proposal,
+                :estimated_mins_durations,
                 detail_attributes: [
                     :title,
                     :description,

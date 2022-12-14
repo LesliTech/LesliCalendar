@@ -37,45 +37,116 @@ module CloudDriver
         has_many :files,        foreign_key: "cloud_driver_events_id"
         has_many :guests,       foreign_key: "cloud_driver_events_id"
         has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :proposals,    foreign_key: "cloud_driver_events_id"
         has_many :activities,   foreign_key: "cloud_driver_events_id"
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
 
         before_validation :set_workflow, on: :create
-        after_create :verify_date
+        validate :required_creation_attributes
+        after_create :initialize_event
 
+        # @return [Hash] The default calendar events
         def self.index(current_user, query)
-            Calendar.show(current_user, query)
+            Courier::Driver::Calendar.show(current_user, query)
         end
 
         def show(current_user = nil)
-            data = Event
-            .joins(:detail)
-            .select(:title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
-            .where("cloud_driver_events.id = ?", id)
-            .first
-
-            model_global_identifier = nil
-            model_global_identifier = model.global_identifier if model
-
-            total_invites_count = attendants.count + guests.count
-            confirmed_invites_count = attendants.where("confirmed_at is not ?", nil).count + guests.where("confirmed_at is not ?", nil).count
-
             {
-                id: id,
-                model_id: model_id,
-                model_type: model_type,
+                id: self.id,
+                model_id: self.model_id,
+                model_type: self.model_type,
                 editable: self.is_editable_by?(current_user),
-                model_global_identifier: model_global_identifier,
-                total_invites_count: total_invites_count,
-                confirmed_invites_count: confirmed_invites_count,
-                users_id: users_id,
-                user_main_id: user_main_id,
-                organizer_name: (user_main_including_deleted ? user_main_including_deleted.full_name : ""),
-                cloud_driver_catalog_event_types_id: cloud_driver_catalog_event_types_id,
-                cloud_driver_calendars_id: cloud_driver_calendars_id,
-                detail_attributes: data
+                is_proposal: self.is_proposal,
+                estimated_mins_durations: self.estimated_mins_durations,
+                model_global_identifier: self.model ? self.model.global_identifier : nil,
+                total_invites_count: self.attendants.count + self.guests.count,
+                confirmed_invites_count: self.attendants.where("confirmed_at is not ?", nil).count + self.guests.where("confirmed_at is not ?", nil).count,
+                users_id: self.users_id,
+                user_main_id: self.user_main_id,
+                organizer_name: self.user_main_including_deleted ? self.user_main_including_deleted.full_name : "",
+                cloud_driver_catalog_event_types_id: self.cloud_driver_catalog_event_types_id,
+                cloud_driver_calendars_id: self.cloud_driver_calendars_id,
+                detail_attributes: self.detail.slice(:id, :title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
             }
+        end
+
+        # @return [Array] of events on my calendar and the ones I am invited to of the same calendar source
+        def self.with_deadline(current_user, query, calendar)
+            # If filter dates not provided, force use current month
+            if query[:filters][:start_date].blank? or query[:filters][:end_date].blank?
+                query[:filters][:start_date] = query[:filters][:start_date] || Time.now.beginning_of_month.to_s
+                query[:filters][:end_date] = query[:filters][:end_date] || Time.parse(query[:filters][:start_date]).end_of_month.to_s
+            end
+
+            # Getting all my events
+            my_calendar_events = calendar.events.joins(:detail).left_joins(:type).joins(
+                "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+            ).where(
+                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+            ).or(
+                calendar.events.joins(:detail).left_joins(:type).joins(
+                    "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+                ).where(
+                    "cloud_driver_event_details.event_date is ?", nil
+                ).where(
+                    "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                )
+            ).select(
+                "cloud_driver_events.id",
+                :title,
+                :description,
+                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                :location,
+                # "false as is_attendant",
+                "cloud_driver_catalog_event_types.name as event_type",
+                :is_proposal,
+            )
+
+            # Getting events of the same calendar source of other users where I am an attendant
+            my_attendant_events = CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+            ).joins(
+                "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
+            ).where(
+                "cloud_driver_calendars.source_code = ?", calendar.source_code
+            ).where(
+                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+            ).or(
+                CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                    "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
+                ).joins(
+                    "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
+                ).where(
+                    "cloud_driver_event_details.event_date is ?", nil
+                ).where(
+                    "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                )
+            ).select(
+                "cloud_driver_events.id",
+                :title,
+                :description,
+                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                :location,
+                # "true as is_attendant",
+                "cloud_driver_catalog_event_types.name as event_type",
+                :is_proposal,
+            )
+
+            # Union of my events and the ones I am invited to
+            driver_events = my_calendar_events.union(my_attendant_events)
+
+            # Ordering by date
+            driver_events = driver_events.order("date")
+
+            # Removing duplicates
+            driver_events = driver_events.distinct
+
+            driver_events
         end
 
         def attendant_list
@@ -237,37 +308,6 @@ module CloudDriver
             )
         end
 
-        def self.with_deadline(current_user, query, calendar)
-            driver_events = calendar.events.joins(:detail)
-            .joins("left join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
-            .left_joins(:type)
-            .select(
-                :id,
-                :title,
-                :description,
-                :event_date,
-                :time_start,
-                :time_end,
-                "(cdea.users_id = #{current_user.id}) as is_attendant",
-                "cloud_driver_catalog_event_types.name as event_type"
-            )
-            .where("
-                cloud_driver_events.user_main_id = :user
-                or cloud_driver_events.users_id = :user
-                or cloud_driver_event_details.public = true", { user: current_user.id }
-            )
-
-            if query[:filters][:start_date] && query[:filters][:end_date]
-                driver_events = driver_events.where(
-                    "cloud_driver_event_details.event_date >= ?", query[:filters][:start_date]
-                ).where(
-                    "cloud_driver_event_details.event_date <= ? ", query[:filters][:end_date]
-                )
-            end
-
-            driver_events.order("event_date")
-        end
-
         #############################
         # Notification methods
         #############################
@@ -287,14 +327,28 @@ module CloudDriver
 
         protected
 
-        # @return [void]
-        # @description Sets the default event date if the date was not set during creation
-        # @example
-        #     new_event = CloudDriver::Event.create!(detail_attributes: {title: "Test event", event_type: "kuv_with_kop"})
-        #     puts new_event.detail.event_date
-        #     # This will display the creation time of the event
-        def verify_date
-            detail.update(event_date: self.created_at) unless detail.event_date
+        # @return [void] adds an error if the event is not valid
+        def required_creation_attributes
+            # Event title is required
+            errors.add(:title, "cannot be empty") unless self.detail&.title.present?
+        end
+
+        # @return [void] adds initial values to the event if they are not present
+        def initialize_event
+            # If event date is not provided, the event is a proposal by default
+            self.update(is_proposal: true) if self.detail.event_date.blank?
+
+            # If event date is not provided, the event date is the current date
+            self.detail.update!(event_date: self.created_at) if self.detail.event_date.blank?
+
+            # If the event is a proposal and estimated time is not provided, the event estimated time is setted to 1 hour
+            self.update(estimated_mins_durations: 60) if self.is_proposal? && self.estimated_mins_durations.blank?
+
+            # If time start is not provided and event date is provided, the event time start is setted equal to the event date
+            self.detail.update(time_start: self.detail.event_date) if self.detail.time_start.blank? && self.detail.event_date.present?
+
+            # If time end is not provided and time start is setted, the event time end is setted equal to 1 hour later than the time start by default
+            self.detail.update(time_end: self.detail.time_start + 1.hour) if self.detail.time_end.blank? && self.detail.time_start.present?
         end
 
     end

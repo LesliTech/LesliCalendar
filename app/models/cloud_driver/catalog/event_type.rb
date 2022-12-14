@@ -25,54 +25,42 @@ module CloudDriver
         def self.index(current_user, query)
             # Parsing filters
             filters = query[:filters]
-            filters_query = []
 
-            # We filter by a text string written by the user
-            if filters["query"] && !filters["query"].empty?
-                query_words = filters["query"].split(" ")
-                query_words.each do |query_word|
-                    query_word = query_word.strip.downcase
-
-                    # first customer
-                    filters_query.push("(lower(name) similar to '%#{query_word}%')")
-                end
+            # Get order params from query
+            unless query.dig(:order, :by).blank?
+                order_by = query.dig(:order, :by)
+                order_dir = query.dig(:order, :dir)
             end
+
+            # get search string from query params
+            search_string = query[:search].downcase.gsub(" ","%") unless query[:search].blank?
 
             # Executing the query
             event_types = current_user.account.driver.event_types
 
-            # We apply the previous filters in the main query
-            unless filters_query.empty?
-                event_types = event_types.where(filters_query.join(' and '))
+            # We filter by a text string written by the user
+            unless search_string.blank?
+                event_types = event_types.where(
+                    "lower(name) SIMILAR TO :search_string",
+                    search_string: "%#{sanitize_sql_like(search_string, " ")}%"
+                )
             end
 
-            # Adding pagination to event_types
-            event_types = event_types
-            .page(query[:pagination][:page])
-            .per(query[:pagination][:perPage])
-            .order("#{query[:pagination][:orderBy]} #{query[:pagination][:order]}")
+            # Adding order to the query
+            event_types = event_types.order(order_by.concat(" ").concat(order_dir)) unless order_by.blank?
 
             # We format the response
+            records = event_types.select("*", LC::Date2.new.db_column("created_at", "cloud_driver_catalog_event_types"))
 
-            LC::Response.pagination(
-                event_types.current_page,
-                event_types.total_pages,
-                event_types.total_count,
-                event_types.length,
-                event_types.map do |event_type|
-                    event_type.attributes.merge({
-                        "created_at_text" => LC::Date.to_string_datetime(event_type["created_at"])
-                    })
-                end
-            )
+            # Adding pagination
+            records.page(query[:pagination][:page]).per(query[:pagination][:perPage])
         end
 
         def show
-            data = attributes
-            data["created_at"] = LC::Date.to_string_datetime(data["created_at"])
-            data["updated_at"] = LC::Date.to_string_datetime(data["updated_at"])
-
-            data
+            self.attributes.merge({
+                created_at: LC::Date2.new(self.created_at).date_time_words.to_s,
+                updated_at: LC::Date2.new(self.updated_at).date_time_words.to_s,
+            })
         end
     end
 end

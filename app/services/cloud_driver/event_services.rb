@@ -21,16 +21,10 @@ module CloudDriver
     class EventServices
 
         def self.create(current_user, event_params, calendar=nil)
+            # Setting the default calendar if not provided
+            calendar = current_user.account.driver.calendars.default(current_user) if calendar.blank?
 
-            # Validate event includes minimum required data
-            if (
-                event_params.dig(:detail_attributes, :title).blank? ||
-                event_params.dig(:detail_attributes, :event_date).blank?)
-                return LC::Response.service(false, "Missing event data")
-            end
-
-            calendar = current_user.account.driver.calendars.default if calendar.blank?
-
+            # Creating the event
             event = calendar.events.new(event_params)
             event.account = current_user.account
             event.user_creator = current_user
@@ -41,6 +35,8 @@ module CloudDriver
 
             if event.save
                 Event.log_activity_create(current_user, event)
+
+                # Adding the main user as an attendant too
                 event.attendants.create(users_id: event.user_main.id)
 
                 return LC::Response.service(true, event)
@@ -69,7 +65,7 @@ module CloudDriver
                 Event.log_activity_update(current_user, event, old_attributes, new_attributes)
                 Workflow::Action.execute_actions(current_user, event, old_attributes, new_attributes)
 
-                return LC::Response.service(true, event)
+                return LC::Response.service(true, event.show)
             else
                 return LC::Response.service(true, event)
             end

@@ -32,24 +32,24 @@ FactoryBot.define do
                 time_end: time_end,
                 public: Faker::Boolean.boolean,
                 location: Faker::Address.full_address,
-                budget: Faker::Number.decimal(l_digits: 2),
-                real_cost: Faker::Number.decimal(l_digits: 2),
+                budget: Faker::Number.number(digits: 3).to_f,
+                real_cost: Faker::Number.number(digits: 3).to_f,
                 signed_up_count: Faker::Number.number(digits: 3),
-                showed_up_count: Faker::Number.number(digits: 3) 
+                showed_up_count: Faker::Number.number(digits: 3)
             }
         end
 
         cloud_driver_accounts_id { Account.first.driver.id }
 
         cloud_driver_calendars_id do
-            Account.find(cloud_driver_accounts_id).driver.calendars.default.id
+            Account.find(cloud_driver_accounts_id).driver.calendars.default(User.first).id
         end
-        
+
         users_id do
             default_account = Account.find(cloud_driver_accounts_id)
 
             default_user = default_account.users.first
-            
+
             if default_user
                 default_user.id
             else
@@ -57,12 +57,12 @@ FactoryBot.define do
                 new_user.id
             end
         end
-        
+
         user_main_id do
             default_account = Account.find(cloud_driver_accounts_id)
 
             default_user = default_account.users.order("random()").first
-            
+
             if default_user
                 default_user.id
             else
@@ -75,7 +75,7 @@ FactoryBot.define do
             default_account = Account.find(cloud_driver_accounts_id).driver
 
             event_type = default_account.event_types.order("random()").first
-            
+
             if event_type
                 event_type.id
             else
@@ -83,6 +83,6 @@ FactoryBot.define do
                 new_event_type.id
             end
         end
-        
+
     end
 end

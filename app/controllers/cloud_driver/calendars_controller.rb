@@ -21,7 +21,7 @@ require_dependency "cloud_driver/application_controller"
 
 module CloudDriver
     class CalendarsController < ApplicationController
-        before_action :set_calendar, only: [:show, :edit, :update, :destroy]
+        before_action :set_calendar, only: [:show, :edit, :update]
         before_action :parse_query_params, only: :show
 
         def privileges
@@ -43,11 +43,7 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    respond_with_successful(
-                        current_user.account.driver
-                        .calendars.joins(:detail)
-                        .select(:id, :name, :color)
-                    )
+                    respond_with_pagination(CloudDriver::Calendar.index(current_user, @query))
                 end
             end
         end
@@ -56,7 +52,7 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json { respond_with_successful(Calendar.show(current_user, @query)) }
+                format.json { respond_with_successful(@calendar.show(current_user, @query)) }
             end
         end
 
@@ -81,8 +77,6 @@ module CloudDriver
 
         # PATCH/PUT /calendars/1
         def update
-            return respond_with_not_found unless @calendar
-
             if @calendar.update(calendar_params)
                 redirect_to @calendar, notice: 'Calendar was successfully updated.'
             else
@@ -92,10 +86,6 @@ module CloudDriver
 
         # DELETE /calendars/1
         def destroy
-            return respond_with_not_found unless @calendar
-
-            @calendar.destroy
-            redirect_to calendars_url, notice: 'Calendar was successfully destroyed.'
         end
 
         def options
@@ -117,10 +107,12 @@ module CloudDriver
         #     # This will either display nil or an instance of CloudDriver::Calendar
         def set_calendar
             if params[:id].blank? || params[:id] == "default"
-                @calendar = current_user.account.driver.calendars.default
+                @calendar = current_user.account.driver.calendars.default(current_user)
             elsif params[:id]
                 @calendar = current_user.account.driver.calendars.find_by(id: params[:id])
             end
+
+            return respond_with_not_found unless @calendar
         end
 
         # Only allow a trusted parameter "white list" through.
