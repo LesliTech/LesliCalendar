@@ -32,13 +32,30 @@ module CloudDriver
             attendant = event.attendants.new(event_attendant_params)
 
             if attendant.save
-                LC::Response.service(true, attendant)
-
                 Event.log_activity_create_attendant(current_user, event, attendant)
-                Event.send_notification_create_attendant(attendant)
+                CloudDriver::Event::AttendantCreateNotificationJob.perform_later(attendant)
                 EventMailer.with({ user: attendant.user, event: event }).attendant.deliver_later
+                return LC::Response.service(true, attendant)
             else
-                LC::Response.service(false, attendant)
+                return LC::Response.service(false, attendant)
+            end
+        end
+
+        def self.destroy(current_user, events_id, event_attendants_id)
+            # Looking for the event
+            event = Courier::Driver::Event.find(current_user, events_id)
+
+            return LC::Response.service(false) unless event
+
+            return LC::Response.service(false) unless event.is_editable_by?(current_user)
+
+            attendant = event.attendants.find_by_id(event_attendants_id)
+
+            # Destroying the event attendant
+            if attendant.destroy
+                return LC::Response.service(true)
+            else
+                return LC::Response.service(false, attendant)
             end
         end
 
