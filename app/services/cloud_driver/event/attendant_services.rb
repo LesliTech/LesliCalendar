@@ -28,6 +28,10 @@ module CloudDriver
 
             return LC::Response.service(false) unless event.is_editable_by?(current_user)
 
+            user = User.find_by_id(event_attendant_params[:users_id])
+
+            return LC::Response.service(false) unless user
+
             # Creating the event attendant
             attendant = event.attendants.new(event_attendant_params)
 

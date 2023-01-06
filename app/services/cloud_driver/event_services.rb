@@ -52,8 +52,10 @@ module CloudDriver
             # Not accesing from current_user to avoid ignoring events where user is attendant
             events = CloudDriver::Event
 
-            # Getting events from the calendars where the user is the owner
-            my_events = events.joins(:calendar).where("cloud_driver_calendars.user_main_id = ?", current_user.id)
+            # Getting events from the calendars where the user is the owner or the calendar is public
+            my_events = events.joins(:calendar).where("cloud_driver_calendars.user_main_id = ?", current_user.id).or(
+                events.joins(:calendar).where("cloud_driver_calendars.user_main_id is null")
+            )
 
             # Getting events where the user is invited
             invited_events = events.joins("inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}")
