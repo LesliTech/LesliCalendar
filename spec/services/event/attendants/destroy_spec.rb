@@ -23,7 +23,7 @@ require "lesli_service_helper"
 
 RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
 
-    it "is expected to create an event attendant" do
+    it "is expected to destroy an event attendant" do
         current_user = FactoryBot.create(:user)
         other_user = FactoryBot.create(:user)
 
@@ -36,34 +36,20 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
             users_id: other_user.id
         }
 
-        response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        # Create the attendant to be deleted
+        create_attendant_response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+
+        attendant = create_attendant_response.payload
+
+        response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id)
 
         # shared examples
         expect_response_with_successful(response)
-
-        # custom examples
-        expect(response_body).to be_a CloudDriver::Event::Attendant
-        expect(response_body.id).not_to be_nil
     end
 
-    it "is expected not to create an event attendant because of nil event" do
+    it "is expected not to destroy an event attendant because of nil attendant" do
         current_user = FactoryBot.create(:user)
         other_user = FactoryBot.create(:user)
-
-        event_id = CloudDriver::Event.all.count + 1
-
-        event_attendant_params = {
-            users_id: other_user.id
-        }
-
-        response = CloudDriver::Event::AttendantServices.create(current_user, event_id, event_attendant_params)
-
-        # shared examples
-        expect_response_with_error(response)
-    end
-
-    it "is expected not to create an event attendant because of nil user" do
-        current_user = FactoryBot.create(:user)
 
         event = FactoryBot.create(:cloud_driver_event, {
             users_id: current_user.id,
@@ -71,10 +57,15 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         })
 
         event_attendant_params = {
-            users_id: User.all.count + 1
+            users_id: other_user.id
         }
 
-        response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        # Create the attendant to be deleted
+        create_attendant_response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+
+        attendant = create_attendant_response.payload
+
+        response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id + 1)
 
         # shared examples
         expect_response_with_error(response)

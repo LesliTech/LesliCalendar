@@ -55,6 +55,8 @@ module CloudDriver
 
             attendant = event.attendants.find_by_id(event_attendants_id)
 
+            return LC::Response.service(false) unless attendant
+
             # Destroying the event attendant
             if attendant.destroy
                 return LC::Response.service(true)
