@@ -39,11 +39,11 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         # shared examples
-        expect_response_with_successful(response)
+        expect_service_response_with_successful(response)
 
         # custom examples
-        expect(response_body).to be_a CloudDriver::Event::Attendant
-        expect(response_body.id).not_to be_nil
+        expect(service_response_body).to be_a CloudDriver::Event::Attendant
+        expect(service_response_body.id).not_to be_nil
     end
 
     it "is expected not to create an event attendant because of nil event" do
@@ -59,7 +59,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         response = CloudDriver::Event::AttendantServices.create(current_user, event_id, event_attendant_params)
 
         # shared examples
-        expect_response_with_error(response)
+        expect_service_response_with_error(response)
     end
 
     it "is expected not to create an event attendant because of nil user" do
@@ -77,7 +77,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         # shared examples
-        expect_response_with_error(response)
+        expect_service_response_with_error(response)
     end
 
 end

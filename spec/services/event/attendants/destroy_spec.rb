@@ -44,7 +44,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id)
 
         # shared examples
-        expect_response_with_successful(response)
+        expect_service_response_with_successful(response)
     end
 
     it "is expected not to destroy an event attendant because of nil attendant" do
@@ -68,7 +68,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id + 1)
 
         # shared examples
-        expect_response_with_error(response)
+        expect_service_response_with_error(response)
     end
 
 end

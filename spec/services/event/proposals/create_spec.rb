@@ -25,6 +25,7 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
 
     it "is expected to create an event proposal" do
         current_user = FactoryBot.create(:user)
+        other_user = FactoryBot.create(:user)
 
         event = FactoryBot.create(:cloud_driver_event, {
             users_id: current_user.id,
@@ -38,11 +39,13 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
         response = CloudDriver::Event::ProposalServices.create(current_user, event.id, event_proposal_params)
 
         # shared examples
-        expect_response_with_successful(response)
+        expect_service_response_with_successful(response)
+
+        L2.info "response: #{response}"
 
         # custom examples
-        expect(response_body).to be_a CloudDriver::Event::Proposal
-        expect(response_body.id).not_to be_nil
+        expect(service_response_body).to be_a CloudDriver::Event::Proposal
+        expect(service_response_body.id).not_to be_nil
     end
 
     it "is expected not to create an event proposal because of nil event" do
@@ -58,7 +61,7 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
         response = CloudDriver::Event::ProposalServices.create(current_user, event_id, event_proposal_params)
 
         # shared examples
-        expect_response_with_error(response)
+        expect_service_response_with_error(response)
     end
 
 end
