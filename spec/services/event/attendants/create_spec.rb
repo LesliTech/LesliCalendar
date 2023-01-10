@@ -50,7 +50,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         current_user = FactoryBot.create(:user)
         other_user = FactoryBot.create(:user)
 
-        event_id = CloudDriver::Event.all.count + 1
+        event_id = 0
 
         event_attendant_params = {
             users_id: other_user.id
@@ -71,7 +71,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         })
 
         event_attendant_params = {
-            users_id: User.all.count + 1
+            users_id: 0
         }
 
         response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)

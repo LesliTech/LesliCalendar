@@ -30,18 +30,18 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
         event = FactoryBot.create(:cloud_driver_event, {
             users_id: current_user.id,
             user_main_id: current_user.id,
+            is_proposal: true,
         })
 
         event_proposal_params = {
-            users_id: other_user.id
+            users_id: other_user.id,
+            event_date: LC::Date2.new.get,
         }
 
         response = CloudDriver::Event::ProposalServices.create(current_user, event.id, event_proposal_params)
 
         # shared examples
         expect_service_response_with_successful(response)
-
-        L2.info "response: #{response}"
 
         # custom examples
         expect(service_response_body).to be_a CloudDriver::Event::Proposal
