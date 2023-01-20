@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "Tests for Lesli 3", :unless => defined?(DeutscheLeibrenten) do
+RSpec.describe "Tests for Lesli 3" do
     describe "POST:/driver/catalog/event_types", type: :request do
         include_context "request user authentication"
 
