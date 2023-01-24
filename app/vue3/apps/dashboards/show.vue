@@ -21,33 +21,54 @@ For more information read the license file including with this software.
 import { ref, reactive, onMounted, watch, computed, inject } from "vue"
 import { useRouter, useRoute } from 'vue-router'
 
-
 // · Import components
+import componentCalendar from './components/calendar.vue'
+import componentAgenda from './components/agenda.vue'
 
+// · import lesli stores
+import { useShow } from 'CloudDriver/stores/dashboard/show'
+import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
 
 // · initialize/inject plugins
 const router = useRouter()
 const msg = inject("msg")
 const url = inject("url")
 
-
-// · import lesli stores
-
-
 // · implement stores
+const storeShow = useShow()
+const storeCalendar = useCalendar()
 
-
-// · 
 onMounted(() => {
 })
 
-
 </script>
+
 <template>
     <section class="application-component">
-        <lesli-header title="Calendar">
+
+        <lesli-header :title="storeShow.setTitle()">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
+                    <button class="button"><span class="icon"><i class="fas fa-plus"></i></span></button>
+                </div>
+            </div>
         </lesli-header>
 
-        <lesli-toolbar @search=""></lesli-toolbar>
+        <lesli-toolbar @search="a"></lesli-toolbar>
+
+        <div class="columns">
+            <div class="column is-one-quarter">
+                <div class="box">
+                    <componentAgenda />
+                </div>
+            </div>
+            <div class="column">
+                <div class="box">
+                    <componentCalendar />
+                </div>
+            </div>
+        </div>
+
     </section>
 </template>

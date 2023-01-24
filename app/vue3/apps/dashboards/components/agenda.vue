@@ -1,5 +1,7 @@
+<script setup>
+
 /*
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -15,15 +17,20 @@ For more information read the license file including with this software.
 // · 
 */
 
+// · import lesli stores
+import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
 
-// · Import apps and components
-import appShow from './apps/show.vue'
+// · implement stores
+const storeCalendar = useCalendar()
 
-const routes = [
-    // {
-    //     path: '/',
-    //     component: appShow
-    // }
-]
+</script>
 
-export default routes
+<template>
+    <h2>All Events ({{ storeCalendar.currentEvents.length }})</h2>
+    <ul>
+        <li v-for='event in storeCalendar.currentEvents' :key='event.id'>
+            <b>{{ event.start }}</b>
+            <i>{{ event.title }}</i>
+        </li>
+    </ul>
+</template>
