@@ -1,9 +1,9 @@
 =begin
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -12,7 +12,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 =end
 require_dependency "cloud_driver/application_controller"
@@ -35,8 +35,8 @@ module CloudDriver
                 format.html {}
                 format.json do
                     set_event
-                    return responseWithNotFound unless @event
-                    responseWithSuccessful(@event.guest_list) 
+                    return respond_with_not_found unless @event
+                    respond_with_successful(@event.guest_list)
                 end
             end
         end
@@ -49,13 +49,13 @@ module CloudDriver
             guest = @event.guests.new(event_guest_params)
 
             if guest.save
-                responseWithSuccessful(guest)
+                respond_with_successful(guest)
 
                 #Event.log_activity_create_guest(current_user, @event, guest)
                 #Event.send_notification_create_guest(attendant)
                 #EventMailer.with({user: guest.email, event: @event}).guest.deliver_later
             else
-                responseWithError(guest.errors.full_messages.to_sentence)
+                respond_with_error(guest.errors.full_messages.to_sentence)
             end
         end
 
@@ -72,12 +72,12 @@ module CloudDriver
             return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
             guest = @event.guests.find_by(id: params[:id])
-            return responseWithNotFound unless guest
+            return respond_with_not_found unless guest
 
             if guest.destroy
-                responseWithSuccessful
+                respond_with_successful
             else
-                responseWithError(guest.errors.full_messages.to_sentence)
+                respond_with_error(guest.errors.full_messages.to_sentence)
             end
         end
 
