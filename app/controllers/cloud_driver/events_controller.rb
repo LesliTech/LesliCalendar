@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -68,11 +68,11 @@ module CloudDriver
             respond_to do |format|
                 format.html { }
                 format.json do
-                    return responseWithNotFound unless @event
+                    return respond_with_not_found unless @event
                     respond_with_successful(@event.show(current_user))
                 end
                 format.ics do
-                    return responseWithNotFound unless @event
+                    return respond_with_not_found unless @event
                     render plain: @event.download
                 end
             end
@@ -108,8 +108,8 @@ module CloudDriver
 
         # PATCH/PUT /events/1
         def update
-            return responseWithNotFound unless @event
-            return responseWithUnauthorized unless @event.is_editable_by?(current_user)
+            return respond_with_not_found unless @event
+            return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
             if @event.update(event_params)
                 respond_with_successful(@event)
@@ -120,8 +120,8 @@ module CloudDriver
 
         # DELETE /events/1
         def destroy
-            return responseWithNotFound unless @event
-            return responseWithUnauthorized unless @event.is_editable_by?(current_user)
+            return respond_with_not_found unless @event
+            return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
             if @event.destroy
                 return respond_with_successful
