@@ -27,7 +27,6 @@ import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
 // · implement stores
 const storeCalendar = useCalendar()
 
-
 let eventGuid = 0
 function createEventId() {
     return String(eventGuid++)
