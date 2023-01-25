@@ -17,83 +17,41 @@ For more information read the license file including with this software.
 */
 
 // · Import components, libraries and tools
-import {  onMounted } from "vue"
-import '@fullcalendar/core/vdom' 
-import FullCalendar from '@fullcalendar/vue3'
+import { onMounted } from "vue"
 
 // · import lesli stores
 import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
+import { useShow } from 'CloudDriver/stores/dashboard/show'
 
 // · implement stores
 const storeCalendar = useCalendar()
-
-let eventGuid = 0
-function createEventId() {
-    return String(eventGuid++)
-}
-
-function onDateSelect(selectInfo) {
-    let title = prompt('Please enter a new title for your event')
-    let calendarApi = selectInfo.view.calendar
-    calendarApi.unselect()
-
-    if (title) {
-        const newEvent = {
-            id: createEventId(),
-            title,
-            start: selectInfo.startStr,
-            end: selectInfo.endStr,
-            allDay: selectInfo.allDay
-        }
-        calendarApi.currentEvents = storeCalendar.currentEvents
-        calendarApi.addEvent(newEvent)
-        storeCalendar.currentEvents.push(newEvent)
-        localStorage.setItem('currentEvents', JSON.stringify(storeCalendar.currentEvents))
-    }
-}
-
-function onEventClick(clickInfo) {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-        storeCalendar.currentEvents = storeCalendar.currentEvents.filter(e => { return e.id !== clickInfo.event.id })
-    }
-}
-
-function onEventsSet(events) {
-    this.currentEvents = events
-}
+const storeShow = useShow()
 
 // · 
 onMounted(() => {
+    setTimeout(function () {
+        storeCalendar.initCalendar();
+    }, 1);
     storeCalendar.currentEvents = JSON.parse(localStorage.getItem("currentEvents"))
-    storeCalendar.calendarOptions.select = onDateSelect
-    storeCalendar.calendarOptions.eventClick = onEventClick
-    storeCalendar.calendarOptions.eventsSet = onEventsSet
 })
 
 </script>
 
 <template>
-    <FullCalendar :options='storeCalendar.calendarOptions'>
-        <template v-slot:eventContent='arg'>
-            <b>{{ arg.timeText }}</b>
-            <i>{{ arg.event.title }}</i>
-        </template>
-    </FullCalendar>
+    <div id="driver_calendar"></div>
 </template>
 
 <style lang='css'>
-
 /* overwrited styles provied by FullCalendar lib */
 
 /* used for event dates/times */
-div.box b {  
+div.box b {
     margin-right: 3px;
 }
 
 /* used for events on dates */
 div.fc-event-main b,
-div.fc-event-main i { 
+div.fc-event-main i {
     color: black;
 }
 
@@ -117,6 +75,7 @@ div.fc-event-main i {
     text-align: center;
     white-space: nowrap;
 }
+
 .fc-prev-button.fc-button.fc-button-primary:focus:not(:active),
 .fc-next-button.fc-button.fc-button-primary:focus:not(:active),
 .fc-today-button.fc-button.fc-button-primary:focus:not(:active),
@@ -179,5 +138,4 @@ div.fc-event-main i {
     border-color: var(--lesli-color-primary);
     color: var(--lesli-color-primary);
 }
-
 </style>

@@ -17,6 +17,9 @@ For more information read the license file including with this software.
 // · 
 */
 
+// · Import components, libraries and tools
+import dayjs from 'dayjs'
+
 // · import lesli stores
 import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
 
@@ -28,8 +31,8 @@ const storeCalendar = useCalendar()
 <template>
     <h2>All Events ({{ storeCalendar.currentEvents.length }})</h2>
     <ul>
-        <li v-for='event in storeCalendar.currentEvents' :key='event.id'>
-            <b>{{ event.start }}</b>
+        <li v-for='event in storeCalendar.currentEvents.sort((a, b) => new Date(a.start) - new Date(b.start))' :key='event.id'>
+            <b>{{ dayjs(event.start).format('MMMM DD') }}:</b>
             <i>{{ event.title }}</i>
         </li>
     </ul>

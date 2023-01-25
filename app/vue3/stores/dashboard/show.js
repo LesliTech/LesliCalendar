@@ -26,7 +26,6 @@ import { defineStore } from "pinia"
 export const useShow = defineStore("driver.show", {
     state: () => {
         return {
-            
         }
     },
 
