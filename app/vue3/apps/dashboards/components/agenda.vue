@@ -32,8 +32,8 @@ const storeCalendar = useCalendar()
     <h2>All Events ({{ storeCalendar.currentEvents.length }})</h2>
     <ul>
         <li v-for='event in storeCalendar.currentEvents.sort((a, b) => new Date(a.start) - new Date(b.start))' :key='event.id'>
-            <b>{{ dayjs(event.start).format('MMMM DD') }}:</b>
-            <i>{{ event.title }}</i>
+            <b class="fc-event-date">{{ dayjs(event.start).format('MMMM DD') }}:</b>
+            <i class="fc-event-title">{{ event.title }}</i>
         </li>
     </ul>
 </template>

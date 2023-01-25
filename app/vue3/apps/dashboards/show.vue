@@ -24,10 +24,12 @@ import { useRouter, useRoute } from 'vue-router'
 // · Import components
 import componentCalendar from './components/calendar.vue'
 import componentAgenda from './components/agenda.vue'
+import componentPanelEvent from './components/panel-event.vue'
 
 // · import lesli stores
 import { useShow } from 'CloudDriver/stores/dashboard/show'
 import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
+import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
 
 // · initialize/inject plugins
 const router = useRouter()
@@ -37,6 +39,7 @@ const url = inject("url")
 // · implement stores
 const storeShow = useShow()
 const storeCalendar = useCalendar()
+const storePanelEvent = usePanelEvent()
 
 onMounted(() => {
 })
@@ -50,7 +53,7 @@ onMounted(() => {
             <div class="navbar-item">
                 <div class="buttons">
                     <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
-                    <button class="button"><span class="icon"><i class="fas fa-plus"></i></span></button>
+                    <button class="button" @click="togleModal"><span class="icon"><i class="fas fa-plus"></i></span></button>
                 </div>
             </div>
         </lesli-header>
