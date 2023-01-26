@@ -17,11 +17,14 @@ For more information read the license file including with this software.
 // · 
 */
 
-// · Import components, libraries and tools
-import dayjs from 'dayjs'
+// · import vue tools
+import { inject } from "vue"
 
 // · import lesli stores
 import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
+
+// · initialize/inject plugins
+const date = inject("date")
 
 // · implement stores
 const storeCalendar = useCalendar()
@@ -32,7 +35,7 @@ const storeCalendar = useCalendar()
     <h2>All Events ({{ storeCalendar.currentEvents.length }})</h2>
     <ul>
         <li v-for='event in storeCalendar.currentEvents.sort((a, b) => new Date(a.start) - new Date(b.start))' :key='event.id'>
-            <b class="fc-event-date">{{ dayjs(event.start).format('MMMM DD') }}:</b>
+            <b class="fc-event-date">{{ date.date(event.start) }}:</b>
             <i class="fc-event-title">{{ event.title }}</i>
         </li>
     </ul>
