@@ -96,9 +96,9 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
-                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
-                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
                 # "false as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",
@@ -128,9 +128,9 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "case when is_proposal = true then cdep.event_date else cloud_driver_event_details.event_date end as date",
-                "case when is_proposal = true then cdep.time_start else cloud_driver_event_details.time_start end as start",
-                "case when is_proposal = true then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_event_details.event_date end as date",
+                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_event_details.time_start end as start",
+                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
                 # "true as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",

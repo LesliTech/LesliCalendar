@@ -3,11 +3,11 @@ require_dependency "cloud_driver/application_controller"
 module CloudDriver
 =begin
 
-Copyright (c) 2020, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
-All the information provided by this platform is protected by international laws related  to 
-industrial property, intellectual property, copyright and relative international laws. 
-All intellectual or industrial property rights of the code, texts, trade mark, design, 
+All the information provided by this platform is protected by international laws related  to
+industrial property, intellectual property, copyright and relative international laws.
+All intellectual or industrial property rights of the code, texts, trade mark, design,
 pictures and any other information belongs to the owner of this platform.
 
 Without the written permission of the owner, any replication, modification,
@@ -16,7 +16,7 @@ transmission, publication is strictly forbidden.
 For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
+// ·
 
 =end
     class Event::AttendantsController < ApplicationController
@@ -32,8 +32,8 @@ For more information read the license file including with this software.
         end
 
 =begin
-@return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of 
-    all attendants associated to certain event 
+@return [HTML|JSON] HTML view for listing all attendants of an event or a Json that contains a list of
+    all attendants associated to certain event
 @description Retrieves and returns all event attendants associated to a *ClouDriver::Account* and a
     *CloudDriver::Event*. The account is obtained directly from *current_user*. The HTTP request has to specify
     wheter the HTML or the JSON text should be rendered
@@ -47,16 +47,16 @@ For more information read the license file including with this software.
                 format.html {}
                 format.json do
                     set_event
-                    return responseWithNotFound unless @event
+                    return respond_with_not_found unless @event
 
-                    responseWithSuccessful(@event.attendant_list) 
+                    respond_with_successful(@event.attendant_list)
                 end
             end
         end
 
 =begin
 @controller_action_param :users_id [Integer] The id of the user that is going to be added as an attendant
-@return [Json] Json that contains wheter the creation of the attendant was successful or not. 
+@return [Json] Json that contains wheter the creation of the attendant was successful or not.
     If it is not successful, it returns an error message
 @description Creates a new attendant associated to the *current_user*'s *account* and to the
     event specified by the *event_id* param.
@@ -77,25 +77,25 @@ For more information read the license file including with this software.
             attendant = @event.attendants.new(event_attendant_params)
 
             if attendant.save
-                responseWithSuccessful(attendant)
+                respond_with_successful(attendant)
 
                 Event.log_activity_create_attendant(current_user, @event, attendant)
                 Event.send_notification_create_attendant(attendant)
                 EventMailer.with({user: attendant.user, event: @event}).attendant.deliver_later
             else
-                responseWithError(attendant.errors.full_messages.to_sentence)
+                respond_with_error(attendant.errors.full_messages.to_sentence)
             end
         end
 
 
-        def update 
+        def update
             attendant = @event.attendants.find_by(id: params["id"])
             attendant.confirm_attendance
             respond_with_successful(attendant)
         end
 
 =begin
-@return [Json] Json that contains wheter the event attendant was successfully deleted or not. 
+@return [Json] Json that contains wheter the event attendant was successfully deleted or not.
     If it it not successful, it returns an error message
 @description Deletes an existing *event* *attendant* associated to the *current_user*'s *account*.
 @example
@@ -109,17 +109,17 @@ For more information read the license file including with this software.
             return respond_with_unauthorized unless @event.is_editable_by?(current_user)
 
             attendant = @event.attendants.find_by(id: params[:id])
-            return responseWithNotFound unless attendant
+            return respond_with_not_found unless attendant
 
             if attendant.destroy
-                responseWithSuccessful
+                respond_with_successful
             else
-                responseWithError(attendant.errors.full_messages.to_sentence)
+                respond_with_error(attendant.errors.full_messages.to_sentence)
             end
         end
 
         private
-        
+
 =begin
 @return [void]
 @description Sets the variable @event. The variable contains the *event*
