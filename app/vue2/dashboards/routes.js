@@ -20,10 +20,10 @@ For more information read the license file including with this software.
 import appShow from './apps/show.vue'
 
 const routes = [
-    {
-        path: '/',
-        component: appShow
-    }
+    // {
+    //     path: '/',
+    //     component: appShow
+    // }
 ]
 
 export default routes
