@@ -44,8 +44,7 @@ onMounted(() => {
 })
 
 const togleModal = () => {
-    // storePanelEvent.showModal = !storePanelEvent.showModal
-    storePanelEvent.showModal = true
+    storePanelEvent.showModal = !storePanelEvent.showModal
 }
 
 </script>
