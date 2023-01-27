@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -20,25 +20,6 @@ For more information read the license file including with this software.
 
 FactoryBot.define do
     factory :cloud_driver_event, class: "CloudDriver::Event" do
-        detail_attributes do
-            time_start = Faker::Time.between(from: DateTime.now, to: DateTime.now + 3.days)
-            time_end = Faker::Time.between(from: time_start, to: time_start + 3.days)
-
-            {
-                title:  Faker::Sports::Football.competition,
-                description:  Faker::Lorem.sentence(word_count: 10, supplemental: true),
-                event_date:  time_start,
-                time_start: time_start,
-                time_end: time_end,
-                public: Faker::Boolean.boolean,
-                location: Faker::Address.full_address,
-                budget: Faker::Number.number(digits: 3).to_f,
-                real_cost: Faker::Number.number(digits: 3).to_f,
-                signed_up_count: Faker::Number.number(digits: 3),
-                showed_up_count: Faker::Number.number(digits: 3)
-            }
-        end
-
         cloud_driver_accounts_id { Account.first.driver.id }
 
         cloud_driver_calendars_id do
@@ -83,6 +64,29 @@ FactoryBot.define do
                 new_event_type.id
             end
         end
+
+        title { Faker::Sports::Football.competition }
+
+        description { Faker::Lorem.sentence(word_count: 10, supplemental: true) }
+
+        event_date { Faker::Time.between(from: DateTime.now, to: DateTime.now + 3.days) }
+
+        time_start { event_date }
+
+        time_end { Faker::Time.between(from: time_start, to: time_start + 3.days) }
+
+        public { Faker::Boolean.boolean }
+
+        location { Faker::Address.full_address }
+
+        budget { Faker::Number.number(digits: 3).to_f }
+
+        real_cost { Faker::Number.number(digits: 3).to_f }
+
+        signed_up_count { Faker::Number.number(digits: 3) }
+
+        showed_up_count { Faker::Number.number(digits: 3) }
+
 
     end
 end

@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -35,13 +35,11 @@ RSpec.describe "CloudDriver::Calendar" do
                     user_main_id: @user.id,
                     cloud_driver_accounts_id: @user.account.id,
                     cloud_driver_calendars_id: @user.account.driver.calendars.default(@user).id,
-                    detail_attributes: {
-                        title: Faker::Sports::Football.competition,
-                        event_date: event_date,
-                        time_start: event_date,
-                        time_end: event_date,
-                        public: true,
-                    }
+                    title: Faker::Sports::Football.competition,
+                    event_date: event_date,
+                    time_start: event_date,
+                    time_end: event_date,
+                    public: true,
                 )
 
             end
@@ -76,12 +74,10 @@ RSpec.describe "CloudDriver::Calendar" do
                     users_id: @user.id,
                     cloud_driver_accounts_id: @user.account.id,
                     cloud_driver_calendars_id: @user.account.driver.calendars.default(@user).id,
-                    detail_attributes: {
-                        event_date: event_date,
-                        time_start: event_date,
-                        time_end: event_date,
-                        title: Faker::Sports::Football.competition
-                    }
+                    event_date: event_date,
+                    time_start: event_date,
+                    time_end: event_date,
+                    title: Faker::Sports::Football.competition
                 )
             end
 
