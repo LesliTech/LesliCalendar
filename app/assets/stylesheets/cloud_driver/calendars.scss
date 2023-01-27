@@ -78,6 +78,13 @@ $btn-bg-color: white;
             background-color: var(--lesli-color-primary);
         }
 
+        // button  disabled
+        .fc-button:disabled {
+            border-color: var(--lesli-color-primary);
+            color: var(--lesli-color-primary);
+            background-color: $btn-bg-color;
+        }
+
         // hover buttons (not disabled)
         .fc-button:not(:disabled):hover {
             border-color: var(--lesli-color-primary);

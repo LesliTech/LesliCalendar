@@ -21,18 +21,15 @@ import { onMounted } from "vue"
 
 // · import lesli stores
 import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
-import { useShow } from 'CloudDriver/stores/dashboard/show'
 
 // · implement stores
 const storeCalendar = useCalendar()
-const storeShow = useShow()
 
 // · 
 onMounted(() => {
     setTimeout(function () {
         storeCalendar.initCalendar();
     }, 1);
-    storeCalendar.currentEvents = JSON.parse(localStorage.getItem("currentEvents"))
 })
 
 </script>

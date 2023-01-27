@@ -25,6 +25,10 @@ import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list';
+
+// · import lesli stores
+import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {
@@ -33,10 +37,12 @@ export const useCalendar = defineStore("driver.calendar", {
             calendarPlugins: [
                 dayGridPlugin,
                 interactionPlugin,
-                timeGridPlugin
+                timeGridPlugin,
+                listPlugin,
             ],
             calendar: {},
-            currentEvents: [],
+            currentEvents: JSON.parse(localStorage.getItem("currentEvents")),
+            currentEventId: null,
             calendarData: {
                 driver_events: [],
                 focus_tasks: [],
@@ -47,7 +53,7 @@ export const useCalendar = defineStore("driver.calendar", {
                     shared: I18n.t('core.shared')
                 }
             },
-            eventGuid: 0
+            eventGuid: 0,
         }
     },
 
@@ -59,7 +65,7 @@ export const useCalendar = defineStore("driver.calendar", {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
                 firstDay: 1,
                 locale: I18n.currentLocale(),
@@ -89,6 +95,7 @@ export const useCalendar = defineStore("driver.calendar", {
         },
 
         onDateSelect(selectInfo) {
+            
             let title = prompt('Please enter a new title for your event')
             let calendarApi = selectInfo.view.calendar
             calendarApi.unselect()
@@ -107,12 +114,11 @@ export const useCalendar = defineStore("driver.calendar", {
             }
         },
 
-        onEventClick(clickInfo) {
-            if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-                clickInfo.event.remove()
-                this.currentEvents = this.currentEvents.filter(e => { return e.id !== clickInfo.event.id })
-                localStorage.setItem('currentEvents', JSON.stringify(this.currentEvents))
-            }
+        onEventClick: function(arg) {
+            const storePanelEvent = usePanelEvent()
+            storePanelEvent.event.id = arg.event.id
+            storePanelEvent.event.detail_attributes.title = arg.event.title
+            storePanelEvent.showModal = !storePanelEvent.showModal
         },
 
         createEventId() {

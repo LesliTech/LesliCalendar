@@ -23,7 +23,6 @@ import { useRouter, useRoute } from 'vue-router'
 
 // · Import components
 import componentCalendar from './components/calendar.vue'
-import componentAgenda from './components/agenda.vue'
 import componentPanelEvent from './components/panel-event.vue'
 
 // · import lesli stores
@@ -45,14 +44,14 @@ onMounted(() => {
 })
 
 const togleModal = () => {
-    storePanelEvent.showModal = !storePanelEvent.showModal 
+    // storePanelEvent.showModal = !storePanelEvent.showModal
+    storePanelEvent.showModal = true
 }
 
 </script>
 
 <template>
     <section class="application-component">
-
         <lesli-header :title="storeShow.setTitle()">
             <div class="navbar-item">
                 <div class="buttons">
@@ -65,11 +64,7 @@ const togleModal = () => {
         <lesli-toolbar @search="a"></lesli-toolbar>
 
         <div class="columns">
-            <div class="column is-one-quarter">
-                <div class="box">
-                    <componentAgenda />
-                </div>
-            </div>
+            
             <div class="column">
                 <div class="box">
                     <componentCalendar />
@@ -78,7 +73,7 @@ const togleModal = () => {
         </div>
 
         <div v-if="storePanelEvent.showModal">
-            <componentPanelEvent @close="togleModal" />
+            <componentPanelEvent @close="togleModal()" />
         </div>
 
     </section>

@@ -28,6 +28,7 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
         return {
             showModal: false,
             event: {
+                id: null,
                 organizer_name: 'Admin',
                 cloud_driver_catalog_event_types_id: null,
                 detail_attributes: {
@@ -42,7 +43,11 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
             },
             options: {
                 event_types: []
-            }
+            },
+            translations: {
+                events: I18n.t('driver.events'),
+                core: I18n.t('core.shared')
+            },
         }
     },
 
@@ -61,6 +66,8 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
             })
         },
 
-        postEvent() {}
+        postEvent() {
+            console.log(this.event)
+        }
     }
 })
