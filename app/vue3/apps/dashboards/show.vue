@@ -57,8 +57,7 @@ const togleModal = () => {
             <div class="navbar-item">
                 <div class="buttons">
                     <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
-                    <button class="button" @click="togleModal"><span class="icon"><i
-                                class="fas fa-plus"></i></span></button>
+                    <button class="button" @click="togleModal"><span class="icon"><i class="fas fa-plus"></i></span></button>
                 </div>
             </div>
         </lesli-header>
