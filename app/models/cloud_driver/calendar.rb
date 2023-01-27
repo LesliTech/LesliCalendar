@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -23,14 +23,11 @@ module CloudDriver
         belongs_to  :user_main,      foreign_key: "user_main_id",    class_name: "::User", optional: true
         belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
-        has_one     :detail, foreign_key: "cloud_driver_calendars_id", dependent: :delete, inverse_of: :calendar, autosave: true
-        accepts_nested_attributes_for :detail
-
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
         # @return [CloudDriver::Calendar] The account shared calendar
         def self.default(current_user)
-            current_user.account.driver.calendars.joins(:detail).find_by(cloud_driver_calendar_details: { default: true }, user_main_id: nil, users_id: nil)
+            current_user.account.driver.calendars.find_by(default: true, user_main_id: nil, users_id: nil)
         end
 
         # @return [Array] Array of calendars of the current_user
@@ -50,9 +47,6 @@ module CloudDriver
             # Executing the query
             records = current_user.account.driver.calendars
 
-            # Joining calendar with details
-            records = records.joins(:detail)
-
             # Filtering by the calendars of the current_user and the shared calendars
             records = records.where(
                 user_main: current_user
@@ -65,7 +59,7 @@ module CloudDriver
                 records = records.where(
                     "
                     (LOWER(source_code) SIMILAR TO :search_string) OR
-                    (LOWER(cloud_driver_calendar_details.name) SIMILAR TO :search_string)
+                    (LOWER(name) SIMILAR TO :search_string)
                     ",
                     search_string: "%#{sanitize_sql_like(search_string, " ")}%"
                 )
@@ -76,13 +70,13 @@ module CloudDriver
 
             # Formating the response
             records = records.select(
-                "cloud_driver_calendars.id",
-                "cloud_driver_calendar_details.name",
-                "cloud_driver_calendar_details.default",
-                "cloud_driver_calendars.created_at",
-                "cloud_driver_calendars.updated_at",
-                "cloud_driver_calendars.source_code",
-                "cloud_driver_calendars.user_main_id",
+                :id,
+                :name,
+                :default,
+                :created_at,
+                :updated_at,
+                :source_code,
+                :user_main_id,
                 LC::Date2.new.db_column("created_at", "cloud_driver_calendars"),
                 LC::Date2.new.db_column("updated_at", "cloud_driver_calendars"),
             )
@@ -99,10 +93,8 @@ module CloudDriver
         #         # The instance of CloudDriver::Account should call this method in an after_create()
         def self.initialize_data(account)
             account.calendars.create_with(
-                detail_attributes: {
-                    name: "Default Calendar",
-                    default: true,
-                }
+                name: "Default Calendar",
+                default: true,
             ).find_or_create_by!(
                 account: account
             )
@@ -138,7 +130,7 @@ module CloudDriver
             # Calendar data
             calendar_data = {
                 id: self.id,
-                name: self.detail.name,
+                name: self.name,
                 users_id: self.user_main_id,
                 user_name: self.user_main_id ? self.user_main.full_name : nil,
                 events: [],
