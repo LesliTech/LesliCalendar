@@ -44,6 +44,7 @@ onMounted(() => {
 })
 
 const togleModal = () => {
+    storePanelEvent.reset()
     storePanelEvent.showModal = !storePanelEvent.showModal
 }
 
@@ -59,21 +60,14 @@ const togleModal = () => {
                 </div>
             </div>
         </lesli-header>
-
         <lesli-toolbar @search="a"></lesli-toolbar>
-
         <div class="columns">
-            
             <div class="column">
                 <div class="box">
                     <componentCalendar />
                 </div>
             </div>
         </div>
-
-        <div v-if="storePanelEvent.showModal">
-            <componentPanelEvent @close="togleModal()" />
-        </div>
-
+        <componentPanelEvent />
     </section>
 </template>

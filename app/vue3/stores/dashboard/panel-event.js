@@ -28,30 +28,38 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
         return {
             showModal: false,
             event: {
+                cloud_driver_catalog_event_types_id: null,
                 id: null,
                 organizer_name: 'Admin',
-                cloud_driver_catalog_event_types_id: null,
-                detail_attributes: {
-                    title: null,
-                    description: '',
-                    event_date: new Date(),
-                    time_start: null,
-                    time_end: null,
-                    location: '',
-                    url: ''
-                },
+                title: null,
+                description: '',
+                event_date: new Date(),
+                time_start: null,
+                time_end: null,
+                location: '',
+                url: ''   
             },
             options: {
                 event_types: []
-            },
-            translations: {
-                events: I18n.t('driver.events'),
-                core: I18n.t('core.shared')
             },
         }
     },
 
     actions: {
+        
+        reset() {
+            this.event.cloud_driver_catalog_event_types_id = null
+            this.event.id = null
+            this.event.title = null
+            this.event.description = ''
+            this.event.event_date = new Date()
+            this.event.time_start = null
+            this.event.time_end = null
+            this.event.location = ''
+            this.event.url = ''
+
+        },
+
         getOptions(){
             let url = this.url.driver('events/options')
 

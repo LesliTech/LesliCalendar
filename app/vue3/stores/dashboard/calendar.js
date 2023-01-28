@@ -42,7 +42,6 @@ export const useCalendar = defineStore("driver.calendar", {
             ],
             calendar: {},
             currentEvents: JSON.parse(localStorage.getItem("currentEvents")),
-            currentEventId: null,
             calendarData: {
                 driver_events: [],
                 focus_tasks: [],
@@ -69,7 +68,6 @@ export const useCalendar = defineStore("driver.calendar", {
                 },
                 firstDay: 1,
                 locale: I18n.currentLocale(),
-                select: this.onDateSelect,
                 eventClick: this.onEventClick,
                 initialView: 'dayGridMonth',
                 initialEvents: JSON.parse(localStorage.getItem("currentEvents")),
@@ -94,30 +92,10 @@ export const useCalendar = defineStore("driver.calendar", {
             this.calendar.render()
         },
 
-        onDateSelect(selectInfo) {
-            
-            let title = prompt('Please enter a new title for your event')
-            let calendarApi = selectInfo.view.calendar
-            calendarApi.unselect()
-        
-            if (title) {
-                const newEvent = {
-                    id: this.createEventId(),
-                    title,
-                    start: selectInfo.startStr,
-                    end: selectInfo.endStr,
-                    allDay: selectInfo.allDay
-                }
-                calendarApi.addEvent(newEvent)
-                this.currentEvents ? this.currentEvents.push(newEvent) : this.currentEvents = [newEvent]
-                localStorage.setItem('currentEvents', JSON.stringify(this.currentEvents))
-            }
-        },
-
         onEventClick: function(arg) {
             const storePanelEvent = usePanelEvent()
             storePanelEvent.event.id = arg.event.id
-            storePanelEvent.event.detail_attributes.title = arg.event.title
+            storePanelEvent.event.title = arg.event.title
             storePanelEvent.showModal = !storePanelEvent.showModal
         },
 
