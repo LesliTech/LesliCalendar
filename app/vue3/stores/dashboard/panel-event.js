@@ -30,7 +30,7 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
             event: {
                 cloud_driver_catalog_event_types_id: null,
                 id: null,
-                organizer_name: 'Admin',
+                organizer_name: '',
                 title: null,
                 description: '',
                 event_date: new Date(),
@@ -75,7 +75,6 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
         },
 
         postEvent() {
-            console.log(this.event)
         }
     }
 })
