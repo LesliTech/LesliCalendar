@@ -22,8 +22,8 @@ import ComponentDiscussions from "LesliVue/cloud-objects/discussion.vue"
 import ComponentFiles from "LesliVue/cloud-objects/file.vue"
 
 // · import lesli stores
-import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
-import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
+import { usePanelEvent } from 'CloudDriver/stores/panel-event'
+import { useCalendar } from 'CloudDriver/stores/calendar'
 
 // · implement stores
 const storePanelEvent = usePanelEvent()
@@ -43,10 +43,8 @@ onMounted(() => {
 })
 
 const translations = {
-    main: I18n.t('driver.events'),
-    core: {
-        shared: I18n.t('core.shared')
-    },
+    events: I18n.t('driver.events'),
+    core: I18n.t('core.shared'),
 }
 
 </script>
@@ -60,76 +58,81 @@ const translations = {
         <template #default>
             <lesli-tabs v-model="tab">
 
-                <lesli-tab-item :title="translations.core.shared.view_tab_title_general_information" icon="info">
+                <lesli-tab-item :title="translations.core.view_tab_title_general_information" icon="info">
                     <form @submit.prevent="submitEvent">
                         <fieldset>
                             <div class="columns">
                                 <div class="column">
                                     <field label="column_user_main_id">
-                                        <p>Organizer:</p>
+                                        <p>{{ translations.events.column_user_main_id }}</p>
                                         <input class="input is-default" type="text" name="organizer_name"
                                             v-model="storePanelEvent.event.organizer_name" readonly />
                                     </field>
                                     <field>
-                                        <p>Title:</p>
+                                        <p>{{ translations.events.column_title }}</p>
                                         <input class="input is-default" type="text" name="organizer_name"
                                             v-model="storePanelEvent.event.title" required />
                                     </field>
                                     <field>
-                                        <p>Date start:</p>
+                                        <p>{{ translations.events.column_time_start }}</p>
                                         <lesli-calendar :v-model="storePanelEvent.event.time_start"
                                             mode="dateTime">
                                         </lesli-calendar>
                                     </field>
                                     <field>
-                                        <p>Budget:</p>
+                                        <p>{{translations.events.column_budget}} ({{storePanelEvent.lesli.settings.currency.symbol}})</p>
                                         <input class="input is-default" type="number" name="budget" min="0" step="0.01"
                                             v-model="storePanelEvent.event.budget" />
                                     </field>
                                     <field>
-                                        <p>Showed up count:</p>
+                                        <p>{{ translations.events.column_showed_up_count }}</p>
                                         <input class="input is-default" type="number" name="showed_up_count" min="0"
                                             step="1"
                                             v-model="storePanelEvent.event.showed_up_count" />
                                     </field>
+                                    <field>
+                                        <p>Estimated duration (mins)</p>
+                                        <input class="input is-default" type="number" name="estimated_mins_durations"
+                                            min="10" step="10"
+                                            v-model="storePanelEvent.event.estimated_mins_durations" />
+                                    </field>
                                 </div>
                                 <div class="column">
                                     <field>
-                                        <p>Event type:</p>
+                                        <p>{{ translations.events.column_cloud_driver_catalog_event_types_id }}</p>
                                         <lesli-select
                                             v-model="storePanelEvent.event.cloud_driver_catalog_event_types_id"
                                             icon="public" :options="storePanelEvent.options.event_types">
                                         </lesli-select>
                                     </field>
                                     <field>
-                                        <p>Address:</p>
+                                        <p>{{ translations.events.column_location }}</p>
                                         <input class="input is-default" type="text" name="address"
                                             v-model="storePanelEvent.event.location" />
                                     </field>
                                     <field>
-                                        <p>Date end:</p>
+                                        <p>{{translations.events.column_time_end}}</p>
                                         <lesli-calendar :v-model="storePanelEvent.event.time_end"
                                             mode="dateTime">
                                         </lesli-calendar>
                                     </field>
                                     <field>
-                                        <p>Real cost:</p>
+                                        <p>{{translations.events.column_real_cost}} ({{storePanelEvent.lesli.settings.currency.symbol}})</p>
                                         <input class="input is-default" type="number" name="real_cost" min="0"
                                             step="0.01" v-model="storePanelEvent.event.real_cost" />
                                     </field>
                                     <field>
-                                        <p>Duration (mins):</p>
-                                        <input class="input is-default" type="number" name="estimated_mins_durations"
-                                            min="10" step="10"
-                                            v-model="storePanelEvent.event.estimated_mins_durations" />
+                                        <p>{{ translations.events.column_signed_up_count }}</p>
+                                        <input class="input is-default" type="number" name="signed_up_count" min="0"
+                                            step="1"
+                                            v-model="storePanelEvent.event.signed_up_count" />
                                     </field>
-
                                 </div>
                             </div>
                             <div class="columns">
                                 <div class="column">
                                     <field>
-                                        <p>Description:</p>
+                                        <p>{{ translations.events.column_description }}</p>
                                         <div class="control">
                                             <textarea v-model="storePanelEvent.event.description"
                                                 class="textarea" name="description"></textarea>
@@ -166,21 +169,21 @@ const translations = {
                     </form>
                 </lesli-tab-item>
 
-                <lesli-tab-item  :title="translations.core.shared.view_btn_discussions"
+                <lesli-tab-item  :title="translations.core.view_btn_discussions"
                     icon="forum">
                     <ComponentDiscussions v-if="storePanelEvent.event.id" cloud-module="driver" cloud-object="events"
                         :cloud-object-id="storePanelEvent.event.id" :onlyDiscussions="true">
                     </ComponentDiscussions>
                 </lesli-tab-item>
 
-                <lesli-tab-item :title="translations.core.shared.view_btn_files"
+                <lesli-tab-item :title="translations.core.view_btn_files"
                     icon="attach_file">
                     <ComponentFiles v-if="storePanelEvent.event.id" cloud-module="driver" cloud-object="events"
                         :cloud-object-id="storePanelEvent.event.id"
                         :accepted-files="['images', 'documents', 'plaintext']"></ComponentFiles>
                 </lesli-tab-item>
 
-                <lesli-tab-item :title="translations.main.view_tab_title_assignments" icon="group">
+                <lesli-tab-item :title="translations.events.view_tab_title_assignments" icon="group">
                 </lesli-tab-item>
 
             </lesli-tabs>

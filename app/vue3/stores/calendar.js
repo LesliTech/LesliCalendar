@@ -28,7 +28,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list';
 
 // · import lesli stores
-import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
+import { usePanelEvent } from 'CloudDriver/stores/panel-event'
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {

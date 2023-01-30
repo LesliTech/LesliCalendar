@@ -26,9 +26,9 @@ import componentCalendar from './components/calendar.vue'
 import componentPanelEvent from './components/panel-event.vue'
 
 // · import lesli stores
-import { useShow } from 'CloudDriver/stores/dashboard/show'
-import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
-import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
+import { useShow } from 'CloudDriver/stores/show'
+import { useCalendar } from 'CloudDriver/stores/calendar'
+import { usePanelEvent } from 'CloudDriver/stores/panel-event'
 
 // · initialize/inject plugins
 const router = useRouter()

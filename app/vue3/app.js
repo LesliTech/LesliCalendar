@@ -23,12 +23,12 @@ import app from "LesliVue/app"
 
 
 // · Import apps and components
-import appDashboardShow from "CloudDriver/apps/dashboards/show.vue"
+import appShow from "CloudDriver/apps/show.vue"
 
 // · Cloud app
 app("CloudDriver", [
     {
         path: '/',
-        component: appDashboardShow
+        component: appShow
     }
 ])

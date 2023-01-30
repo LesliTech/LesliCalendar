@@ -20,7 +20,7 @@ For more information read the license file including with this software.
 import { onMounted } from "vue"
 
 // · import lesli stores
-import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
+import { useCalendar } from 'CloudDriver/stores/calendar'
 
 // · implement stores
 const storeCalendar = useCalendar()

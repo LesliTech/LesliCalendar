@@ -20,8 +20,6 @@ For more information read the license file including with this software.
 // · 
 import { defineStore } from "pinia"
 
-// · Import components, libraries and tools
-
 // · 
 export const usePanelEvent = defineStore("driver.panelEvent", {
     state: () => {
@@ -42,6 +40,13 @@ export const usePanelEvent = defineStore("driver.panelEvent", {
             options: {
                 event_types: []
             },
+            lesli: {
+                settings: {
+                    currency: {
+                        symbol: null
+                    }
+                }
+            }
         }
     },
 
