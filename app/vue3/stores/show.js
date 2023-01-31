@@ -20,6 +20,9 @@ For more information read the license file including with this software.
 // · 
 import { defineStore } from "pinia"
 
+// · import lesli stores
+import { useEvent } from 'CloudDriver/stores/event'
+
 // · 
 export const useShow = defineStore("driver.show", {
     state: () => {
@@ -31,7 +34,7 @@ export const useShow = defineStore("driver.show", {
 
         setTitle() {
             return this.date.dateWords()
-        } 
+        }
 
     }
 })

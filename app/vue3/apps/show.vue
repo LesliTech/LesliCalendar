@@ -23,12 +23,13 @@ import { useRouter, useRoute } from 'vue-router'
 
 // · Import components
 import componentCalendar from './components/calendar.vue'
-import componentPanelEvent from './components/panel-event.vue'
+import componentEvent from './components/event.vue'
 
 // · import lesli stores
 import { useShow } from 'CloudDriver/stores/show'
 import { useCalendar } from 'CloudDriver/stores/calendar'
-import { usePanelEvent } from 'CloudDriver/stores/panel-event'
+import { useEvent } from 'CloudDriver/stores/event'
+// import { useGuests } from 'CloudDriver/stores/guests'
 
 // · initialize/inject plugins
 const router = useRouter()
@@ -38,15 +39,17 @@ const url = inject("url")
 // · implement stores
 const storeShow = useShow()
 const storeCalendar = useCalendar()
-const storePanelEvent = usePanelEvent()
+const storeEvent = useEvent()
+// const storeGuests = useGuests()
 
-onMounted(() => { 
+const newEvent = () => {
+    storeCalendar.reset()
+    storeEvent.showModal = !storeEvent.showModal
+}
+
+onMounted(() => {
 })
 
-const togleModal = () => {
-    storePanelEvent.reset()
-    storePanelEvent.showModal = !storePanelEvent.showModal
-}
 
 </script>
 
@@ -56,7 +59,8 @@ const togleModal = () => {
             <div class="navbar-item">
                 <div class="buttons">
                     <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
-                    <button class="button" @click="togleModal"><span class="icon"><i class="fas fa-plus"></i></span></button>
+                    <button class="button" @click="newEvent()"><span class="icon"><i
+                                class="fas fa-plus"></i></span></button>
                 </div>
             </div>
         </lesli-header>
@@ -68,6 +72,6 @@ const togleModal = () => {
                 </div>
             </div>
         </div>
-        <componentPanelEvent />
+        <componentEvent />
     </section>
 </template>

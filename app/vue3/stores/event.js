@@ -21,65 +21,29 @@ For more information read the license file including with this software.
 import { defineStore } from "pinia"
 
 // · 
-export const usePanelEvent = defineStore("driver.panelEvent", {
+export const useEvent = defineStore("driver.event", {
     state: () => {
         return {
             showModal: false,
-            event: {
-                cloud_driver_catalog_event_types_id: null,
-                id: null,
-                organizer_name: '',
-                title: null,
-                description: '',
-                event_date: new Date(),
-                time_start: null,
-                time_end: null,
-                location: '',
-                url: ''   
-            },
             options: {
                 event_types: []
             },
-            lesli: {
-                settings: {
-                    currency: {
-                        symbol: null
-                    }
-                }
-            }
         }
     },
 
     actions: {
-        
-        reset() {
-            this.event.cloud_driver_catalog_event_types_id = null
-            this.event.id = null
-            this.event.title = null
-            this.event.description = ''
-            this.event.event_date = new Date()
-            this.event.time_start = null
-            this.event.time_end = null
-            this.event.location = ''
-            this.event.url = ''
 
-        },
-
-        getOptions(){
+        getOptions() {
             let url = this.url.driver('events/options')
-
             this.http.get(url).then(result => {
                 if (result) {
                     this.options.event_types = result.event_types.map(option => {
-                        return {label: option.text, value: option.value };
-                      });
+                        return { label: option.text, value: option.value };
+                    });
                 }
             }).catch(error => {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
             })
         },
-
-        postEvent() {
-        }
     }
 })

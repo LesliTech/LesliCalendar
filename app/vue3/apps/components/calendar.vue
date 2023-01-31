@@ -25,12 +25,12 @@ import { useCalendar } from 'CloudDriver/stores/calendar'
 // · implement stores
 const storeCalendar = useCalendar()
 
-// · 
 onMounted(() => {
     setTimeout(function () {
         storeCalendar.initCalendar();
+        storeCalendar.getCalendarEvents();
     }, 1);
-})
+});
 
 </script>
 
