@@ -28,6 +28,10 @@ export const useEvent = defineStore("driver.event", {
             options: {
                 event_types: []
             },
+            submit: {
+                event: false,
+                delete: false
+            },
         }
     },
 

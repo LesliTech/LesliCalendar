@@ -132,7 +132,6 @@ export const useCalendar = defineStore("driver.calendar", {
             try {
                 let result = await this.http.get(url);
                 this.calendarData = result;
-                console.log('getCalendarEvents result', result)
                 this.calendarData.events.forEach(event => this.calendar.addEvent(event))
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
@@ -253,6 +252,7 @@ export const useCalendar = defineStore("driver.calendar", {
             })
             if (isConfirmed) {
                 try {
+                    storeEvent.submit.delete = true
                     const result = await this.http.delete(this.url.driver(`events/${this.event_id}`))
                     let deletedEvent = this.calendar.getEventById(this.event_id)
                     deletedEvent.remove()

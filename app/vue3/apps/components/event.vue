@@ -62,7 +62,7 @@ const deleteEvent = async () => {
 
         <template #default>
             <lesli-tabs v-model="tab">
-
+                
                 <lesli-tab-item :title="translations.core.view_tab_title_general_information" icon="info">
                     <form @submit.prevent="submitEvent">
                         <fieldset>
@@ -174,14 +174,18 @@ const deleteEvent = async () => {
 
                 <lesli-tab-item :title="translations.core.view_btn_discussions" icon="forum">
                     <ComponentDiscussions v-if="storeCalendar.event_id" cloud-module="driver" cloud-object="events"
-                        :cloud-object-id="storeCalendar.event_id" :onlyDiscussions="true">
+                        :cloud-object-id="storeCalendar.event.id" :onlyDiscussions="true">
                     </ComponentDiscussions>
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.core.view_btn_files" icon="attach_file">
-                    <ComponentFiles v-if="storeCalendar.event_id" cloud-module="driver" cloud-object="events"
-                        :cloud-object-id="storeCalendar.event_id"
-                        :accepted-files="['images', 'documents', 'plaintext']"></ComponentFiles>
+                    <ComponentFiles 
+                        v-if="storeCalendar.event_id" 
+                        cloud-module="driver" 
+                        cloud-object="events"
+                        :cloud-object-id="storeCalendar.event.id"
+                        :accepted-files="['images', 'documents', 'plaintext']">
+                    </ComponentFiles>
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_assignments" icon="group">
@@ -190,8 +194,13 @@ const deleteEvent = async () => {
 
                 <lesli-tab-item :title="translations.events.view_tab_title_delete_section" icon="delete">
                     <div v-if="storeCalendar.event_id" class="buttons">
-                        <button class="button is-danger" @click="deleteEvent()">
-                            Delete event
+                        <button type="is-danger" @click="deleteEvent()" class="button is-danger submit-button" :disabled="storeEvent.submit.delete">
+                            <span v-if="storeEvent.submit.delete">
+                                <i class="fas fa-spin fa-circle-notch"></i> {{translations.core.view_btn_deleting}}
+                            </span>
+                            <span v-else>
+                                <i class="fas fa-trash-alt"></i> {{translations.core.view_btn_delete}}
+                            </span>
                         </button>
                     </div>
                 </lesli-tab-item>
