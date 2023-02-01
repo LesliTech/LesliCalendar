@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -24,26 +24,12 @@ module CloudDriver
         before_action :set_calendar, only: [:show, :edit, :update]
         before_action :parse_query_params, only: :show
 
-        def privileges
-            {
-                index: [],
-                show: [
-                    "options",
-                    "sync",
-                    "CloudDriver::EventsController#options",
-                    "CloudDriver::Event::DiscussionsController#index",
-                    "CloudDriver::Event::FilesController#index",
-                    "CloudDriver::Event::FilesController#options",
-                ],
-            }
-        end
-
         # GET /calendars
         def index
             respond_to do |format|
                 format.html { }
                 format.json do
-                    respond_with_pagination(CloudDriver::Calendar.index(current_user, @query))
+                    respond_with_pagination(CloudDriver::CalendarService.new(current_user).index(@query))
                 end
             end
         end
@@ -52,13 +38,12 @@ module CloudDriver
         def show
             respond_to do |format|
                 format.html { }
-                format.json { respond_with_successful(@calendar.show(current_user, @query)) }
+                format.json { respond_with_successful(@calendar.show(@query)) }
             end
         end
 
         # GET /calendars/new
         def new
-            @calendar = Calendar.new
         end
 
         # GET /calendars/1/edit
@@ -67,21 +52,10 @@ module CloudDriver
 
         # POST /calendars
         def create
-            @calendar = Calendar.new(calendar_params)
-            if @calendar.save
-                redirect_to @calendar, notice: 'Calendar was successfully created.'
-            else
-                render :new
-            end
         end
 
         # PATCH/PUT /calendars/1
         def update
-            if @calendar.update(calendar_params)
-                redirect_to @calendar, notice: 'Calendar was successfully updated.'
-            else
-                render :edit
-            end
         end
 
         # DELETE /calendars/1
@@ -107,9 +81,9 @@ module CloudDriver
         #     # This will either display nil or an instance of CloudDriver::Calendar
         def set_calendar
             if params[:id].blank? || params[:id] == "default"
-                @calendar = current_user.account.driver.calendars.default(current_user)
+                @calendar = CloudDriver::CalendarService.new(current_user).default_calendar
             elsif params[:id]
-                @calendar = current_user.account.driver.calendars.find_by(id: params[:id])
+                @calendar = CloudDriver::CalendarService.new(current_user).find(params[:id])
             end
 
             return respond_with_not_found unless @calendar
@@ -117,7 +91,7 @@ module CloudDriver
 
         # Only allow a trusted parameter "white list" through.
         def calendar_params
-            params.fetch(:calendar, {})
+            params.require(:calendar)
         end
 
         def parse_query_params
