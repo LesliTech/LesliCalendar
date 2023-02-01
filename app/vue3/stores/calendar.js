@@ -21,7 +21,6 @@ For more information read the license file including with this software.
 import { defineStore } from "pinia"
 
 // · Import components, libraries and tools
-import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -35,28 +34,12 @@ export const useCalendar = defineStore("driver.calendar", {
     state: () => {
         return {
             calendar: {},
-
-            calendarPlugins: [
-                dayGridPlugin,
-                interactionPlugin,
-                timeGridPlugin,
-                listPlugin,
-            ],
-
-            calendarToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            },
-
             calendarData: {
                 driver_events: [],
                 focus_tasks: [],
                 help_tickets: [],
             },
-
             event_id: '',
-            timeoutId: null,
             event: {
                 cloud_driver_catalog_event_types_id: null,
                 detail_attributes: {
@@ -69,7 +52,6 @@ export const useCalendar = defineStore("driver.calendar", {
                     url: ''
                 }
             },
-
             lesli: {
                 settings: {
                     currency: {
@@ -95,36 +77,6 @@ export const useCalendar = defineStore("driver.calendar", {
                     url: ''
                 }
             }
-        },
-
-        initCalendar() {
-            this.calendar = new Calendar(document.getElementById("driver_calendar"), {
-                plugins: this.calendarPlugins,
-                headerToolbar: this.calendarToolbar,
-                firstDay: 1,
-                locale: I18n.currentLocale(),
-                initialView: 'dayGridMonth',
-                showNonCurrentDates: false,
-                events: [
-                    this.calendarData.driver_events,
-                    this.calendarData.focus_tasks,
-                    this.calendarData.help_tickets,
-                ],
-                eventClick: this.onEventClick,
-                dateClick: this.onDateClick,
-                eventMouseEnter: this.onEventMouseEnter,
-                eventMouseLeave: this.onEventMouseLeave,
-                eventContent: function (args) {
-                    let title = document.createElement('span')
-                    let time = document.createElement('span')
-                    title.innerHTML = args.event.title
-                    time.innerHTML = args.timeText
-                    title.classList.add('event-title')
-                    time.classList.add('event-time')
-                    return { domNodes: [title, time] }
-                }
-            })
-            this.calendar.render()
         },
 
         async getCalendarEvents() {
@@ -155,24 +107,6 @@ export const useCalendar = defineStore("driver.calendar", {
             storeEvent.showModal = !storeEvent.showModal
         },
 
-        onEventMouseEnter: function (arg) {
-            this.timeoutId = setTimeout(() => {
-                const storeEvent = useEvent()
-                arg.jsEvent.preventDefault()
-                this.event_id = parseInt(arg.event.id)
-                this.http.get(this.url.driver(`events/${this.event_id}`))
-                    .then(result => {
-                        this.event = result
-                    })
-                storeEvent.showModal = !storeEvent.showModal
-            }, 400)
-        },
-
-        onEventMouseLeave: function () {
-            clearTimeout(this.timeoutId)
-            this.timeoutId = null
-        },
-
         async postEvent(url = this.url.driver('events')) {
             const storeEvent = useEvent();
             let data = {
@@ -189,6 +123,7 @@ export const useCalendar = defineStore("driver.calendar", {
                     }
                 }
             };
+            
             try {
                 const result = await this.http.post(url, data).then(event => {
                     this.event_id = event.id
@@ -246,10 +181,11 @@ export const useCalendar = defineStore("driver.calendar", {
             const storeEvent = useEvent()
             const { isConfirmed } = await this.dialog.confirmation({
                 title: "Delete event",
-                text: "Are you sure you want to delete this event?",
-                confirmText: "yes",
-                cancelText: "no"
+                text: "driver.events.view_text_delete_confirmation",
+                confirmText: I18n.t("core.shared.view_text_yes"),
+                cancelText: I18n.t("core.shared.view_text_no")
             })
+
             if (isConfirmed) {
                 try {
                     storeEvent.submit.delete = true
@@ -264,6 +200,5 @@ export const useCalendar = defineStore("driver.calendar", {
             }
             return { isConfirmed }
         }
-
     }
 })

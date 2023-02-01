@@ -40,7 +40,6 @@ const url = inject("url")
 const storeShow = useShow()
 const storeCalendar = useCalendar()
 const storeEvent = useEvent()
-// const storeGuests = useGuests()
 
 const newEvent = () => {
     storeCalendar.reset()
@@ -63,14 +62,14 @@ onMounted(() => {
         <lesli-header :title="storeShow.setTitle()">
             <div class="navbar-item">
                 <div class="buttons">
-                    <button class="button">
+                    <lesli-button>
                         <span class="icon"><i class="fab fa-google"></i></span>
                         <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
-                    </button>
-                    <button class="button" @click="newEvent()">
+                    </lesli-button>
+                    <lesli-button @click="newEvent()">
                         <span class="icon"><i class="fas fa-plus"></i></span>
                         <span>{{ translations.events.view_btn_new }}</span>
-                    </button>
+                    </lesli-button>
                 </div>
             </div>
         </lesli-header>

@@ -18,6 +18,11 @@ For more information read the license file including with this software.
 
 // · Import components, libraries and tools
 import { onMounted } from "vue"
+import { Calendar } from '@fullcalendar/core'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list';
 
 // · import lesli stores
 import { useCalendar } from 'CloudDriver/stores/calendar'
@@ -27,10 +32,47 @@ const storeCalendar = useCalendar()
 
 onMounted(() => {
     setTimeout(function () {
-        storeCalendar.initCalendar();
-        storeCalendar.getCalendarEvents();
+        initCalendar()
     }, 1);
+    storeCalendar.getCalendarEvents();
 });
+
+function initCalendar() {
+    storeCalendar.calendar = new Calendar(document.getElementById("driver_calendar"), {
+        plugins: [
+            dayGridPlugin,
+            interactionPlugin,
+            timeGridPlugin,
+            listPlugin
+        ],
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        firstDay: 1,
+        locale: I18n.currentLocale(),
+        initialView: 'dayGridMonth',
+        showNonCurrentDates: false,
+        events: [
+            storeCalendar.calendarData.driver_events,
+            storeCalendar.calendarData.focus_tasks,
+            storeCalendar.calendarData.help_tickets,
+        ],
+        eventClick: storeCalendar.onEventClick,
+        dateClick: storeCalendar.onDateClick,
+        eventContent: function (args) {
+            let title = document.createElement('span')
+            let time = document.createElement('span')
+            title.innerHTML = args.event.title
+            time.innerHTML = args.timeText
+            title.classList.add('event-title')
+            time.classList.add('event-time')
+            return { domNodes: [title, time] }
+        }
+    })
+    storeCalendar.calendar.render()
+}
 
 </script>
 
