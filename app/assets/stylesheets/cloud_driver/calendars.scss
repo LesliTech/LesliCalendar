@@ -50,12 +50,8 @@ $btn-bg-color: white;
     // calendar headerToolbar buttons
     .fc-toolbar {
 
-        // buttons (prev, next, today, month, week, day)
         .fc-button {
-            background-color: $btn-bg-color;
-            border-color: #dbdbdb;
             border-width: 1px;
-            color: #363636;
             cursor: pointer;
             justify-content: center;
             padding-bottom: calc(0.5em - 1px);
@@ -64,52 +60,21 @@ $btn-bg-color: white;
             padding-top: calc(0.5em - 1px);
             text-align: center;
             white-space: nowrap;
+            color: #3689e6;
+            background-color: transparent;
+            border-color: #3689e6;
         }
 
-        // active buttons
-        .fc-button:focus:not(:active) {
-            background-color: $btn-bg-color;
-        }
-
-        // focus buttons
-        .fc-button:focus {
-            border-color: #dbdbdb;
-            color: #363636;
-            background-color: var(--lesli-color-primary);
-        }
-
-        // button  disabled
-        .fc-button:disabled {
-            border-color: var(--lesli-color-primary);
-            color: var(--lesli-color-primary);
-            background-color: $btn-bg-color;
-        }
-
-        // hover buttons (not disabled)
-        .fc-button:not(:disabled):hover {
-            border-color: var(--lesli-color-primary);
-            color: var(--lesli-color-primary);
-            background-color: $btn-bg-color;
-        }
-
-        // active and focus buttons (not disabled)
-        .fc-button:not(:disabled):active:focus {
-            border-color: white;
-            color: white;
-            background-color: var(--lesli-color-primary);
-        }
-
-        // focus buttons (not active)
-        .fc-button:focus:not(:active) {
-            border-color: var(--lesli-color-primary);
-            color: var(--lesli-color-primary);
-        }
-
-        //  active buttons
+        .fc-button:disabled,
+        .fc-button:focus,
+        .fc-button:focus:not(:active),
+        .fc-button:not(:disabled):active:focus,
+        .fc-button:not(:disabled):hover:focus,
+        .fc-button:not(:disabled):hover,
         .fc-button.fc-button-primary.fc-button-active {
-            background-color: $btn-bg-color;
-            border-color: var(--lesli-color-primary);
-            color: var(--lesli-color-primary);
+            border-color: #3689e6;
+            background-color: #3689e6;
+            color: #fff;
         }
 
     }

@@ -47,6 +47,11 @@ const newEvent = () => {
     storeEvent.showModal = !storeEvent.showModal
 }
 
+const translations = {
+    calendars: I18n.t('driver.calendars'),
+    events: I18n.t('driver.events')
+}
+
 onMounted(() => {
 })
 
@@ -58,9 +63,14 @@ onMounted(() => {
         <lesli-header :title="storeShow.setTitle()">
             <div class="navbar-item">
                 <div class="buttons">
-                    <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
-                    <button class="button" @click="newEvent()"><span class="icon"><i
-                                class="fas fa-plus"></i></span></button>
+                    <button class="button">
+                        <span class="icon"><i class="fab fa-google"></i></span>
+                        <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
+                    </button>
+                    <button class="button" @click="newEvent()">
+                        <span class="icon"><i class="fas fa-plus"></i></span>
+                        <span>{{ translations.events.view_btn_new }}</span>
+                    </button>
                 </div>
             </div>
         </lesli-header>
