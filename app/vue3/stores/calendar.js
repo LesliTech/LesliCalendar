@@ -56,6 +56,7 @@ export const useCalendar = defineStore("driver.calendar", {
             },
 
             event_id: '',
+            eventHovered: false,
             event: {
                 cloud_driver_catalog_event_types_id: null,
                 detail_attributes: {
@@ -111,6 +112,8 @@ export const useCalendar = defineStore("driver.calendar", {
                 ],
                 eventClick: this.onEventClick,
                 dateClick: this.onDateClick,
+                eventMouseEnter: this.onEventMouseEnter,
+                eventMouseLeave: this.onEventMouseLeave,
                 eventContent: function (args) {
                     let title = document.createElement('span')
                     let time = document.createElement('span')
@@ -152,6 +155,26 @@ export const useCalendar = defineStore("driver.calendar", {
                 })
             storeEvent.showModal = !storeEvent.showModal
         },
+
+        onEventMouseEnter: function (arg) {
+            if (!this.eventHovered) {
+              this.eventHovered = true
+              setTimeout(() => {
+                const storeEvent = useEvent()
+                arg.jsEvent.preventDefault()
+                this.event_id = parseInt(arg.event.id)
+                this.http.get(this.url.driver(`events/${this.event_id}`))
+                  .then(result => {
+                    this.event = result
+                  })
+                storeEvent.showModal = !storeEvent.showModal
+              }, 300)
+            }
+          },
+          
+          onEventMouseLeave: function () {
+            this.eventHovered = false
+          },
 
         async postEvent(url = this.url.driver('events')) {
             const storeEvent = useEvent();
