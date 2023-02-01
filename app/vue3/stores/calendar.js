@@ -129,6 +129,7 @@ export const useCalendar = defineStore("driver.calendar", {
             try {
                 let result = await this.http.get(url);
                 this.calendarData = result;
+                console.log('getCalendarEvents result', result)
                 this.calendarData.events.forEach(event => this.calendar.addEvent(event))
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
@@ -171,9 +172,20 @@ export const useCalendar = defineStore("driver.calendar", {
             try {
                 const result = await this.http.post(url, data).then(event => {
                     this.event_id = event.id
-                    this.calendarData.driver_events.push(event);
-                    this.calendarData.events.push(event);
-                    this.calendar.addEvent(event)
+                    let newEvent = {
+                        id: event.id,
+                        date: event.detail_attributes.event_date,
+                        description: event.detail_attributes.description,
+                        end: event.detail_attributes.time_end,
+                        event_type: event.cloud_driver_catalog_event_types_id,
+                        is_proposal: event.is_proposal,
+                        location: event.detail_attributes.location,
+                        start: event.detail_attributes.time_start,
+                        title: event.detail_attributes.title,
+                    }
+                    this.calendarData.driver_events.push(newEvent);
+                    this.calendarData.events.push(newEvent);
+                    this.calendar.addEvent(newEvent)
                 });
                 storeEvent.showModal = !storeEvent.showModal;
                 this.msg.success(I18n.t("core.users.messages_success_operation"));
@@ -183,41 +195,54 @@ export const useCalendar = defineStore("driver.calendar", {
         },
 
 
-        putEvent(url = this.url.driver(`events/${this.event.id}`)) {
+        async putEvent(url = this.url.driver(`events/${this.event.id}`)) {
             const storeEvent = useEvent()
             let data = { event: this.event }
-            this.http.put(url, data).then(result => {
+            try {
+                const result = await this.http.put(url, data)
+                let oldEvent = this.calendar.getEventById(this.event_id)
+                let newEvent = {
+                    id: this.event.id,
+                    date: this.event.detail_attributes.event_date,
+                    description: this.event.detail_attributes.description,
+                    end: this.event.detail_attributes.time_end,
+                    event_type: this.event.cloud_driver_catalog_event_types_id,
+                    is_proposal: this.event.is_proposal,
+                    location: this.event.detail_attributes.location,
+                    start: this.event.detail_attributes.time_start,
+                    title: this.event.detail_attributes.title,
+                }
+                oldEvent.remove()
+                this.calendar.addEvent(newEvent)
+
                 this.msg.success(I18n.t("core.users.messages_success_operation"))
                 storeEvent.showModal = !storeEvent.showModal
-            }).catch(error => {
-                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
-            })
+            } catch (error) {
+                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            }
         },
 
-        deleteEvent() {
+        async deleteEvent() {
             const storeEvent = useEvent()
-            return this.dialog
-                .confirmation({
-                    title: "Delete event",
-                    text: "Are you sure you want to delete this event?",
-                    confirmText: "yes",
-                    cancelText: "no"
-                })
-                .then(({ isConfirmed }) => {
-                    if (isConfirmed) {
-                        this.http
-                            .delete(this.url.driver(`events/${this.event_id}`))
-                            .then((result) => {
-                                this.calendar.removeEvent(this.event)
-                                this.msg.success(I18n.t("core.users.messages_success_operation"));
-                                storeEvent.showModal = !storeEvent.showModal
-                            })
-                            .catch((error) => {
-                                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
-                            });
-                    }
-                    return { isConfirmed }
-                });
+            const { isConfirmed } = await this.dialog.confirmation({
+                title: "Delete event",
+                text: "Are you sure you want to delete this event?",
+                confirmText: "yes",
+                cancelText: "no"
+            })
+            if (isConfirmed) {
+                try {
+                    const result = await this.http.delete(this.url.driver(`events/${this.event_id}`))
+                    let deletedEvent = this.calendar.getEventById(this.event_id)
+                    deletedEvent.remove()
+                    this.msg.success(I18n.t("core.users.messages_success_operation"))
+                    storeEvent.showModal = !storeEvent.showModal
+                } catch (error) {
+                    this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+                }
+            }
+            return { isConfirmed }
         }
+
     }
 })
