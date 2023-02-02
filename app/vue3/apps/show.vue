@@ -29,6 +29,7 @@ import componentEvent from './components/event.vue'
 import { useShow } from 'CloudDriver/stores/show'
 import { useCalendar } from 'CloudDriver/stores/calendar'
 import { useEvent } from 'CloudDriver/stores/event'
+import { useGuests } from 'CloudDriver/stores/guests'
 
 // · initialize/inject plugins
 const router = useRouter()
@@ -39,6 +40,7 @@ const url = inject("url")
 const storeShow = useShow()
 const storeCalendar = useCalendar()
 const storeEvent = useEvent()
+const storeGuests = useGuests()
 
 const newEvent = () => {
     storeCalendar.reset()
