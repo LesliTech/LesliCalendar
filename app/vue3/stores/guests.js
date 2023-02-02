@@ -18,6 +18,9 @@ For more information read the license file including with this software.
 // · 
 import { defineStore } from "pinia"
 import { useCalendar } from 'CloudDriver/stores/calendar'
+// · import vue tools
+import { inject } from "vue"
+
 
 // · 
 export const useGuests = defineStore("driver.guests", {
@@ -99,7 +102,7 @@ export const useGuests = defineStore("driver.guests", {
                 this.msg.success(this.translations.main.messages_success_attendant_created)
 
             }).catch(error => {
-                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
+                this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
             })
         },
 
@@ -111,12 +114,12 @@ export const useGuests = defineStore("driver.guests", {
             let url = `${this.main_route}/${storeCalendar.event.id}/attendants/${attendant.id}.json`
 
             // If this is a guest, we have a different endpoint
-            if(guest.type == 'guest'){
+            if (guest.type == 'guest') {
                 url = `${this.main_route}/${storeCalendar.event.id}/guests/${attendant.id}.json`
             }
 
             this.http.delete(url).then(result => {
-                this.attendants = this.attendants.filter((attendant)=>{
+                this.attendants = this.attendants.filter((attendant) => {
                     return attendant.email !== guest.email
                 })
                 this.msg.success(this.translations.main.messages_success_attendant_deleted)
@@ -124,5 +127,46 @@ export const useGuests = defineStore("driver.guests", {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
             })
         },
+
+        confirmAttendance(guest, today) {
+            const storeCalendar = useCalendar()
+            let newAttendants = this.attendants.map(attendant => {
+                if (attendant.email === guest.email) attendant.confirmed_at_string = today
+                return attendant
+            })
+            let url, data;
+
+            this.loading.attendants = true
+            // working with attendants
+            if (guest.users_id) {
+                url = this.url.driver("events/:event_id/attendants/:attendant_id", {
+                    event_id: storeCalendar.event.id,
+                    attendant_id: guest.id
+                })
+                data = { event_attendant: guest }
+            }
+
+            // working with guests
+            if (!guest.users_id) {
+                url = this.url.driver("events/:event_id/guests/:attendant_id", {
+                    event_id: storeCalendar.event.id,
+                    attendant_id: guest.id
+                })
+                data = { event_guest: guest }
+            }
+
+            this.http.put(url, data).then(result => {
+                this.$patch({ attendants: newAttendants })
+                this.msg.success(this.translations.core.users.messages_success_operation)
+            }).catch(error => {
+                console.log(error)
+                this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
+            }).finally(() => {
+                this.loading.attendants = false
+            })
+        }
+
+
+
     }
 })

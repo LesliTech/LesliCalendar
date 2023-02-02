@@ -17,7 +17,7 @@ For more information read the license file including with this software.
 */
 
 // · Import components, libraries and tools
-import { onMounted } from "vue"
+import { onMounted, inject } from "vue"
 
 // · import lesli stores
 import { useGuests } from 'CloudDriver/stores/guests'
@@ -26,6 +26,11 @@ import { useCalendar } from 'CloudDriver/stores/calendar'
 // · implement stores
 const storeGuests = useGuests()
 const storeCalendar = useCalendar()
+
+// · initialize/inject plugins
+const date = inject("date")
+const today = date.date(new Date())
+// const today = new Date()
 
 onMounted(() => {
     storeGuests.getAttendants()
@@ -57,8 +62,6 @@ function totalInvitesCount() {
 function searchUser(text) {
     console.log('text:', text)
 }
-
-// :checked="storeGuests.attendants.findIndex(attendant => attendant.users_id === record.id) !== -1"
 </script>
 
 <template>
@@ -68,26 +71,58 @@ function searchUser(text) {
     </h5>
     <lesli-tabs v-model="tab">
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="add">
+        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="person_search">
             <lesli-toolbar @search="searchUser"></lesli-toolbar>
-            <lesli-table
-                :columns="[{ field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' }, { field: 'actions', label: '' }]"
-                :records="storeGuests.attendant_options.users">
+            <lesli-table :columns="[
+            { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
+            { field: 'actions', label: 'requested' }]" :records="storeGuests.attendant_options.users">
                 <template #head(actions)="{ column }">
                 </template>
                 <template #actions="{ record }">
                     <input type="checkbox" v-model="record.checked" @input="submitGuest(record)"
-                    :checked="storeGuests.attendant_options.users.checked"
-                    
-                    >
+                        :checked="storeGuests.attendant_options.users.checked">
                 </template>
             </lesli-table>
         </lesli-tab-item>
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_guests" icon="info">
+        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_guests" icon="group_add">
+            <div>Guest add</div>
         </lesli-tab-item>
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_attendants_list" icon="info">
+        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_attendants_list" icon="groups">
+            <lesli-table :columns="[
+            { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
+            { field: 'confirmed_at', label: 'translations.main.column_confirmed_at' },
+            { field: 'actions', label: '' }]" :records="storeGuests.attendants">
+
+                <template #head(confirmed_at)="{ column }">
+                </template>
+                <template #confirmed_at="{ record }">
+                    <div class="buttons">
+                        <lesli-button v-if="!record.confirmed_at_string && !storeGuests.loading.attendants" @click="storeGuests.confirmAttendance(record, today)">
+                            Confirm {{ translations.main.view_text_click_to_confirm }}
+                        </lesli-button>
+                        <lesli-button v-if="storeGuests.loading.attendants" :loading="true">
+                        </lesli-button>
+                        <lesli-button v-if="record.confirmed_at_string && !storeGuests.loading.attendants" solid>
+                        {{ record.confirmed_at_string }}
+                        </lesli-button>
+                    </div>
+                </template>
+
+                <template #head(actions)="{ column }">
+                </template>
+                <template #actions="{ record }">
+                    <div class="buttons">
+                        <button type="is-danger" @click="deleteGuest()" class="button is-danger submit-button">
+                            <span>
+                                <i class="fas fa-trash-alt"></i> {{ translations.core.view_btn_delete }}
+                            </span>
+                        </button>
+                    </div>
+                </template>
+
+            </lesli-table>
         </lesli-tab-item>
 
     </lesli-tabs>

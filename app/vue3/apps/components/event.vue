@@ -25,10 +25,12 @@ import ComponentGuests from './guests.vue'
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
 import { useCalendar } from 'CloudDriver/stores/calendar'
+import { useGuests } from 'CloudDriver/stores/guests'
 
 // · implement stores
 const storeEvent = useEvent()
 const storeCalendar = useCalendar()
+const storeGuests = useGuests()
 
 onMounted(() => {
     storeEvent.getOptions()
@@ -173,7 +175,7 @@ const deleteEvent = async () => {
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.core.view_btn_discussions" icon="forum">
-                    <ComponentDiscussions v-if="storeCalendar.event_id" cloud-module="driver" cloud-object="events"
+                    <ComponentDiscussions v-if="storeCalendar.event.id" cloud-module="driver" cloud-object="events"
                         :cloud-object-id="storeCalendar.event.id" :onlyDiscussions="true">
                     </ComponentDiscussions>
                 </lesli-tab-item>
@@ -189,11 +191,11 @@ const deleteEvent = async () => {
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_assignments" icon="group">
-                    <ComponentGuests v-if="storeCalendar.event_id"/>
+                    <ComponentGuests v-if="storeCalendar.event.id"/>
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_delete_section" icon="delete">
-                    <div v-if="storeCalendar.event_id" class="buttons">
+                    <div v-if="storeCalendar.event.id" class="buttons">
                         <button type="is-danger" @click="deleteEvent()" class="button is-danger submit-button" :disabled="storeEvent.submit.delete">
                             <span v-if="storeEvent.submit.delete">
                                 <i class="fas fa-spin fa-circle-notch"></i> {{translations.core.view_btn_deleting}}

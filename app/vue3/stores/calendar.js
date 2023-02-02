@@ -28,6 +28,7 @@ import listPlugin from '@fullcalendar/list';
 
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
+import { useGuests } from 'CloudDriver/stores/guests'
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {
@@ -98,13 +99,18 @@ export const useCalendar = defineStore("driver.calendar", {
 
         onEventClick: function (arg) {
             const storeEvent = useEvent()
+            const storeGuests = useGuests()
             arg.jsEvent.preventDefault()
             this.event_id = parseInt(arg.event.id)
             this.http.get(this.url.driver(`events/${this.event_id}`))
                 .then(result => {
                     this.event = result
+                    storeEvent.showModal = !storeEvent.showModal
+                    storeGuests.getAttendants()
+                    storeGuests.getUsers()
                 })
-            storeEvent.showModal = !storeEvent.showModal
+
+
         },
 
         async postEvent(url = this.url.driver('events')) {
@@ -123,7 +129,7 @@ export const useCalendar = defineStore("driver.calendar", {
                     }
                 }
             };
-            
+
             try {
                 const result = await this.http.post(url, data).then(event => {
                     this.event_id = event.id
