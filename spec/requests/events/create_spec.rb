@@ -1,6 +1,6 @@
 # =begin
 
-# Copyright (c) 2022, all rights reserved.
+# Copyright (c) 2023, all rights reserved.
 
 # All the information provided by this platform is protected by international laws related  to
 # industrial property, intellectual property, copyright and relative international laws.
@@ -40,28 +40,22 @@ RSpec.describe "CloudDriver::Event" do
 
             # custom examples
             expect(response_body["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
-            expect(response_body["detail_attributes"]["description"]).to eq(event[:detail_attributes][:description])
-            expect(response_body["detail_attributes"]["location"]).to eq(event[:detail_attributes][:location])
-            expect(response_body["detail_attributes"]["budget"].to_f).to eq(event[:detail_attributes][:budget])
-            expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event[:detail_attributes][:real_cost])
-            expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event[:detail_attributes][:signed_up_count])
-            expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event[:detail_attributes][:showed_up_count])
+            expect(response_body["title"]).to eq(event[:title])
+            expect(response_body["description"]).to eq(event[:description])
+            expect(response_body["location"]).to eq(event[:location])
+            expect(response_body["budget"].to_f).to eq(event[:budget])
+            expect(response_body["real_cost"].to_f).to eq(event[:real_cost])
+            expect(response_body["signed_up_count"].to_i).to eq(event[:signed_up_count])
+            expect(response_body["showed_up_count"].to_i).to eq(event[:showed_up_count])
 
         end
 
 
         it "is expected to create an event with the minimum data" do
 
-            event = FactoryBot.attributes_for(:cloud_driver_event)
-            event.slice(:detail_attributes)
-            event[:detail_attributes] = event[:detail_attributes].slice(:title, :event_date)
-
             event = {
-                detail_attributes: {
-                    "title": Faker::Sports::Football.competition,
-                    "event_date": Time.current
-                }
+                "title": Faker::Sports::Football.competition,
+                "event_date": Time.current
             }
 
             post("/driver/events.json", params: { "event": event})
@@ -71,7 +65,7 @@ RSpec.describe "CloudDriver::Event" do
 
             # custom examples
             expect(response_body["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_body["detail_attributes"]["title"]).to eq(event[:detail_attributes][:title])
+            expect(response_body["title"]).to eq(event[:title])
 
         end
 
@@ -99,7 +93,7 @@ RSpec.describe "CloudDriver::Event" do
 
 
         it "is expected to respond with error if event is empty" do
-            post("/driver/events.json", params: { "event": { "detail_attributes": {} }})
+            post("/driver/events.json", params: { "event": {}})
 
             # shared examples
             expect_response_with_error
@@ -111,9 +105,7 @@ RSpec.describe "CloudDriver::Event" do
         it "is expected to respond with error if event title is empty" do
 
             event = {
-                detail_attributes: {
-                    "event_date": Faker::Time.between(from: DateTime.now, to: DateTime.now + 3.days)
-                }
+                "event_date": Faker::Time.between(from: DateTime.now, to: DateTime.now + 3.days)
             }
 
             post("/driver/events.json", params: { "event": event})
@@ -128,9 +120,7 @@ RSpec.describe "CloudDriver::Event" do
         it "is expected to respond with error if event date is empty" do
 
             event = {
-                detail_attributes: {
-                    "title": Faker::Sports::Football.competition,
-                }
+                "title": Faker::Sports::Football.competition,
             }
 
             post("/driver/events.json", params: { "event": event})
