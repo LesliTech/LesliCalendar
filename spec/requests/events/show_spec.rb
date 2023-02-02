@@ -1,6 +1,6 @@
 # =begin
 
-# Copyright (c) 2022, all rights reserved.
+# Copyright (c) 2023, all rights reserved.
 
 # All the information provided by this platform is protected by international laws related  to
 # industrial property, intellectual property, copyright and relative international laws.
@@ -40,13 +40,13 @@ RSpec.describe "CloudDriver::Event" do
 
             # custom examples
             expect(response_body["organizer_name"]).to eq(@current_user.full_name)
-            expect(response_body["detail_attributes"]["title"]).to eq(event.detail.title)
-            expect(response_body["detail_attributes"]["description"]).to eq(event.detail.description)
-            expect(response_body["detail_attributes"]["location"]).to eq(event.detail.location)
-            expect(response_body["detail_attributes"]["budget"].to_f).to eq(event.detail.budget)
-            expect(response_body["detail_attributes"]["real_cost"].to_f).to eq(event.detail.real_cost)
-            expect(response_body["detail_attributes"]["signed_up_count"].to_i).to eq(event.detail.signed_up_count)
-            expect(response_body["detail_attributes"]["showed_up_count"].to_i).to eq(event.detail.showed_up_count)
+            expect(response_body["title"]).to eq(event.title)
+            expect(response_body["description"]).to eq(event.description)
+            expect(response_body["location"]).to eq(event.location)
+            expect(response_body["budget"].to_f).to eq(event.budget)
+            expect(response_body["real_cost"].to_f).to eq(event.real_cost)
+            expect(response_body["signed_up_count"].to_i).to eq(event.signed_up_count)
+            expect(response_body["showed_up_count"].to_i).to eq(event.showed_up_count)
 
         end
 

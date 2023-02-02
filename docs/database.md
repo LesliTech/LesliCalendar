@@ -21,7 +21,6 @@
     10.07. driver/calendar/subscribers
 
     11.01. driver/events
-    11.02. driver/event/details
     11.03. driver/event/actions 
     11.04. driver/event/activities 
     11.05. driver/event/discussions 
