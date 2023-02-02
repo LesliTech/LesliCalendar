@@ -213,10 +213,8 @@ class CloudDriver::CalendarService < LesliService
     # Standard method to create new resource into the database
     def create params
         calendar = current_user.account.driver.calendars.create_with(
-            detail_attributes: {
-                name: params[:name],
-                default: params[:default] || false,
-            }
+            name: params[:name],
+            default: params[:default] || false,
         ).find_or_initialize_by(
             user_main: current_user,
             user_creator: current_user,

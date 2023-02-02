@@ -159,20 +159,18 @@ module CloudDriver
                 :external_uid,
                 :is_proposal,
                 :estimated_mins_durations,
-                detail_attributes: [
-                    :title,
-                    :description,
-                    :event_date,
-                    :time_start,
-                    :time_end,
-                    :location,
-                    :budget,
-                    :real_cost,
-                    :signed_up_count,
-                    :showed_up_count,
-                    :url,
-                    :public
-                ]
+                :title,
+                :description,
+                :event_date,
+                :time_start,
+                :time_end,
+                :location,
+                :budget,
+                :real_cost,
+                :signed_up_count,
+                :showed_up_count,
+                :url,
+                :public
             )
         end
 

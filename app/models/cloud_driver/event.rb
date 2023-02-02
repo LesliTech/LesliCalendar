@@ -1,6 +1,6 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -30,9 +30,6 @@ module CloudDriver
 
         # In case the main user is deleted
         belongs_to :user_main_including_deleted, foreign_key: "user_main_id",   class_name: "::User", optional: true, with_deleted: true
-
-        has_one     :detail, inverse_of: :event, autosave: true, foreign_key: "cloud_driver_events_id"
-        accepts_nested_attributes_for :detail, update_only: true
 
         has_many :files,        foreign_key: "cloud_driver_events_id"
         has_many :guests,       foreign_key: "cloud_driver_events_id"
@@ -67,7 +64,18 @@ module CloudDriver
                 organizer_name: self.user_main_including_deleted ? self.user_main_including_deleted.full_name : "",
                 cloud_driver_catalog_event_types_id: self.cloud_driver_catalog_event_types_id,
                 cloud_driver_calendars_id: self.cloud_driver_calendars_id,
-                detail_attributes: self.detail.slice(:id, :title, :description, :event_date, :time_start, :time_end, :location, :budget, :url, :public, :real_cost, :signed_up_count, :showed_up_count)
+                title: self.title,
+                description: self.description,
+                event_date: self.event_date,
+                time_start: self.time_start,
+                time_end: self.time_end,
+                location: self.location,
+                budget: self.budget,
+                url: self.url,
+                public: self.public,
+                real_cost: self.real_cost,
+                signed_up_count: self.signed_up_count,
+                showed_up_count: self.showed_up_count,
             }
         end
 
@@ -80,15 +88,15 @@ module CloudDriver
             end
 
             # Getting all my events
-            my_calendar_events = calendar.events.joins(:detail).left_joins(:type).joins(
+            my_calendar_events = calendar.events.left_joins(:type).joins(
                 "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
             ).where(
-                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                "cloud_driver_events.event_date >= :start_date and cloud_driver_events.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
             ).or(
-                calendar.events.joins(:detail).left_joins(:type).joins(
+                calendar.events.left_joins(:type).joins(
                     "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
                 ).where(
-                    "cloud_driver_event_details.event_date is ?", nil
+                    "cloud_driver_events.event_date is ?", nil
                 ).where(
                     "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
                 )
@@ -96,9 +104,9 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_event_details.event_date end as date",
-                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_event_details.time_start end as start",
-                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_events.event_date end as date",
+                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_events.time_start end as start",
+                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_events.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
                 # "false as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",
@@ -106,21 +114,21 @@ module CloudDriver
             )
 
             # Getting events of the same calendar source of other users where I am an attendant
-            my_attendant_events = CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+            my_attendant_events = CloudDriver::Event.joins(:calendar).left_joins(:type).joins(
                 "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
             ).joins(
                 "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
             ).where(
                 "cloud_driver_calendars.source_code = ?", calendar.source_code
             ).where(
-                "cloud_driver_event_details.event_date >= :start_date and cloud_driver_event_details.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
+                "cloud_driver_events.event_date >= :start_date and cloud_driver_events.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
             ).or(
-                CloudDriver::Event.joins(:calendar, :detail).left_joins(:type).joins(
+                CloudDriver::Event.joins(:calendar).left_joins(:type).joins(
                     "left join cloud_driver_event_proposals cdep on cdep.cloud_driver_events_id = cloud_driver_events.id and cloud_driver_events.is_proposal = true"
                 ).joins(
                     "inner join cloud_driver_event_attendants cdea on cdea.cloud_driver_events_id = cloud_driver_events.id and cdea.users_id = #{current_user.id}"
                 ).where(
-                    "cloud_driver_event_details.event_date is ?", nil
+                    "cloud_driver_events.event_date is ?", nil
                 ).where(
                     "cdep.event_date >= :start_date and cdep.event_date <= :end_date", { start_date: query[:filters][:start_date], end_date: query[:filters][:end_date] }
                 )
@@ -128,9 +136,9 @@ module CloudDriver
                 "cloud_driver_events.id",
                 :title,
                 :description,
-                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_event_details.event_date end as date",
-                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_event_details.time_start end as start",
-                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_event_details.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
+                "case when is_proposal = true and cdep.event_date is not NULL then cdep.event_date else cloud_driver_events.event_date end as date",
+                "case when is_proposal = true and cdep.time_start is not NULL then cdep.time_start else cloud_driver_events.time_start end as start",
+                "case when is_proposal = true and cdep.time_end is not NULL then cdep.time_end else cloud_driver_events.time_end + interval '1 second' end as end", # The calendar will crash if start and end dates are the same
                 :location,
                 # "true as is_attendant",
                 "cloud_driver_catalog_event_types.name as event_type",
@@ -175,12 +183,12 @@ module CloudDriver
             event_template = event_template
             .sub("{{organizer_name}}", ( organizer.full_name || "").strip )
             .sub("{{organizer_email}}", ( organizer.email || "").strip )
-            .sub("{{dtstamp}}", (self.detail.event_date.strftime("%Y%m%d")))
-            .sub("{{description}}",( self.detail.description || "").strip )
-            .sub("{{summary}}", ( self.detail.title || "").strip )
-            .sub("{{location}}", ( self.detail.location || "").strip )
-            .sub("{{dtstart}}", ( (self.detail.time_start || self.detail.event_date).strftime("%Y%m%dT%H%M%S")))
-            .sub("{{dtend}}", ( (self.detail.time_end || self.detail.event_date).strftime("%Y%m%dT%H%M%S")))
+            .sub("{{dtstamp}}", (self.event_date.strftime("%Y%m%d")))
+            .sub("{{description}}",( self.description || "").strip )
+            .sub("{{summary}}", ( self.title || "").strip )
+            .sub("{{location}}", ( self.location || "").strip )
+            .sub("{{dtstart}}", ( (self.time_start || self.event_date).strftime("%Y%m%dT%H%M%S")))
+            .sub("{{dtend}}", ( (self.time_end || self.event_date).strftime("%Y%m%dT%H%M%S")))
             .sub("{{uid}}", Time.now.getutc.to_s)
             .sub("{{url}}", URI.escape(url) )
 
@@ -188,7 +196,7 @@ module CloudDriver
         end
 
         def global_identifier(extended: false)
-            return detail.title
+            return self.title
         end
 
         #############################
@@ -330,25 +338,25 @@ module CloudDriver
         # @return [void] adds an error if the event is not valid
         def required_creation_attributes
             # Event title is required
-            errors.add(:title, "cannot be empty") unless self.detail&.title.present?
+            errors.add(:title, "cannot be empty") unless self.title.present?
         end
 
         # @return [void] adds initial values to the event if they are not present
         def initialize_event
             # If event date is not provided, the event is a proposal by default
-            self.update(is_proposal: true) if self.detail.event_date.blank?
+            self.update(is_proposal: true) if self.event_date.blank?
 
             # If event date is not provided, the event date is the current date
-            self.detail.update!(event_date: self.created_at) if self.detail.event_date.blank?
+            self.update!(event_date: self.created_at) if self.event_date.blank?
 
             # If the event is a proposal and estimated time is not provided, the event estimated time is setted to 1 hour
             self.update(estimated_mins_durations: 60) if self.is_proposal? && self.estimated_mins_durations.blank?
 
             # If time start is not provided and event date is provided, the event time start is setted equal to the event date
-            self.detail.update(time_start: self.detail.event_date) if self.detail.time_start.blank? && self.detail.event_date.present?
+            self.update(time_start: self.event_date) if self.time_start.blank? && self.event_date.present?
 
             # If time end is not provided and time start is setted, the event time end is setted equal to 1 hour later than the time start by default
-            self.detail.update(time_end: self.detail.time_start + 1.hour) if self.detail.time_end.blank? && self.detail.time_start.present?
+            self.update(time_end: self.time_start + 1.hour) if self.time_end.blank? && self.time_start.present?
         end
 
     end
