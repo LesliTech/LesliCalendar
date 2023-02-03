@@ -26,7 +26,6 @@ import { inject } from "vue"
 export const useGuests = defineStore("driver.guests", {
     state: () => {
         return {
-            users_route: '/administration/users/list.json?role=kop,callcenter,api,support&type=exclude',
             main_route: `/driver/events`,
             attendant_options: {
                 users: []
@@ -41,6 +40,10 @@ export const useGuests = defineStore("driver.guests", {
                 attendant_options: false
             },
             attendants: [],
+            submit: {
+                event: false,
+                delete: false
+            },
 
             translations: {
                 main: I18n.t('driver.events'),
@@ -54,7 +57,8 @@ export const useGuests = defineStore("driver.guests", {
 
     actions: {
         getUsers() {
-            this.http.get(this.users_route).then(result => {
+            this.http.get('/administration/users/list.json').then(result => {
+                console.log('getUsers', result)
                 this.loading.attendants = false
                 this.attendant_options.users = [...result].map(user => {
                     const checked = this.attendants.findIndex(attendant => attendant.email === user.email) !== -1;
@@ -71,6 +75,7 @@ export const useGuests = defineStore("driver.guests", {
             let url = `${this.main_route}/${storeCalendar.event.id}/attendants.json`
             this.loading.attendants = true
             this.http.get(url).then(result => {
+                console.log('getAttendants', result)
                 this.loading.attendants = false
                 const filteredGuests = result.filter((guest, index, self) =>
                     self.findIndex(record => record.email === guest.email) === index
@@ -102,7 +107,7 @@ export const useGuests = defineStore("driver.guests", {
                 this.msg.success(this.translations.main.messages_success_attendant_created)
 
             }).catch(error => {
-                this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
+                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
             })
         },
 
@@ -117,11 +122,12 @@ export const useGuests = defineStore("driver.guests", {
             if (guest.type == 'guest') {
                 url = `${this.main_route}/${storeCalendar.event.id}/guests/${attendant.id}.json`
             }
-
+            this.submit.delete = true
             this.http.delete(url).then(result => {
                 this.attendants = this.attendants.filter((attendant) => {
                     return attendant.email !== guest.email
                 })
+                this.submit.delete = false
                 this.msg.success(this.translations.main.messages_success_attendant_deleted)
             }).catch(error => {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
@@ -157,7 +163,7 @@ export const useGuests = defineStore("driver.guests", {
 
             this.http.put(url, data).then(result => {
                 this.$patch({ attendants: newAttendants })
-                this.msg.success(this.translations.core.users.messages_success_operation)
+                this.msg.success(this.translations.core_users.messages_success_operation)
             }).catch(error => {
                 console.log(error)
                 this.msg.danger(this.translations.core.shared.messages_danger_internal_error);

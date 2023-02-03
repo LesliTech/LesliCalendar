@@ -76,7 +76,7 @@ function searchUser(text) {
             <lesli-table :columns="[
             { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
             { field: 'actions', label: 'requested' }]" :records="storeGuests.attendant_options.users">
-                <template #head(actions)="{ column }">
+                <template #head(actions)="{ }">
                 </template>
                 <template #actions="{ record }">
                     <input type="checkbox" v-model="record.checked" @input="submitGuest(record)"
@@ -95,28 +95,31 @@ function searchUser(text) {
             { field: 'confirmed_at', label: 'translations.main.column_confirmed_at' },
             { field: 'actions', label: '' }]" :records="storeGuests.attendants">
 
-                <template #head(confirmed_at)="{ column }">
+                <template #head(confirmed_at)="{ }">
                 </template>
                 <template #confirmed_at="{ record }">
                     <div class="buttons">
-                        <lesli-button v-if="!record.confirmed_at_string && !storeGuests.loading.attendants" @click="storeGuests.confirmAttendance(record, today)">
-                            Confirm {{ translations.main.view_text_click_to_confirm }}
-                        </lesli-button>
+                        <button class="button is-info" v-if="!record.confirmed_at_string && !storeGuests.loading.attendants" @click="storeGuests.confirmAttendance(record, today)">
+                            {{ translations.main.view_text_click_to_confirm }}
+                        </button>
                         <lesli-button v-if="storeGuests.loading.attendants" :loading="true">
                         </lesli-button>
-                        <lesli-button v-if="record.confirmed_at_string && !storeGuests.loading.attendants" solid>
+                        <button class="button is-success" :disabled="record.confirmed_at_string" v-if="record.confirmed_at_string && !storeGuests.loading.attendants" >
                         {{ record.confirmed_at_string }}
-                        </lesli-button>
+                        </button>
                     </div>
                 </template>
 
-                <template #head(actions)="{ column }">
+                <template #head(actions)="{ }">
                 </template>
                 <template #actions="{ record }">
                     <div class="buttons">
-                        <button type="is-danger" @click="deleteGuest()" class="button is-danger submit-button">
-                            <span>
-                                <i class="fas fa-trash-alt"></i> {{ translations.core.view_btn_delete }}
+                        <button type="is-danger" @click="storeGuests.deleteInvite(record)" class="button is-danger submit-button" :disabled="storeGuests.submit.delete">
+                            <span v-if="storeGuests.submit.delete">
+                                <i class="fas fa-spin fa-circle-notch"></i> {{translations.core.view_btn_deleting}}
+                            </span>
+                            <span v-else>
+                                <i class="fas fa-trash-alt"></i> {{translations.core.view_btn_delete}}
                             </span>
                         </button>
                     </div>
