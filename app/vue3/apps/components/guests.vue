@@ -30,20 +30,11 @@ const storeCalendar = useCalendar()
 // · initialize/inject plugins
 const date = inject("date")
 const today = date.date(new Date())
-// const today = new Date()
 
 onMounted(() => {
     storeGuests.getAttendants()
     storeGuests.getUsers()
 })
-
-const translations = {
-    main: I18n.t('driver.events'),
-    core: I18n.t('core.shared'),
-    core_users: I18n.t('core.users'),
-    users: I18n.t('deutscheleibrenten.users'),
-    attendants: I18n.t('driver.event/attendants')
-}
 
 function submitAttendant(user) {
     user.checked = !user.checked;
@@ -71,7 +62,7 @@ function totalInvitesCount() {
         <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="person_search">
             <lesli-toolbar @search="a"></lesli-toolbar>
             <lesli-table :columns="[
-            { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
+            { field: 'name', label: '{{storeGueststranslations.core.view_text_name}}' }, { field: 'email', label: '{{translations.core.view_text_email}}' },
             { field: 'actions', label: 'requested' }]" :records="storeGuests.attendant_options.users">
                 <template #head(actions)="{}">
                 </template>
@@ -110,8 +101,8 @@ function totalInvitesCount() {
 
         <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_attendants_list" icon="groups">
             <lesli-table :columns="[
-            { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
-            { field: 'confirmed_at', label: 'translations.main.column_confirmed_at' },
+            { field: 'name', label: '{{storeGuests.translations.core.view_text_name}}' }, { field: 'email', label: 'translations.core.view_text_email' },
+            { field: 'confirmed_at', label: '{{storeGuests.translations.main.column_confirmed_at}}' },
             { field: 'actions', label: '' }]" :records="storeGuests.attendants">
 
                 <template #head(confirmed_at)="{}">
@@ -120,7 +111,7 @@ function totalInvitesCount() {
                     <div class="buttons">
                         <lesli-button v-if="!record.confirmed_at_string && !storeGuests.loading.attendants"
                             @click="storeGuests.confirmAttendance(record, today)">
-                            Confirm{{ translations.main.view_text_click_to_confirm }}
+                            {{ storeGuests.translations.main.view_text_click_to_confirm }}
                         </lesli-button>
                         <lesli-button v-if="storeGuests.loading.attendants" :loading="true">
                         </lesli-button>
@@ -138,10 +129,10 @@ function totalInvitesCount() {
                         <button type="is-danger" @click="storeGuests.deleteInvite(record)"
                             class="button is-danger submit-button" :disabled="storeGuests.submit.delete">
                             <span v-if="storeGuests.submit.delete">
-                                <i class="fas fa-spin fa-circle-notch"></i> {{ translations.core.view_btn_deleting }}
+                                <i class="fas fa-spin fa-circle-notch"></i> {{ storeGuests.translations.core.view_btn_deleting }}
                             </span>
                             <span v-else>
-                                <i class="fas fa-trash-alt"></i> {{ translations.core.view_btn_delete }}
+                                <i class="fas fa-trash-alt"></i> {{ storeGuests.translations.core.view_btn_delete }}
                             </span>
                         </button>
                     </div>
