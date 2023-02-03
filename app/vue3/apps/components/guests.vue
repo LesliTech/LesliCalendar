@@ -52,14 +52,14 @@ function totalInvitesCount() {
 
 const attendantsTableColumns = [
     { field: 'name', label: 'storeGuests.translations.core.view_text_name' }, 
-    { field: 'email', label: 'translations.core.view_text_email' },
+    { field: 'email', label: 'storeGuests.translations.core.view_text_email' },
     { field: 'confirmed_at', label: 'storeGuests.translations.main.column_confirmed_at' },
     { field: 'actions', label: '' }
 ]
 
 const usersTableColumns = [
-    { field: 'name', label: 'storeGueststranslations.core.view_text_name' }, 
-    { field: 'email', label: 'translations.core.view_text_email' },
+    { field: 'name', label: 'storeGuests.translations.core.view_text_name' }, 
+    { field: 'email', label: 'storeGuests.translations.core.view_text_email' },
     { field: 'actions', label: '' }
 ]
 

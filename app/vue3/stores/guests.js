@@ -18,9 +18,9 @@ For more information read the license file including with this software.
 // · 
 import { defineStore } from "pinia"
 import { useCalendar } from 'CloudDriver/stores/calendar'
-// · import vue tools
-import { inject } from "vue"
 
+// · import lesli stores
+import { useUsers } from "LesliVue/stores/users"
 
 // · 
 export const useGuests = defineStore("driver.guests", {
@@ -31,9 +31,9 @@ export const useGuests = defineStore("driver.guests", {
                 users: []
             },
             attendants: [],
-            guest: { 
-                name: "", 
-                email: "", 
+            guest: {
+                name: "",
+                email: "",
             },
             lists_synched: false,
             loading: {
@@ -62,14 +62,19 @@ export const useGuests = defineStore("driver.guests", {
 
     actions: {
 
-        async getUsers() {
+        getUsers() {
+            const storeUsers = useUsers()
             try {
-                const result = await this.http.get('/administration/users/list.json')
                 this.loading.attendants = false
-                this.attendant_options.users = [...result].map(user => {
-                    const checked = this.attendants.findIndex(attendant => attendant.email === user.email) !== -1;
-                    return { ...user, checked }
-                })
+                this.attendant_options.users = storeUsers.index.records.map(user => {
+                    const foundAttendant = this.attendants.find(attendant => attendant.email === user.email);
+                    return { 
+                        id: user.id,
+                        name: user.name,
+                        email: user.email, 
+                        checked: !!foundAttendant 
+                    };
+                });
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
             } finally {
@@ -77,24 +82,23 @@ export const useGuests = defineStore("driver.guests", {
             }
         },
 
-
-        async getAttendants() {
+        getAttendants() {
             const storeCalendar = useCalendar()
             let url = `${this.main_route}/${storeCalendar.event.id}/attendants.json`
-            try {
-                this.loading.attendants = true
-                const result = await this.http.get(url);
+            this.loading.attendants = true
+            this.http.get(url).then(result => {
                 this.loading.attendants = false
                 const filteredAttendant = result.filter((attendant, index, self) =>
                     self.findIndex(record => record.email === attendant.email) === index
                 )
                 this.attendants = filteredAttendant
-            } catch (error) {
+            }).catch(error => {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
-            } finally {
+            }).finally(() => {
                 this.loaded.attendants = true
-            }
+            })
         },
+
 
         postAttendant(user) {
             const storeCalendar = useCalendar()
@@ -105,10 +109,14 @@ export const useGuests = defineStore("driver.guests", {
                 }
             }
             this.http.post(url, data).then(result => {
+                console.log('post A: ', result)
                 this.attendants.push({
-                    ...result,
+                    id: result.id,
                     type: 'attendant',
-                    name: result.name || result.email,
+                    name: user.name || user.email,
+                    email: user.email,
+                    users_id: user.id,
+                    confirmed_at_string: null
                 })
                 this.msg.success(this.translations.main.messages_success_attendant_created)
 
@@ -196,7 +204,7 @@ export const useGuests = defineStore("driver.guests", {
 
             }).catch(error => {
                 this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
-            }).finally(()=>{
+            }).finally(() => {
                 this.submit.guest = false
             })
         },

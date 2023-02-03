@@ -25,15 +25,16 @@ import ComponentGuests from './guests.vue'
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
 import { useCalendar } from 'CloudDriver/stores/calendar'
-import { useGuests } from 'CloudDriver/stores/guests'
+import { useUsers } from "LesliVue/stores/users"
 
 // · implement stores
 const storeEvent = useEvent()
 const storeCalendar = useCalendar()
-const storeGuests = useGuests()
+const storeUsers = useUsers()
 
 onMounted(() => {
     storeEvent.getOptions()
+    storeUsers.fetchIndex()
 })
 
 const translations = {
