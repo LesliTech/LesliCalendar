@@ -59,9 +59,6 @@ function totalInvitesCount() {
     return storeGuests.attendants.length
 }
 
-function searchUser(text) {
-    console.log('text:', text)
-}
 </script>
 
 <template>
@@ -72,7 +69,7 @@ function searchUser(text) {
     <lesli-tabs v-model="tab">
 
         <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="person_search">
-            <lesli-toolbar @search="searchUser"></lesli-toolbar>
+            <lesli-toolbar @search="a"></lesli-toolbar>
             <lesli-table :columns="[
             { field: 'name', label: 'translations.core.view_text_name' }, { field: 'email', label: 'translations.core.view_text_email' },
             { field: 'actions', label: 'requested' }]" :records="storeGuests.attendant_options.users">

@@ -61,33 +61,39 @@ export const useGuests = defineStore("driver.guests", {
     },
 
     actions: {
-        getUsers() {
-            this.http.get('/administration/users/list.json').then(result => {
+
+        async getUsers() {
+            try {
+                const result = await this.http.get('/administration/users/list.json')
                 this.loading.attendants = false
                 this.attendant_options.users = [...result].map(user => {
                     const checked = this.attendants.findIndex(attendant => attendant.email === user.email) !== -1;
                     return { ...user, checked }
                 })
+            } catch (error) {
+                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            } finally {
                 this.loaded.attendant_options = true
-            }).catch(error => {
-                console.log(error)
-            })
+            }
         },
 
-        getAttendants() {
+
+        async getAttendants() {
             const storeCalendar = useCalendar()
             let url = `${this.main_route}/${storeCalendar.event.id}/attendants.json`
-            this.loading.attendants = true
-            this.http.get(url).then(result => {
+            try {
+                this.loading.attendants = true
+                const result = await this.http.get(url);
                 this.loading.attendants = false
                 const filteredAttendant = result.filter((attendant, index, self) =>
                     self.findIndex(record => record.email === attendant.email) === index
                 )
                 this.attendants = filteredAttendant
-                this.loaded.attendants = true
-            }).catch(error => {
+            } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
-            })
+            } finally {
+                this.loaded.attendants = true
+            }
         },
 
         postAttendant(user) {
@@ -100,12 +106,9 @@ export const useGuests = defineStore("driver.guests", {
             }
             this.http.post(url, data).then(result => {
                 this.attendants.push({
-                    id: result.id,
+                    ...result,
                     type: 'attendant',
-                    name: user.name || user.email,
-                    email: user.email,
-                    users_id: user.id,
-                    confirmed_at_string: null
+                    name: result.name || result.email,
                 })
                 this.msg.success(this.translations.main.messages_success_attendant_created)
 
@@ -130,10 +133,11 @@ export const useGuests = defineStore("driver.guests", {
                 this.attendants = this.attendants.filter((attendant) => {
                     return attendant.email !== user.email
                 })
-                this.submit.delete = false
                 this.msg.success(this.translations.main.messages_success_attendant_deleted)
             }).catch(error => {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            }).finally(() => {
+                this.submit.delete = false
             })
         },
 
@@ -168,7 +172,6 @@ export const useGuests = defineStore("driver.guests", {
                 this.$patch({ attendants: newAttendants })
                 this.msg.success(this.translations.core_users.messages_success_operation)
             }).catch(error => {
-                console.log(error)
                 this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
             }).finally(() => {
                 this.loading.attendants = false
@@ -183,20 +186,20 @@ export const useGuests = defineStore("driver.guests", {
             this.http.post(url, {
                 event_guest: this.guest
             }).then(result => {
-                console.log('result', result)
                 this.attendants.push({
                     ...result,
+                    type: 'guest',
                     name: result.name || result.email,
                 })
                 this.guest = {}
                 this.msg.success(this.translations.main.messages_success_attendant_created)
 
             }).catch(error => {
-                console.log(error)
+                this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
             }).finally(()=>{
                 this.submit.guest = false
             })
-        }
+        },
 
     }
 })
