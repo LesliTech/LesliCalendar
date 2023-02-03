@@ -20,7 +20,6 @@ For more information read the license file including with this software.
 import { onMounted } from 'vue'
 import ComponentDiscussions from "LesliVue/cloud-objects/discussion.vue"
 import ComponentFiles from "LesliVue/cloud-objects/file.vue"
-import ComponentGuests from './guests.vue'
 
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
