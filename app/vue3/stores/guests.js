@@ -53,9 +53,7 @@ export const useGuests = defineStore("driver.guests", {
             translations: {
                 main: I18n.t('driver.events'),
                 core: I18n.t('core.shared'),
-                core_users: I18n.t('core.users'),
-                users: I18n.t('deutscheleibrenten.users'),
-                attendants: I18n.t('driver.event/attendants')
+                core_users: I18n.t('core.users')
             }
         }
     },

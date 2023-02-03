@@ -50,16 +50,24 @@ function totalInvitesCount() {
     return storeGuests.attendants.length
 }
 
+const translations = {
+    main: I18n.t('driver.events'),
+    core: I18n.t('core.shared'),
+    core_users: I18n.t('core.users'),
+    users: I18n.t('deutscheleibrenten.users'),
+    attendants: I18n.t('driver.event/attendants')
+}
+
 const attendantsTableColumns = [
-    { field: 'name', label: 'storeGuests.translations.core.view_text_name' }, 
-    { field: 'email', label: 'storeGuests.translations.core.view_text_email' },
-    { field: 'confirmed_at', label: 'storeGuests.translations.main.column_confirmed_at' },
+    { field: 'name', label: 'translations.core.view_text_name' },
+    { field: 'email', label: 'translations.core.view_text_email' },
+    { field: 'confirmed_at', label: 'translations.main.column_confirmed_at' },
     { field: 'actions', label: '' }
 ]
 
 const usersTableColumns = [
-    { field: 'name', label: 'storeGuests.translations.core.view_text_name' }, 
-    { field: 'email', label: 'storeGuests.translations.core.view_text_email' },
+    { field: 'name', label: 'translations.core.view_text_name' },
+    { field: 'email', label: 'translations.core.view_text_email' },
     { field: 'actions', label: '' }
 ]
 
@@ -67,12 +75,12 @@ const usersTableColumns = [
 
 <template>
     <h5 class="title is-5">
-        {{ storeGuests.translations.attendants.view_title_confirmed_invites_count }}: {{ confirmedInvitesCount() }} /
-        {{ storeGuests.translations.attendants.view_title_total_invites_count }}: {{ totalInvitesCount() }}
+        {{ translations.attendants.view_title_confirmed_invites_count }}: {{ confirmedInvitesCount() }} /
+        {{ translations.attendants.view_title_total_invites_count }}: {{ totalInvitesCount() }}
     </h5>
     <lesli-tabs v-model="tab">
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="person_search">
+        <lesli-tab-item :title="translations.main.view_tab_title_users" icon="person_search">
             <lesli-toolbar @search="a"></lesli-toolbar>
             <lesli-table :columns="usersTableColumns" :records="storeGuests.attendant_options.users">
                 <template #head(actions)="{}">
@@ -84,18 +92,18 @@ const usersTableColumns = [
             </lesli-table>
         </lesli-tab-item>
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_guests" icon="group_add">
+        <lesli-tab-item :title="translations.main.view_tab_title_guests" icon="group_add">
             <form @submit.prevent="storeGuests.postGuest">
                 <fieldset>
                     <div class="columns">
                         <div class="column">
                             <field label="column_user_main_id">
-                                <p>{{ storeGuests.translations.core.view_text_name }}</p>
+                                <p>{{ translations.core.view_text_name }}</p>
                                 <input class="input is-default" type="text" name="guest_name"
                                     v-model="storeGuests.guest.name" />
                             </field>
                             <field label="column_user_main_id">
-                                <p>{{ storeGuests.translations.core.view_text_email }}</p>
+                                <p>{{ translations.core.view_text_email }}</p>
                                 <input class="input is-default" type="email" name="guest_email"
                                     v-model="storeGuests.guest.email" />
                             </field>
@@ -110,7 +118,7 @@ const usersTableColumns = [
             </form>
         </lesli-tab-item>
 
-        <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_attendants_list" icon="groups">
+        <lesli-tab-item :title="translations.main.view_tab_title_attendants_list" icon="groups">
             <lesli-table :columns="attendantsTableColumns" :records="storeGuests.attendants">
 
                 <template #head(confirmed_at)="{}">
@@ -119,7 +127,7 @@ const usersTableColumns = [
                     <div class="buttons">
                         <lesli-button v-if="!record.confirmed_at_string && !storeGuests.loading.attendants"
                             @click="storeGuests.confirmAttendance(record, today)">
-                            {{ storeGuests.translations.main.view_text_click_to_confirm }}
+                            {{ translations.main.view_text_click_to_confirm }}
                         </lesli-button>
                         <lesli-button v-if="storeGuests.loading.attendants" :loading="true">
                         </lesli-button>
@@ -138,11 +146,11 @@ const usersTableColumns = [
                             class="button is-danger submit-button" :disabled="storeGuests.submit.delete">
                             <span v-if="storeGuests.submit.delete">
                                 <i class="fas fa-spin fa-circle-notch"></i> {{
-                                    storeGuests.translations.core.view_btn_deleting
+                                    translations.core.view_btn_deleting
                                 }}
                             </span>
                             <span v-else>
-                                <i class="fas fa-trash-alt"></i> {{ storeGuests.translations.core.view_btn_delete }}
+                                <i class="fas fa-trash-alt"></i> {{ translations.core.view_btn_delete }}
                             </span>
                         </button>
                     </div>
