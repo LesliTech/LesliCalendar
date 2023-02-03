@@ -31,6 +31,9 @@ module CloudDriver
         # In case the main user is deleted
         belongs_to :user_main_including_deleted, foreign_key: "user_main_id",   class_name: "::User", optional: true, with_deleted: true
 
+        # Needs to be implemented in order to be able to run migration: 0301110219_drop_cloud_driver_event_details.rb
+        has_one     :detail, foreign_key: "cloud_driver_events_id"
+
         has_many :files,        foreign_key: "cloud_driver_events_id"
         has_many :guests,       foreign_key: "cloud_driver_events_id"
         has_many :attendants,   foreign_key: "cloud_driver_events_id"
