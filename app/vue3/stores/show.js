@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to
 industrial property, intellectual property, copyright and relative international laws.
@@ -17,18 +17,24 @@ For more information read the license file including with this software.
 
 */
 
+// · 
+import { defineStore } from "pinia"
 
-// · Import main app
-import app from "LesliVue/app"
+// · import lesli stores
+import { useEvent } from 'CloudDriver/stores/event'
 
+// · 
+export const useShow = defineStore("driver.show", {
+    state: () => {
+        return {
+        }
+    },
 
-// · Import apps and components
-import appShow from "CloudDriver/apps/show.vue"
+    actions: {
 
-// · Cloud app
-app("CloudDriver", [
-    {
-        path: '/',
-        component: appShow
+        setTitle() {
+            return this.date.dateWords()
+        }
+
     }
-])
+})

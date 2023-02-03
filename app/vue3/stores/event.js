@@ -20,20 +20,34 @@ For more information read the license file including with this software.
 // · 
 import { defineStore } from "pinia"
 
-// · Import components, libraries and tools
-
 // · 
-export const useShow = defineStore("driver.show", {
+export const useEvent = defineStore("driver.event", {
     state: () => {
         return {
+            showModal: false,
+            options: {
+                event_types: []
+            },
+            submit: {
+                event: false,
+                delete: false
+            },
         }
     },
 
     actions: {
 
-        setTitle() {
-            return this.date.dateWords()
-        } 
-
+        getOptions() {
+            let url = this.url.driver('events/options')
+            this.http.get(url).then(result => {
+                if (result) {
+                    this.options.event_types = result.event_types.map(option => {
+                        return { label: option.text, value: option.value };
+                    });
+                }
+            }).catch(error => {
+                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            })
+        },
     }
 })

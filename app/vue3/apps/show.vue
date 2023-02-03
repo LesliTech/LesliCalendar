@@ -1,6 +1,6 @@
 <script setup>
 /*
-Copyright (c) 2022, all rights reserved.
+Copyright (c) 2023, all rights reserved.
 
 All the information provided by this platform is protected by international laws related  to 
 industrial property, intellectual property, copyright and relative international laws. 
@@ -23,13 +23,12 @@ import { useRouter, useRoute } from 'vue-router'
 
 // · Import components
 import componentCalendar from './components/calendar.vue'
-import componentAgenda from './components/agenda.vue'
-import componentPanelEvent from './components/panel-event.vue'
+import componentEvent from './components/event.vue'
 
 // · import lesli stores
-import { useShow } from 'CloudDriver/stores/dashboard/show'
-import { useCalendar } from 'CloudDriver/stores/dashboard/calendar'
-import { usePanelEvent } from 'CloudDriver/stores/dashboard/panel-event'
+import { useShow } from 'CloudDriver/stores/show'
+import { useCalendar } from 'CloudDriver/stores/calendar'
+import { useEvent } from 'CloudDriver/stores/event'
 
 // · initialize/inject plugins
 const router = useRouter()
@@ -39,39 +38,48 @@ const url = inject("url")
 // · implement stores
 const storeShow = useShow()
 const storeCalendar = useCalendar()
-const storePanelEvent = usePanelEvent()
+const storeEvent = useEvent()
+
+const newEvent = () => {
+    storeCalendar.reset()
+    storeEvent.showModal = !storeEvent.showModal
+}
+
+const translations = {
+    calendars: I18n.t('driver.calendars'),
+    events: I18n.t('driver.events')
+}
 
 onMounted(() => {
 })
+
 
 </script>
 
 <template>
     <section class="application-component">
-
         <lesli-header :title="storeShow.setTitle()">
             <div class="navbar-item">
                 <div class="buttons">
-                    <button class="button"><span class="icon"><i class="fab fa-google"></i></span></button>
-                    <button class="button" @click="togleModal"><span class="icon"><i class="fas fa-plus"></i></span></button>
+                    <lesli-button>
+                        <span class="icon"><i class="fab fa-google"></i></span>
+                        <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
+                    </lesli-button>
+                    <lesli-button @click="newEvent()">
+                        <span class="icon"><i class="fas fa-plus"></i></span>
+                        <span>{{ translations.events.view_btn_new }}</span>
+                    </lesli-button>
                 </div>
             </div>
         </lesli-header>
-
         <lesli-toolbar @search="a"></lesli-toolbar>
-
         <div class="columns">
-            <div class="column is-one-quarter">
-                <div class="box">
-                    <componentAgenda />
-                </div>
-            </div>
             <div class="column">
                 <div class="box">
                     <componentCalendar />
                 </div>
             </div>
         </div>
-
+        <componentEvent />
     </section>
 </template>
