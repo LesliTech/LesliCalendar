@@ -23,6 +23,9 @@ module CloudDriver
         belongs_to  :user_main,      foreign_key: "user_main_id",    class_name: "::User", optional: true
         belongs_to  :status,         foreign_key: "cloud_driver_workflow_statuses_id", class_name: "Workflow::Status", optional: true
 
+        # Needs to be implemented in order to be able to run migration: 0301100219_drop_cloud_driver_calendar_details.rb
+        has_one     :detail, foreign_key: "cloud_driver_calendars_id"
+
         has_many :events, foreign_key: "cloud_driver_calendars_id"
 
         # @return [CloudDriver::Calendar] The account shared calendar
