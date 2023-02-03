@@ -83,8 +83,7 @@ const usersTableColumns = [
         <lesli-tab-item :title="translations.main.view_tab_title_users" icon="person_search">
             <lesli-toolbar @search="a"></lesli-toolbar>
             <lesli-table :columns="usersTableColumns" :records="storeGuests.attendant_options.users">
-                <template #head(actions)="{}">
-                </template>
+                
                 <template #actions="{ record }">
                     <input type="checkbox" v-model="record.checked" @input="submitAttendant(record)"
                         :checked="storeGuests.attendant_options.users.checked">
