@@ -50,6 +50,19 @@ function totalInvitesCount() {
     return storeGuests.attendants.length
 }
 
+const attendantsTableColumns = [
+    { field: 'name', label: 'storeGuests.translations.core.view_text_name' }, 
+    { field: 'email', label: 'translations.core.view_text_email' },
+    { field: 'confirmed_at', label: 'storeGuests.translations.main.column_confirmed_at' },
+    { field: 'actions', label: '' }
+]
+
+const usersTableColumns = [
+    { field: 'name', label: 'storeGueststranslations.core.view_text_name' }, 
+    { field: 'email', label: 'translations.core.view_text_email' },
+    { field: 'actions', label: '' }
+]
+
 </script>
 
 <template>
@@ -61,9 +74,7 @@ function totalInvitesCount() {
 
         <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_users" icon="person_search">
             <lesli-toolbar @search="a"></lesli-toolbar>
-            <lesli-table :columns="[
-            { field: 'name', label: '{{storeGueststranslations.core.view_text_name}}' }, { field: 'email', label: '{{translations.core.view_text_email}}' },
-            { field: 'actions', label: 'requested' }]" :records="storeGuests.attendant_options.users">
+            <lesli-table :columns="usersTableColumns" :records="storeGuests.attendant_options.users">
                 <template #head(actions)="{}">
                 </template>
                 <template #actions="{ record }">
@@ -100,10 +111,7 @@ function totalInvitesCount() {
         </lesli-tab-item>
 
         <lesli-tab-item :title="storeGuests.translations.main.view_tab_title_attendants_list" icon="groups">
-            <lesli-table :columns="[
-            { field: 'name', label: '{{storeGuests.translations.core.view_text_name}}' }, { field: 'email', label: 'translations.core.view_text_email' },
-            { field: 'confirmed_at', label: '{{storeGuests.translations.main.column_confirmed_at}}' },
-            { field: 'actions', label: '' }]" :records="storeGuests.attendants">
+            <lesli-table :columns="attendantsTableColumns" :records="storeGuests.attendants">
 
                 <template #head(confirmed_at)="{}">
                 </template>
@@ -129,7 +137,9 @@ function totalInvitesCount() {
                         <button type="is-danger" @click="storeGuests.deleteInvite(record)"
                             class="button is-danger submit-button" :disabled="storeGuests.submit.delete">
                             <span v-if="storeGuests.submit.delete">
-                                <i class="fas fa-spin fa-circle-notch"></i> {{ storeGuests.translations.core.view_btn_deleting }}
+                                <i class="fas fa-spin fa-circle-notch"></i> {{
+                                    storeGuests.translations.core.view_btn_deleting
+                                }}
                             </span>
                             <span v-else>
                                 <i class="fas fa-trash-alt"></i> {{ storeGuests.translations.core.view_btn_delete }}
