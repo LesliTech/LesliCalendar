@@ -59,16 +59,16 @@ const translations = {
 }
 
 const attendantsTableColumns = [
-    { field: 'name', label: 'translations.core.view_text_name' },
-    { field: 'email', label: 'translations.core.view_text_email' },
-    { field: 'confirmed_at', label: 'translations.main.column_confirmed_at' },
-    { field: 'actions', label: '' }
+    { field: 'name', label: translations.core.view_text_name },
+    { field: 'email', label: translations.core.view_text_email },
+    { field: 'confirmed_at', label: translations.main.column_confirmed_at },
+    { field: 'actions' }
 ]
 
 const usersTableColumns = [
-    { field: 'name', label: 'translations.core.view_text_name' },
-    { field: 'email', label: 'translations.core.view_text_email' },
-    { field: 'actions', label: '' }
+    { field: 'name', label: translations.core.view_text_name },
+    { field: 'email', label: translations.core.view_text_email },
+    { field: 'actions' }
 ]
 
 </script>
