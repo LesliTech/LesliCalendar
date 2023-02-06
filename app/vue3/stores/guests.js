@@ -66,11 +66,11 @@ export const useGuests = defineStore("driver.guests", {
                 this.loading.attendants = false
                 this.attendant_options.users = storeUsers.index.records.map(user => {
                     const foundAttendant = this.attendants.find(attendant => attendant.email === user.email);
-                    return { 
+                    return {
                         id: user.id,
                         name: user.name,
-                        email: user.email, 
-                        checked: !!foundAttendant 
+                        email: user.email,
+                        checked: !!foundAttendant
                     };
                 });
             } catch (error) {
@@ -107,7 +107,6 @@ export const useGuests = defineStore("driver.guests", {
                 }
             }
             this.http.post(url, data).then(result => {
-                console.log('post A: ', result)
                 this.attendants.push({
                     id: result.id,
                     type: 'attendant',
@@ -120,67 +119,6 @@ export const useGuests = defineStore("driver.guests", {
 
             }).catch(error => {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
-            })
-        },
-
-        deleteInvite(user) {
-            const storeCalendar = useCalendar()
-            let attendant = this.attendants.find(attendant => {
-                return attendant.email === user.email
-            })
-            let url = `${this.main_route}/${storeCalendar.event.id}/attendants/${attendant.id}.json`
-
-            // If this is a guest, we have a different endpoint
-            if (user.type == 'guest') {
-                url = `${this.main_route}/${storeCalendar.event.id}/guests/${attendant.id}.json`
-            }
-            this.submit.delete = true
-            this.http.delete(url).then(result => {
-                this.attendants = this.attendants.filter((attendant) => {
-                    return attendant.email !== user.email
-                })
-                this.msg.success(this.translations.main.messages_success_attendant_deleted)
-            }).catch(error => {
-                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
-            }).finally(() => {
-                this.submit.delete = false
-            })
-        },
-
-        confirmAttendance(user, today) {
-            const storeCalendar = useCalendar()
-            let newAttendants = this.attendants.map(attendant => {
-                if (attendant.email === user.email) attendant.confirmed_at_string = today
-                return attendant
-            })
-            let url, data;
-
-            this.loading.attendants = true
-            // working with attendants
-            if (user.users_id) {
-                url = this.url.driver("events/:event_id/attendants/:attendant_id", {
-                    event_id: storeCalendar.event.id,
-                    attendant_id: user.id
-                })
-                data = { event_attendant: user }
-            }
-
-            // working with guests
-            if (!user.users_id) {
-                url = this.url.driver("events/:event_id/guests/:attendant_id", {
-                    event_id: storeCalendar.event.id,
-                    attendant_id: user.id
-                })
-                data = { event_guest: user }
-            }
-
-            this.http.put(url, data).then(result => {
-                this.$patch({ attendants: newAttendants })
-                this.msg.success(this.translations.core_users.messages_success_operation)
-            }).catch(error => {
-                this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
-            }).finally(() => {
-                this.loading.attendants = false
             })
         },
 
@@ -207,5 +145,69 @@ export const useGuests = defineStore("driver.guests", {
             })
         },
 
+        confirmAttendance(user, today) {
+            const storeCalendar = useCalendar();
+            let url, data;
+
+            this.loading.attendants = true;
+
+            if (user.users_id) {
+                url = this.url.driver("events/:event_id/attendants/:attendant_id", {
+                    event_id: storeCalendar.event.id,
+                    attendant_id: user.id
+                });
+                data = { event_attendant: user };
+            } else {
+                url = this.url.driver("events/:event_id/guests/:attendant_id", {
+                    event_id: storeCalendar.event.id,
+                    attendant_id: user.id
+                });
+                data = { event_guest: user };
+            }
+
+            this.http.put(url, data)
+                .then(result => {
+                    const attendantIndex = this.attendants.findIndex(attendant => attendant.email === user.email);
+                    this.attendants[attendantIndex].confirmed_at_string = today;
+                    this.msg.success(this.translations.core_users.messages_success_operation);
+                })
+                .catch(error => {
+                    this.msg.danger(this.translations.core.shared.messages_danger_internal_error);
+                })
+                .finally(() => {
+                    this.loading.attendants = false;
+                });
+        },
+
+        deleteInvite(user) {
+            const storeCalendar = useCalendar()
+
+            const index = this.attendant_options.users.findIndex(attendant => attendant.email === user.email);
+            if (index !== -1) {
+                this.attendant_options.users[index].checked = false;
+            }
+
+            let attendant = this.attendants.find(attendant => {
+                return attendant.email === user.email
+            })
+            let url = `${this.main_route}/${storeCalendar.event.id}/attendants/${attendant.id}.json`
+
+            // If this is a guest, we have a different endpoint
+            if (user.type == 'guest') {
+                url = `${this.main_route}/${storeCalendar.event.id}/guests/${attendant.id}.json`
+            }
+            this.submit.delete = true
+            this.http.delete(url).then(result => {
+                this.attendants = this.attendants.filter((attendant) => {
+                    return attendant.email !== user.email
+                })
+
+                this.msg.success(this.translations.main.messages_success_attendant_deleted)
+            }).catch(error => {
+                this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            }).finally(() => {
+                this.submit.delete = false
+            })
+        },
     }
 })
