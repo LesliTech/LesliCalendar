@@ -136,12 +136,7 @@ const submitEvent = () => {
                     </field>
                 </div>
             </div>
-
-            <div class="buttons">
-                <button name="btn-save" type="submit" class="button is-primary is-fullwidth">
-                    <span><span class="icon is-small"><i class="fas fa-save"></i></span>&nbsp;</span>
-                </button>
-            </div>
+            <lesli-button type="submit" icon="save">{{translations.core.view_btn_save}}</lesli-button>
         </fieldset>
     </form>
 

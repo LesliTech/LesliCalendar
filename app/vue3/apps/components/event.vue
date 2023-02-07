@@ -80,17 +80,12 @@ const deleteEvent = async () => {
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_delete_section" icon="delete">
-                    <div class="buttons">
-                        <button type="is-danger" @click="deleteEvent()" class="button is-danger submit-button"
-                            :disabled="storeEvent.submit.delete">
-                            <span v-if="storeEvent.submit.delete">
-                                <i class="fas fa-spin fa-circle-notch"></i> {{ translations.core.view_btn_deleting }}
-                            </span>
-                            <span v-else>
-                                <i class="fas fa-trash-alt"></i> {{ translations.core.view_btn_delete }}
-                            </span>
-                        </button>
-                    </div>
+                    <button @click="deleteEvent()" class="button is-fullwidth has-text-centered is-danger"
+                        :disabled="storeEvent.submit.delete">
+                        <span class="delete">{{ translations.core.view_btn_delete }}
+                        </span>
+                        {{ translations.core.view_btn_delete }}
+                    </button>
                 </lesli-tab-item>
             </lesli-tabs>
 
