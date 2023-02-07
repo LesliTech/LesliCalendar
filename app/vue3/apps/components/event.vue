@@ -20,17 +20,21 @@ For more information read the license file including with this software.
 import { onMounted } from 'vue'
 import ComponentDiscussions from "LesliVue/cloud-objects/discussion.vue"
 import ComponentFiles from "LesliVue/cloud-objects/file.vue"
+import ComponentGuests from './guests.vue'
 
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
 import { useCalendar } from 'CloudDriver/stores/calendar'
+import { useUsers } from "LesliVue/stores/users"
 
 // · implement stores
 const storeEvent = useEvent()
 const storeCalendar = useCalendar()
+const storeUsers = useUsers()
 
 onMounted(() => {
     storeEvent.getOptions()
+    storeUsers.fetchIndex()
 })
 
 const translations = {
@@ -75,23 +79,23 @@ const deleteEvent = async () => {
                                     <field>
                                         <p>{{ translations.events.column_title }}</p>
                                         <input class="input is-default" type="text" name="organizer_name"
-                                            v-model="storeCalendar.event.detail_attributes.title" required />
+                                            v-model="storeCalendar.event.title" required />
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_time_start }}</p>
-                                        <lesli-calendar v-model="storeCalendar.event.detail_attributes.time_start" mode="dateTime">
+                                        <lesli-calendar v-model="storeCalendar.event.time_start" mode="dateTime">
                                         </lesli-calendar>
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_budget }}
                                             ({{ storeCalendar.lesli.settings.currency.symbol }})</p>
                                         <input class="input is-default" type="number" name="budget" min="0" step="0.01"
-                                            v-model="storeCalendar.event.detail_attributes.budget" />
+                                            v-model="storeCalendar.event.budget" />
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_showed_up_count }}</p>
                                         <input class="input is-default" type="number" name="showed_up_count" min="0"
-                                            step="1" v-model="storeCalendar.event.detail_attributes.showed_up_count" />
+                                            step="1" v-model="storeCalendar.event.showed_up_count" />
                                     </field>
                                     <field>
                                         <p>Estimated duration (mins)</p>
@@ -111,23 +115,23 @@ const deleteEvent = async () => {
                                     <field>
                                         <p>{{ translations.events.column_location }}</p>
                                         <input class="input is-default" type="text" name="address"
-                                            v-model="storeCalendar.event.detail_attributes.location" />
+                                            v-model="storeCalendar.event.location" />
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_time_end }}</p>
-                                        <lesli-calendar v-model="storeCalendar.event.detail_attributes.time_end" mode="dateTime">
+                                        <lesli-calendar v-model="storeCalendar.event.time_end" mode="dateTime">
                                         </lesli-calendar>
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_real_cost }}
                                             ({{ storeCalendar.lesli.settings.currency.symbol }})</p>
                                         <input class="input is-default" type="number" name="real_cost" min="0"
-                                            step="0.01" v-model="storeCalendar.event.detail_attributes.real_cost" />
+                                            step="0.01" v-model="storeCalendar.event.real_cost" />
                                     </field>
                                     <field>
                                         <p>{{ translations.events.column_signed_up_count }}</p>
                                         <input class="input is-default" type="number" name="signed_up_count" min="0"
-                                            step="1" v-model="storeCalendar.event.detail_attributes.signed_up_count" />
+                                            step="1" v-model="storeCalendar.event.signed_up_count" />
                                     </field>
                                 </div>
                             </div>
@@ -136,7 +140,7 @@ const deleteEvent = async () => {
                                     <field>
                                         <p>{{ translations.events.column_description }}</p>
                                         <div class="control">
-                                            <textarea v-model="storeCalendar.event.detail_attributes.description" class="textarea"
+                                            <textarea v-model="storeCalendar.event.description" class="textarea"
                                                 name="description"></textarea>
                                         </div>
                                     </field>
@@ -147,7 +151,7 @@ const deleteEvent = async () => {
                                     <field>
                                         <label class="checkbox">
                                             {{ "View text mark as public?" }}
-                                            <input type="checkbox" name="public" v-model="storeCalendar.event.detail_attributes.public">
+                                            <input type="checkbox" name="public" v-model="storeCalendar.event.public">
                                         </label>
                                     </field>
                                 </div>
@@ -156,7 +160,7 @@ const deleteEvent = async () => {
                                         <label class="checkbox">
                                             {{ "Is proposal?" }}
                                             <input type="checkbox" name="is_proposal"
-                                                v-model="storeCalendar.event.detail_attributes.is_proposal">
+                                                v-model="storeCalendar.event.is_proposal">
                                         </label>
                                     </field>
                                 </div>
@@ -172,7 +176,7 @@ const deleteEvent = async () => {
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.core.view_btn_discussions" icon="forum">
-                    <ComponentDiscussions v-if="storeCalendar.event_id" cloud-module="driver" cloud-object="events"
+                    <ComponentDiscussions v-if="storeCalendar.event.id" cloud-module="driver" cloud-object="events"
                         :cloud-object-id="storeCalendar.event.id" :onlyDiscussions="true">
                     </ComponentDiscussions>
                 </lesli-tab-item>
@@ -188,11 +192,11 @@ const deleteEvent = async () => {
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_assignments" icon="group">
-                    <ComponentGuests v-if="storeCalendar.event_id"/>
+                    <ComponentGuests v-if="storeCalendar.event.id"/>
                 </lesli-tab-item>
 
                 <lesli-tab-item :title="translations.events.view_tab_title_delete_section" icon="delete">
-                    <div v-if="storeCalendar.event_id" class="buttons">
+                    <div v-if="storeCalendar.event.id" class="buttons">
                         <button type="is-danger" @click="deleteEvent()" class="button is-danger submit-button" :disabled="storeEvent.submit.delete">
                             <span v-if="storeEvent.submit.delete">
                                 <i class="fas fa-spin fa-circle-notch"></i> {{translations.core.view_btn_deleting}}

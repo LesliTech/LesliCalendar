@@ -28,6 +28,7 @@ import listPlugin from '@fullcalendar/list';
 
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
+import { useGuests } from 'CloudDriver/stores/guests'
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {
@@ -42,15 +43,13 @@ export const useCalendar = defineStore("driver.calendar", {
             event_id: '',
             event: {
                 cloud_driver_catalog_event_types_id: null,
-                detail_attributes: {
-                    title: null,
-                    description: '',
-                    event_date: new Date(),
-                    time_start: null,
-                    time_end: null,
-                    location: '',
-                    url: ''
-                }
+                title: null,
+                description: '',
+                event_date: new Date(),
+                time_start: null,
+                time_end: null,
+                location: '',
+                url: ''
             },
             lesli: {
                 settings: {
@@ -67,15 +66,13 @@ export const useCalendar = defineStore("driver.calendar", {
         reset() {
             this.event = {
                 cloud_driver_catalog_event_types_id: null,
-                detail_attributes: {
-                    title: null,
-                    description: '',
-                    event_date: new Date(),
-                    time_start: null,
-                    time_end: null,
-                    location: '',
-                    url: ''
-                }
+                title: null,
+                description: '',
+                event_date: new Date(),
+                time_start: null,
+                time_end: null,
+                location: '',
+                url: ''
             }
         },
 
@@ -92,51 +89,39 @@ export const useCalendar = defineStore("driver.calendar", {
 
         onDateClick: function (selectInfo) {
             const storeEvent = useEvent()
-            this.event.detail_attributes = []
+            this.reset()
             storeEvent.showModal = !storeEvent.showModal
         },
 
         onEventClick: function (arg) {
             const storeEvent = useEvent()
+            const storeGuests = useGuests()
             arg.jsEvent.preventDefault()
             this.event_id = parseInt(arg.event.id)
             this.http.get(this.url.driver(`events/${this.event_id}`))
                 .then(result => {
                     this.event = result
+                    storeEvent.showModal = !storeEvent.showModal
+                    storeGuests.getAttendants()
+                    storeGuests.getUsers()
                 })
-            storeEvent.showModal = !storeEvent.showModal
+
+
         },
 
         async postEvent(url = this.url.driver('events')) {
             const storeEvent = useEvent();
             let data = {
-                event: {
-                    cloud_driver_catalog_event_types_id: this.event.cloud_driver_catalog_event_types_id,
-                    detail_attributes: {
-                        title: this.event.detail_attributes.title,
-                        description: this.event.detail_attributes.description,
-                        event_date: this.event.detail_attributes.event_date,
-                        time_start: this.event.detail_attributes.time_start,
-                        time_end: this.event.detail_attributes.time_end,
-                        location: this.event.detail_attributes.location,
-                        url: this.event.detail_attributes.url
-                    }
-                }
+                event: this.event
             };
-            
             try {
                 const result = await this.http.post(url, data).then(event => {
                     this.event_id = event.id
                     let newEvent = {
-                        id: event.id,
-                        date: event.detail_attributes.event_date,
-                        description: event.detail_attributes.description,
-                        end: event.detail_attributes.time_end,
-                        event_type: event.cloud_driver_catalog_event_types_id,
-                        is_proposal: event.is_proposal,
-                        location: event.detail_attributes.location,
-                        start: event.detail_attributes.time_start,
-                        title: event.detail_attributes.title,
+                        ...event,
+                        date: event.event_date,
+                        start: event.time_start,
+                        end: event.time_end
                     }
                     this.calendarData.driver_events.push(newEvent);
                     this.calendarData.events.push(newEvent);
@@ -156,20 +141,14 @@ export const useCalendar = defineStore("driver.calendar", {
             try {
                 const result = await this.http.put(url, data)
                 let oldEvent = this.calendar.getEventById(this.event_id)
-                let newEvent = {
-                    id: this.event.id,
-                    date: this.event.detail_attributes.event_date,
-                    description: this.event.detail_attributes.description,
-                    end: this.event.detail_attributes.time_end,
-                    event_type: this.event.cloud_driver_catalog_event_types_id,
-                    is_proposal: this.event.is_proposal,
-                    location: this.event.detail_attributes.location,
-                    start: this.event.detail_attributes.time_start,
-                    title: this.event.detail_attributes.title,
+                let updatedEvent = {
+                    ...this.event,
+                    date: this.event.event_date,
+                    start: this.event.time_start,
+                    end: this.event.time_end,
                 }
                 oldEvent.remove()
-                this.calendar.addEvent(newEvent)
-
+                this.calendar.addEvent(updatedEvent)
                 this.msg.success(I18n.t("core.users.messages_success_operation"))
                 storeEvent.showModal = !storeEvent.showModal
             } catch (error) {
@@ -198,6 +177,7 @@ export const useCalendar = defineStore("driver.calendar", {
                     this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
                 }
             }
+            storeEvent.submit.delete = false
             return { isConfirmed }
         }
     }
