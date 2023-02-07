@@ -20,6 +20,11 @@ For more information read the license file including with this software.
 module CloudDriver
     class EventServices
 
+        def self.index(current_user, query)
+            CloudDriver::Event.index(current_user, query)
+        end
+        
+
         def self.create(current_user, event_params, calendar=nil)
             # Setting the default calendar if not provided
             calendar = current_user.account.driver.calendars.default(current_user) if calendar.blank?
