@@ -51,6 +51,10 @@ export const useCalendar = defineStore("driver.calendar", {
                 location: '',
                 url: ''
             },
+            submit: {
+                event: false,
+                delete: false
+            },
             lesli: {
                 settings: {
                     currency: {
@@ -111,9 +115,8 @@ export const useCalendar = defineStore("driver.calendar", {
 
         async postEvent(url = this.url.driver('events')) {
             const storeEvent = useEvent();
-            let data = {
-                event: this.event
-            };
+            let data = { event: this.event};
+            this.submit.event = true
             try {
                 const result = await this.http.post(url, data).then(event => {
                     this.event_id = event.id
@@ -131,6 +134,8 @@ export const useCalendar = defineStore("driver.calendar", {
                 this.msg.success(I18n.t("core.users.messages_success_operation"));
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
+            } finally {
+                this.submit.event = false
             }
         },
 
@@ -138,6 +143,7 @@ export const useCalendar = defineStore("driver.calendar", {
         async putEvent(url = this.url.driver(`events/${this.event.id}`)) {
             const storeEvent = useEvent()
             let data = { event: this.event }
+            this.submit.event = true
             try {
                 const result = await this.http.put(url, data)
                 let oldEvent = this.calendar.getEventById(this.event_id)
@@ -153,6 +159,8 @@ export const useCalendar = defineStore("driver.calendar", {
                 storeEvent.showModal = !storeEvent.showModal
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"))
+            } finally {
+                this.submit.event = false
             }
         },
 
