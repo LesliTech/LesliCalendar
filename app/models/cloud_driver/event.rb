@@ -34,13 +34,13 @@ module CloudDriver
         # Needs to be implemented in order to be able to run migration: 0301110219_drop_cloud_driver_event_details.rb
         has_one     :detail, foreign_key: "cloud_driver_events_id"
 
-        has_many :files,        foreign_key: "cloud_driver_events_id"
-        has_many :guests,       foreign_key: "cloud_driver_events_id"
-        has_many :attendants,   foreign_key: "cloud_driver_events_id"
-        has_many :proposals,    foreign_key: "cloud_driver_events_id"
         has_many :activities,   foreign_key: "cloud_driver_events_id"
         has_many :discussions,  foreign_key: "cloud_driver_events_id"
         has_many :subscribers,  foreign_key: "cloud_driver_events_id"
+        has_many :files,        foreign_key: "cloud_driver_events_id"
+        has_many :guests,       foreign_key: "cloud_driver_events_id"
+        has_many :attendants,   foreign_key: "cloud_driver_events_id"
+        has_many :proposals,    foreign_key: "cloud_driver_events_id", class_name: "CloudDriver::Event::Proposal"
 
         before_validation :set_workflow, on: :create
         validate :required_creation_attributes

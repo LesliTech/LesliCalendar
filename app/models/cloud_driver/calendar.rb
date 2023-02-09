@@ -27,6 +27,8 @@ module CloudDriver
         has_one     :detail, foreign_key: "cloud_driver_calendars_id"
 
         has_many :events, foreign_key: "cloud_driver_calendars_id"
+        has_many :proposals, through: :events
+        alias_attribute :event_proposals, :proposals
 
         # @return [CloudDriver::Calendar] The account shared calendar
         def self.default(current_user)
