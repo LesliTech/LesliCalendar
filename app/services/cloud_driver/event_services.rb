@@ -21,7 +21,12 @@ module CloudDriver
     class EventServices
 
         def self.index(current_user, query)
-            CloudDriver::Event.index(current_user, query)
+            current_user.account.driver.events.select(
+                :id,
+                :event_date,
+                LC::Date2.new.date_time.db_column("event_date"),
+                # We might need to show some others event fields later
+            )
         end
         
 
