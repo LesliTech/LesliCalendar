@@ -65,8 +65,7 @@ const usersTableColumns = [
 
 const attendantsTableColumns = [
     { field: 'name', label: translations.core.view_text_name },
-    { field: 'email', label: translations.core.view_text_email },
-    { field: 'confirmed_at', label: translations.main.column_confirmed_at }
+    { field: 'email', label: translations.core.view_text_email }
 ]
 
 </script>

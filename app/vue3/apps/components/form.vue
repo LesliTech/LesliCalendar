@@ -130,7 +130,7 @@ const submitEvent = () => {
                         </label>
                     </field>
                     <field v-show="storeCalendar.event.is_proposal">
-                        <p>Estimated duration (mins)</p>
+                        <p>{{ translations.events.column_estimated_duration }}</p>
                         <input class="input is-default" type="number" name="estimated_mins_durations" min="10" step="10"
                             v-model="storeCalendar.event.estimated_mins_durations" />
                     </field>
