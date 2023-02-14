@@ -29,6 +29,7 @@ import listPlugin from '@fullcalendar/list';
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
 import { useGuests } from 'CloudDriver/stores/guests'
+import { useUser } from "LesliVue/stores/user"
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {
@@ -68,7 +69,9 @@ export const useCalendar = defineStore("driver.calendar", {
     actions: {
 
         reset() {
+            const storeUser = useUser()
             this.event = {
+                organizer_name: storeUser.user.full_name,
                 cloud_driver_catalog_event_types_id: null,
                 title: null,
                 description: '',

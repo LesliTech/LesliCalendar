@@ -35,7 +35,7 @@ const storeUsers = useUsers()
 
 onMounted(() => {
     storeEvent.getOptions()
-    storeUsers.fetchIndex()
+    storeUsers.fetchList()
 })
 
 const translations = {

@@ -52,8 +52,8 @@ const submitEvent = () => {
                     </field>
                     <field>
                         <p>{{ translations.events.column_title }}</p>
-                        <input class="input is-default" type="text" name="organizer_name"
-                            v-model="storeCalendar.event.title" required />
+                        <input class="input is-default" type="text" name="title" v-model="storeCalendar.event.title"
+                            required />
                     </field>
                     <field>
                         <p>{{ translations.events.column_time_start }}</p>
@@ -70,11 +70,6 @@ const submitEvent = () => {
                         <p>{{ translations.events.column_showed_up_count }}</p>
                         <input class="input is-default" type="number" name="showed_up_count" min="0" step="1"
                             v-model="storeCalendar.event.showed_up_count" />
-                    </field>
-                    <field>
-                        <p>Estimated duration (mins)</p>
-                        <input class="input is-default" type="number" name="estimated_mins_durations" min="10" step="10"
-                            v-model="storeCalendar.event.estimated_mins_durations" />
                     </field>
                 </div>
                 <div class="column">
@@ -122,7 +117,7 @@ const submitEvent = () => {
                 <div class="column">
                     <field>
                         <label class="checkbox">
-                            {{ "View text mark as public?" }}
+                            {{ translations.events.view_text_mark_as_public }}
                             <input type="checkbox" name="public" v-model="storeCalendar.event.public">
                         </label>
                     </field>
@@ -134,9 +129,14 @@ const submitEvent = () => {
                             <input type="checkbox" name="is_proposal" v-model="storeCalendar.event.is_proposal">
                         </label>
                     </field>
+                    <field v-show="storeCalendar.event.is_proposal">
+                        <p>{{ translations.events.column_estimated_duration }}</p>
+                        <input class="input is-default" type="number" name="estimated_mins_durations" min="10" step="10"
+                            v-model="storeCalendar.event.estimated_mins_durations" />
+                    </field>
                 </div>
             </div>
-            <lesli-button type="submit" icon="save">{{translations.core.view_btn_save}}</lesli-button>
+            <lesli-button type="submit" icon="save">{{ translations.core.view_btn_save }}</lesli-button>  
         </fieldset>
     </form>
 

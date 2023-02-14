@@ -64,7 +64,7 @@ export const useGuests = defineStore("driver.guests", {
             const storeUsers = useUsers()
             try {
                 this.loading.attendants = false
-                this.attendant_options.users = storeUsers.index.records.map(user => {
+                this.attendant_options.users = storeUsers.list.map(user => {
                     const foundAttendant = this.attendants.find(attendant => attendant.email === user.email);
                     return {
                         id: user.id,
