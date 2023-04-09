@@ -159,7 +159,7 @@ class CloudDriver::CalendarService < LesliService
                     end: event[:end],
                     is_attendant: event[:is_attendant],
                     event_type: event[:event_type],
-                    classNames: ["cloud_driver_events"],
+                    classNames: ["cloud-driver-events"],
                 }
             end
 
@@ -179,7 +179,7 @@ class CloudDriver::CalendarService < LesliService
                     date: task[:deadline],
                     start: task[:deadline],
                     end: task[:deadline] ? task[:deadline] + 1.second : nil, # The calendar will crash if start and end dates are the same
-                    classNames: ["cloud_focus_tasks"]
+                    classNames: ["cloud-focus-tasks"]
                 }
             end
 
@@ -187,9 +187,8 @@ class CloudDriver::CalendarService < LesliService
         end
 
         # Tickets from CloudHelp
-        if query[:filters][:include] && query[:filters][:include][:help_tickets].to_s.downcase == "true"
+        if query[:filters][:include] && query[:filters][:include][:help_tickets].to_s.downcase == "true" || true
             help_tickets  = Courier::Help::Ticket.with_deadline(current_user, query)
-            help_tickets = CloudDriver::Calendar.filter_records_by_text(help_tickets, search_text, fields: ["subject", "description"])
 
             help_tickets = help_tickets.map do |ticket|
                 {
@@ -198,8 +197,8 @@ class CloudDriver::CalendarService < LesliService
                     description: ticket[:description],
                     date: ticket[:deadline],
                     start: ticket[:deadline],
-                    end: ticket[:deadline] ? ticket[:deadline] + 1.second : nil, # The calendar will crash if start and end dates are the same
-                    classNames: ["cloud_help_tickets"]
+                    #end: ticket[:deadline] ? ticket[:deadline] + 1.second : nil, # The calendar will crash if start and end dates are the same
+                    classNames: ["cloud-help-tickets"]
                 }
             end
 
