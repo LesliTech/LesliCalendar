@@ -14,11 +14,12 @@ For more information read the license file including with this software.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // ·
-
 */
+
 
 // · 
 import { defineStore } from "pinia"
+
 
 // · Import components, libraries and tools
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -26,10 +27,12 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list';
 
+
 // · import lesli stores
 import { useEvent } from 'CloudDriver/stores/event'
 import { useGuests } from 'CloudDriver/stores/guests'
 import { useUser } from "LesliVue/stores/user"
+
 
 // · 
 export const useCalendar = defineStore("driver.calendar", {
@@ -88,7 +91,17 @@ export const useCalendar = defineStore("driver.calendar", {
             try {
                 let result = await this.http.get(url);
                 this.calendarData = result;
-                this.calendarData.events.forEach(event => this.calendar.addEvent(event))
+                this.calendarData.driver_events.forEach(event => {
+                    event.dateStart = event.start
+                    event.dateEnd = event.end || null
+                    this.calendar.addEvent(event)
+                })
+                this.calendarData.help_tickets.forEach(event => {
+                    event.dateStart = event.start
+                    event.dateEnd = event.end || null
+                    event.engine = "cloud_help"
+                    this.calendar.addEvent(event)
+                })
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
             }
@@ -101,6 +114,12 @@ export const useCalendar = defineStore("driver.calendar", {
         },
 
         onEventClick: function (arg) {
+
+            if (arg.event._def.extendedProps.engine == "cloud_help") {
+                console.log("redirect to cloud help")
+                return 
+            }
+            
             const storeEvent = useEvent()
             const storeGuests = useGuests()
             arg.jsEvent.preventDefault()

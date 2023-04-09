@@ -21,9 +21,12 @@ For more information read the license file including with this software.
 import { ref, reactive, onMounted, watch, computed, inject } from "vue"
 import { useRouter, useRoute } from 'vue-router'
 
+
 // · Import components
 import componentCalendar from './components/calendar.vue'
 import componentEvent from './components/event.vue'
+import componentAgenda from './components/agenda.vue'
+
 
 // · import lesli stores
 import { useShow } from 'CloudDriver/stores/show'
@@ -32,10 +35,12 @@ import { useEvent } from 'CloudDriver/stores/event'
 import { useGuests } from 'CloudDriver/stores/guests'
 import { useUser } from "LesliVue/stores/user"
 
+
 // · initialize/inject plugins
 const router = useRouter()
 const msg = inject("msg")
 const url = inject("url")
+
 
 // · implement stores
 const storeShow = useShow()
@@ -44,47 +49,64 @@ const storeEvent = useEvent()
 const storeGuests = useGuests()
 const storeUser = useUser()
 
+
 const newEvent = () => {
     storeCalendar.reset()
     storeEvent.showModal = !storeEvent.showModal
 }
+
 
 const translations = {
     calendars: I18n.t('driver.calendars'),
     events: I18n.t('driver.events')
 }
 
+
 onMounted(() => {
     storeUser.fetch()
 })
 
-
 </script>
-
 <template>
     <section class="application-component">
         <lesli-header :title="storeShow.setTitle()">
-            <div class="navbar-item">
-                <div class="buttons">
-                    <lesli-button>
-                        <span class="icon"><i class="fab fa-google"></i></span>
-                        <span>{{ translations.calendars.view_btn_sync_with_google }}</span>
-                    </lesli-button>
-                    <lesli-button @click="newEvent()">
-                        <span class="icon"><i class="fas fa-plus"></i></span>
-                        <span>{{ translations.events.view_btn_new }}</span>
-                    </lesli-button>
-                </div>
-            </div>
+
+            
+            <lesli-button icon="navigate_before">previous</lesli-button>
+            <lesli-button icon="today">Today</lesli-button>
+            <button class="button is-primary is-outlined">
+                <span>next</span>
+                <span class="icon">
+                    <span class="material-icons">navigate_next</span>
+                </span>
+            </button>
+
+            <lesli-select placeholder="All events">
+            </lesli-select>
+            <lesli-button icon="add" solid @click="newEvent()">
+                {{ translations.events.view_btn_new }}
+            </lesli-button>
         </lesli-header>
-        <lesli-toolbar @search="a"></lesli-toolbar>
+
+        <!--
+        <lesli-toolbar>
+            <lesli-select placeholder="All events">
+            </lesli-select>
+        </lesli-toolbar>
+        -->
+
         <div class="columns">
+            <div class="column is-one-quarter">
+                <component-agenda>
+                </component-agenda>
+            </div>
             <div class="column">
-                <div class="box">
-                    <componentCalendar />
-                </div>
+                <component-calendar>
+                </component-calendar>
             </div>
         </div>
-        <componentEvent />
+
+        <component-event>
+        </component-event>
     </section>
 </template>
