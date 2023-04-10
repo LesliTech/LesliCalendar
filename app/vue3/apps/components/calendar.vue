@@ -78,6 +78,7 @@ function initCalendar() {
 onMounted(() => {
     setTimeout(function () {
         initCalendar()
+        storeCalendar.setTitle()
     }, 1);
     storeCalendar.getCalendarEvents();
 });

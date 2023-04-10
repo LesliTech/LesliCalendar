@@ -19,6 +19,7 @@ For more information read the license file including with this software.
 
 // · 
 import { defineStore } from "pinia"
+import dayjs from 'dayjs'
 
 
 // · Import components, libraries and tools
@@ -37,8 +38,12 @@ import { useUser } from "LesliVue/stores/user"
 // · 
 export const useCalendar = defineStore("driver.calendar", {
     state: () => {
+
         return {
+            title: "",
             calendar: {},
+
+
             calendarData: {
                 driver_events: [],
                 focus_tasks: [],
@@ -70,6 +75,40 @@ export const useCalendar = defineStore("driver.calendar", {
     },
 
     actions: {
+
+        setTitle() {
+
+            // if current month show the full date
+            if (this.calendar.getDate().getMonth() == (new Date()).getMonth()) {
+                this.title = this.date2().dateWords().toString()
+            } else {
+                this.title = dayjs(this.calendar.getDate()).locale(I18n.locale).format("MMMM, YYYY")
+            }
+
+        },
+
+        todayMonth() {
+            this.calendar.today()
+            this.setTitle()
+        },
+
+        prevMonth() {
+            this.calendar.prev()
+            this.setTitle()
+        },
+
+        nextMonth() {
+            this.calendar.next()
+            this.setTitle()
+        },
+
+
+
+        onDateClick() {
+            const storeEvent = useEvent()
+            this.reset()
+            storeEvent.showModal = !storeEvent.showModal
+        },
 
         reset() {
             const storeUser = useUser()
@@ -105,12 +144,6 @@ export const useCalendar = defineStore("driver.calendar", {
             } catch (error) {
                 this.msg.danger(I18n.t("core.shared.messages_danger_internal_error"));
             }
-        },
-
-        onDateClick: function (selectInfo) {
-            const storeEvent = useEvent()
-            this.reset()
-            storeEvent.showModal = !storeEvent.showModal
         },
 
         onEventClick: function (arg) {
@@ -160,7 +193,6 @@ export const useCalendar = defineStore("driver.calendar", {
                 this.submit.event = false
             }
         },
-
 
         async putEvent(url = this.url.driver(`events/${this.event.id}`)) {
             const storeEvent = useEvent()

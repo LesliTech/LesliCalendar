@@ -29,7 +29,6 @@ import componentAgenda from './components/agenda.vue'
 
 
 // · import lesli stores
-import { useShow } from 'CloudDriver/stores/show'
 import { useCalendar } from 'CloudDriver/stores/calendar'
 import { useEvent } from 'CloudDriver/stores/event'
 import { useGuests } from 'CloudDriver/stores/guests'
@@ -43,7 +42,6 @@ const url = inject("url")
 
 
 // · implement stores
-const storeShow = useShow()
 const storeCalendar = useCalendar()
 const storeEvent = useEvent()
 const storeGuests = useGuests()
@@ -69,12 +67,13 @@ onMounted(() => {
 </script>
 <template>
     <section class="application-component">
-        <lesli-header :title="storeShow.setTitle()">
+        <lesli-header :title="storeCalendar.title">
 
-            
-            <lesli-button icon="navigate_before">previous</lesli-button>
-            <lesli-button icon="today">Today</lesli-button>
-            <button class="button is-primary is-outlined">
+            <lesli-button icon="navigate_before" @click="storeCalendar.prevMonth()">previous</lesli-button>
+
+            <lesli-button icon="today" @click="storeCalendar.todayMonth()">Today</lesli-button>
+
+            <button class="button is-primary is-outlined" @click="storeCalendar.nextMonth()">
                 <span>next</span>
                 <span class="icon">
                     <span class="material-icons">navigate_next</span>
@@ -83,17 +82,12 @@ onMounted(() => {
 
             <lesli-select placeholder="All events">
             </lesli-select>
+
             <lesli-button icon="add" solid @click="newEvent()">
                 {{ translations.events.view_btn_new }}
             </lesli-button>
         </lesli-header>
 
-        <!--
-        <lesli-toolbar>
-            <lesli-select placeholder="All events">
-            </lesli-select>
-        </lesli-toolbar>
-        -->
 
         <div class="columns">
             <div class="column is-one-quarter">
