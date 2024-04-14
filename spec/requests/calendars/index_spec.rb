@@ -18,7 +18,7 @@ For more information read the license file including with this software.
 =end
 require "lesli_request_helper"
 
-RSpec.describe "CloudDriver::Calendar" do
+RSpec.describe "LesliCalendar::Calendar" do
     describe "GET:/calendars", type: :request do
         include_context "request user authentication"
 

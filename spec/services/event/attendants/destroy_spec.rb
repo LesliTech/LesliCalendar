@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_service_helper"
 
-RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
+RSpec.describe LesliCalendar::Event::AttendantServices, type: :model do
 
     it "is expected to destroy an event attendant" do
         current_user = FactoryBot.create(:user)
@@ -37,11 +37,11 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         }
 
         # Create the attendant to be deleted
-        create_attendant_response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        create_attendant_response = LesliCalendar::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         attendant = create_attendant_response.payload
 
-        response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id)
+        response = LesliCalendar::Event::AttendantServices.destroy(current_user, event.id, attendant.id)
 
         # shared examples
         expect_service_response_with_successful(response)
@@ -61,11 +61,11 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
         }
 
         # Create the attendant to be deleted
-        create_attendant_response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        create_attendant_response = LesliCalendar::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         attendant = create_attendant_response.payload
 
-        response = CloudDriver::Event::AttendantServices.destroy(current_user, event.id, attendant.id + 1)
+        response = LesliCalendar::Event::AttendantServices.destroy(current_user, event.id, attendant.id + 1)
 
         # shared examples
         expect_service_response_with_error(response)

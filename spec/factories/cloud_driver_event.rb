@@ -19,7 +19,7 @@ For more information read the license file including with this software.
 
 
 FactoryBot.define do
-    factory :cloud_driver_event, class: "CloudDriver::Event" do
+    factory :cloud_driver_event, class: "LesliCalendar::Event" do
         cloud_driver_accounts_id { Account.first.driver.id }
 
         cloud_driver_calendars_id do

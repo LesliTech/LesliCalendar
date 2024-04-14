@@ -1,108 +1,41 @@
 =begin
 
-Copyright (c) 2022, all rights reserved.
+Lesli
 
-All the information provided by this platform is protected by international laws related  to
-industrial property, intellectual property, copyright and relative international laws.
-All intellectual or industrial property rights of the code, texts, trade mark, design,
-pictures and any other information belongs to the owner of this platform.
+Copyright (c) 2023, Lesli Technologies, S. A.
 
-Without the written permission of the owner, any replication, modification,
-transmission, publication is strictly forbidden.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-For more information read the license file including with this software.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// ·
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
 
+Lesli · Ruby on Rails SaaS Development Framework.
+
+Made with ♥ by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@contact  hello@lesli.tech
+@website  https://www.lesli.tech
+@license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
 =end
 
-CloudDriver::Engine.routes.draw do
-
+LesliCalendar::Engine.routes.draw do
     root to: "calendars#show"
 
-    resource :dashboards
-
-    scope :catalog, module: :catalog do
-        resources :event_types do
-            collection do
-                get :options
-            end
-        end
+    resource :calendar, only: [:show] do
     end
 
-    # the routes bellow needs revision
-    resources :workflows do
-        member do
-            get "actions/options",          to: "workflow/actions#options"
-            get "checks/options",           to: "workflow/checks#options"
-        end
-        collection do
-            post "list" => :index
-            get  "associations/options",    to: "workflow/associations#options"
-            get "/resources/transition-options/:cloud_object_name/:cloud_object_id", to: "workflows#transition_options"
-        end
-        scope module: :workflow do
-            resources :associations
-            resources :statuses
-            resources :checks
-            resources :actions do
-                collection do
-                    scope :resources do
-                        get :options_create_cloud_object_file
-                        get :options_cloud_object_clone
-                    end
-                end
-            end
-        end
-    end
-
-    resources :dashboards do
-        collection do
-            post "list" => :index
-            get :options
-        end
-        scope module: :dashboard do
-            resources :components
-        end
-    end
-
-    resources :calendars do
-        collection do
-            get :options
-            get :sync
-        end
-        scope module: :calendar do
-            resources :actions
-            resources :discussions
-            resources :activities
-            resources :attachments
-            resources :details
-        end
-    end
-
-    resources :events do
-        member do
-            get "/resources/files-zip-download",    to:  "event/files#zip_download"
-        end
-        collection do
-            get :search
-            get :options
-            get "/files/options",                   to: "event/files#options"
-            get "/resources/events-by-model/:model_type/:model_id" =>  :events_by_model
-        end
-        scope module: :event do
-            resources :actions
-            resources :discussions
-            resources :activities
-            resources :subscriptions
-            resources :attachments
-            resources :details
-            resources :files
-            resources :proposals
-            resources :attendants
-            resources :guests, only: [:create, :destroy, :update]
-        end
-
+    resources :events, only: [:index, :create] do
     end
 end

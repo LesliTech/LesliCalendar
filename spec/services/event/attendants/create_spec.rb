@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_service_helper"
 
-RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
+RSpec.describe LesliCalendar::Event::AttendantServices, type: :model do
 
     it "is expected to create an event attendant" do
         current_user = FactoryBot.create(:user)
@@ -36,13 +36,13 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
             users_id: other_user.id
         }
 
-        response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        response = LesliCalendar::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         # shared examples
         expect_service_response_with_successful(response)
 
         # custom examples
-        expect(service_response_body).to be_a CloudDriver::Event::Attendant
+        expect(service_response_body).to be_a LesliCalendar::Event::Attendant
         expect(service_response_body.id).not_to be_nil
     end
 
@@ -56,7 +56,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
             users_id: other_user.id
         }
 
-        response = CloudDriver::Event::AttendantServices.create(current_user, event_id, event_attendant_params)
+        response = LesliCalendar::Event::AttendantServices.create(current_user, event_id, event_attendant_params)
 
         # shared examples
         expect_service_response_with_error(response)
@@ -74,7 +74,7 @@ RSpec.describe CloudDriver::Event::AttendantServices, type: :model do
             users_id: 0
         }
 
-        response = CloudDriver::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
+        response = LesliCalendar::Event::AttendantServices.create(current_user, event.id, event_attendant_params)
 
         # shared examples
         expect_service_response_with_error(response)

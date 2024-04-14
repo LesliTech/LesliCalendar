@@ -1,0 +1,181 @@
+/*
+
+Lesli
+
+Copyright (c) 2023, Lesli Technologies, S. A.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
+
+Lesli · Ruby on Rails SaaS Development Framework.
+
+Made with ♥ by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@contact  hello@lesli.tech
+@website  https://www.lesli.tech
+@license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+*/
+
+
+// · 
+@import "Lesli/scss/templates/dashboards";
+
+
+// · 
+$driver-color: #3689e6;
+$focus-color: #28bca3;
+$support-color: #a56de2;
+
+
+// · 
+.lesli-calendar-agenda {
+
+    h3 {
+        color: lesli-css-color(silver, 900);
+        padding: 14px 0;
+    }
+
+    .event {
+        border-bottom: 1px solid lesli-css-color(silver, 300);
+        min-height: 100px;
+
+        .date {
+            flex: 0 0 70px;            
+            text-align: center;
+            color: lesli-css-color(silver, 900);
+
+            .day-number {
+                font-weight: 700;
+                font-size: 1.2rem;
+            }
+        }
+
+        .description {
+            line-height: 1.2;
+            font-size: 0.9rem;
+            padding: 3px 0 3px 18px;
+            border-left: 3px solid lesli-css-color(silver);
+
+            p:first-child {
+                margin-bottom: 4px;
+                font-weight: 700;
+                font-size: 0.9rem;
+            }
+
+            &.cloud-driver-events {
+                border-left-color: $driver-color;
+            }
+
+            &.cloud-focus-tasks {
+                border-left-color: $focus-color;
+            }
+
+            &.lesli-support {
+                border-left-color: $support-color;
+            }
+        }
+    }
+}
+
+
+// · 
+#lesli-calendar {
+    background-color: white;
+    box-shadow: $lesli-box-shadow;
+
+    .fc-header-toolbar {
+        height: 0px !important;
+        margin-bottom: 0;
+        h2 {
+            color: transparent;
+        }
+    }
+
+    // remove outside border of the calendar grid
+    .fc-scrollgrid {
+        border: none !important;
+
+        // calendar header (day names)
+        .fc-scrollgrid-section-header {
+
+            .fc-col-header-cell {
+                padding: .8rem 0;
+                text-align: center;
+                border-left-width: 0;
+                border-right-width: 0;
+                a {
+                    color: lesli-css-color(silver, 900)
+                }
+            }
+
+        }
+
+        .fc-scrollgrid-section-body {
+
+            // grid of days of the month
+            .fc-daygrid-day  {
+
+                // Day number
+                .fc-daygrid-day-top .fc-daygrid-day-number {
+                    padding: 5px 10px; 
+                }
+
+                // change current day indicator
+                &.fc-day-today .fc-daygrid-day-top .fc-daygrid-day-number {
+                    color: $lesli-color-primary;
+                    font-weight: 800;
+                }
+
+                // event in the calendar
+                .fc-daygrid-event {
+                    border: none;
+                    margin: 0 .25rem .2rem;
+                    border-radius: 3px;
+                    padding-left: 4px;
+                    border-left: 5px solid $driver-color;
+                    background-color: lighten($driver-color, 40);
+
+                    .event-title { 
+                        flex: 1;
+                     }
+
+                    // ticket events
+                    &.lesli-support {
+                        border-left-color: $support-color;
+                        background-color: lighten($support-color, 32);
+                        .fc-event-time,
+                        .fc-daygrid-event-dot { display: none !important; }
+                        .fc-event-title { color: darken($support-color, 30) }
+                    }
+
+                    // focus events
+                    &.cloud-focus-tasks {
+                        border-left-color: $focus-color;
+                        background-color: lighten($focus-color, 48  );
+                        .event-title { color: darken($focus-color, 30) }
+                    }
+
+                    .fc-event-title {
+                        text-transform: capitalize;
+                        color: darken($driver-color, 30);
+                        font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", sans-serif;
+                    }
+                }
+            }
+        }
+    }
+}

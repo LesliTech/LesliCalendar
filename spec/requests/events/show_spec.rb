@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_request_helper"
 
-RSpec.describe "CloudDriver::Event" do
+RSpec.describe "LesliCalendar::Event" do
     describe "GET:/driver/events/:id", type: :request do
         include_context "request user authentication"
 

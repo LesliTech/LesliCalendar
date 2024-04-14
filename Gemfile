@@ -1,18 +1,11 @@
-source 'https://rubygems.org'
+# Lesli
+# For more information read the license file including with this software.
+
+source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Declare your gem's dependencies in cloud_driver.gemspec.
-# Bundler will treat runtime dependencies like base dependencies, and
-# development dependencies will be added by default to the :development group.
+# Specify your gem's dependencies in lesli_admin.gemspec.
 gemspec
 
-# Declare any dependencies that are still in development here instead of in
-# your gemspec. These might include edge Rails or gems from your path or
-# Git. Remember to move these dependencies to your gemspec before releasing
-# your gem to rubygems.org.
-
-# To use a debugger
-# gem 'byebug', group: [:development, :test]
-
-# Generator needs this gem to scaffold inside the engine
-gem "sprockets-rails", group: [:development]
+# Start debugger with binding.b [https://github.com/ruby/debug]
+# gem "debug", ">= 1.0.0"

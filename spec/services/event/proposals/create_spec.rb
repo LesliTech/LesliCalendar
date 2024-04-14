@@ -21,7 +21,7 @@
 # include helpers, configuration & initializers for request tests
 require "lesli_service_helper"
 
-RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
+RSpec.describe LesliCalendar::Event::ProposalServices, type: :model do
 
     it "is expected to create an event proposal" do
         current_user = FactoryBot.create(:user)
@@ -38,13 +38,13 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
             event_date: LC::Date2.new.get,
         }
 
-        response = CloudDriver::Event::ProposalServices.create(current_user, event.id, event_proposal_params)
+        response = LesliCalendar::Event::ProposalServices.create(current_user, event.id, event_proposal_params)
 
         # shared examples
         expect_service_response_with_successful(response)
 
         # custom examples
-        expect(service_response_body).to be_a CloudDriver::Event::Proposal
+        expect(service_response_body).to be_a LesliCalendar::Event::Proposal
         expect(service_response_body.id).not_to be_nil
     end
 
@@ -52,13 +52,13 @@ RSpec.describe CloudDriver::Event::ProposalServices, type: :model do
         current_user = FactoryBot.create(:user)
         other_user = FactoryBot.create(:user)
 
-        event_id = CloudDriver::Event.all.count + 1
+        event_id = LesliCalendar::Event.all.count + 1
 
         event_proposal_params = {
             users_id: other_user.id
         }
 
-        response = CloudDriver::Event::ProposalServices.create(current_user, event_id, event_proposal_params)
+        response = LesliCalendar::Event::ProposalServices.create(current_user, event_id, event_proposal_params)
 
         # shared examples
         expect_service_response_with_error(response)
