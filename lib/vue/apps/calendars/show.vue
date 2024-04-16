@@ -43,7 +43,7 @@ onMounted(() => {
 </script>
 <template>
     <lesli-application-container dashboard>
-        <lesli-header :title="date().dateWords()">
+        <lesli-header :title="date.dateWords()">
             <div class="field has-addons m-0">
                 <div class="control">
                     <lesli-button icon="arrow_back_ios">
