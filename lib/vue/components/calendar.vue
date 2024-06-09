@@ -129,9 +129,7 @@ onMounted(() => {
     setTimeout(() => { storeCalendar.calendar.render(); }, 200)
 
 })
-
 </script>
-
 <template>
     <div id="lesli-calendar"></div>
 </template>
