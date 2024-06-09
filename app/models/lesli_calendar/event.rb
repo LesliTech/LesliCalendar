@@ -1,4 +1,5 @@
 module LesliCalendar
-  class Event < ApplicationRecord
-  end
+    class Event < ApplicationRecord
+        belongs_to :calendar
+    end
 end

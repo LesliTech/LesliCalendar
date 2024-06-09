@@ -55,7 +55,7 @@ module LesliCalendar
         def set_calendar
 
             if params[:id].blank? || params[:id] == "default"
-                @calendar = CalendarService.new(current_user).find_default
+                @calendar = CalendarService.new(current_user,query).find_default
             elsif params[:id]
                 @calendar = CalendarService.new(current_user).find(params[:id])
             end

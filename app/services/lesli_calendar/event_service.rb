@@ -31,26 +31,27 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliCalendar
-    class CalendarService < Lesli::ApplicationLesliService
+    class EventService < Lesli::ApplicationLesliService
 
         def find calendar_id
             #super(current_user.account.calendar.calendar.find_by(id: calendar_id))
             super(current_user.account.calendar.calendars.first)
         end
 
-        def find_default
-            find(current_user.account.calendar.calendars.find_by(:name => "default"))
-        end
+        def index()
+            events = current_user.account.calendar.calendars.first.events
+            .select(:id, :title, :description, :date, :start, :end, :url, :location, :status, "'lesli-calendar' as classNames")
 
-        def show()
-            # Calendar data
-            calendar_data = {
-                id: self.resource.id,
-                name: self.resource.name,
-                user_id: self.resource.user_id,
-                events: EventService.new(current_user, query).index(),
-                events_support: [] # LesliSupport::TicketService.new(current_user).with_deadline
-            }
+            tickets = ::LesliSupport::TicketService.new(current_user, query).index.map do |ticket|
+                {
+                    id: ticket.id,
+                    title: ticket.subject,
+                    date: ticket.deadline,
+                    classNames: 'lesli-support'
+                }
+            end
+
+            return events + tickets
         end
     end
 end
