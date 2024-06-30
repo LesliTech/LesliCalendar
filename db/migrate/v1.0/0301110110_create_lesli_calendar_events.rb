@@ -34,9 +34,9 @@ class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
         create_table :lesli_calendar_events do |t|
             t.string    :title, required: true
             t.string    :description
-            t.date      :date
-            t.time      :start
-            t.time      :end
+            t.date      :date # migrate to start column
+            t.datetime  :start
+            t.datetime  :end
             t.string    :url
             t.string    :location
             t.string    :status # proposal, draft

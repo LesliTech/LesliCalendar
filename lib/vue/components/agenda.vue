@@ -19,7 +19,7 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 
 Lesli · Ruby on Rails SaaS Development Framework.
 
-Made with ♥ by https://www.lesli.tech
+Made with ♥ by LesliTech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
@@ -34,18 +34,21 @@ Building a better future, one line of code at a time.
 // · 
 import { onMounted, watch, ref, inject } from "vue"
 
-import dayjs from "dayjs"
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
-dayjs.extend(isSameOrAfter)
 
 // · 
+import dayjs from "dayjs"
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
 
+
+// · 
+dayjs.extend(isSameOrAfter)
 
 
 // · import lesli stores
 import { useCalendar } from "LesliCalendar/vue/stores/calendar"
 
 
+// · 
 const date = inject("date")
 
 
@@ -61,11 +64,13 @@ const today = dayjs()
 // · 
 function merge() {
 
+    console.log(events)
+
     let events = [
         ...storeCalendar.calendarData.events, 
         ...storeCalendar.calendarData.events_support
     ]
-    
+
     let count = 0
 
     events = events.filter(event => {
@@ -107,31 +112,107 @@ function merge() {
 
     })
     
+    // ordenar por hora
+    //console.log(events)
     events = events.sort((a,b) => a.time > b.time)
+    //console.log(events)
 
     agenda.value = events
 }
 
 
+
+// Function to merge and group events by date
+function mergeAndGroupEvents() {
+
+    // Get current date and time
+    const currentDate = dayjs();
+
+    // Combine events and support events into one array
+    const mergedEvents = [
+        ...storeCalendar.calendarData.events, 
+        ...storeCalendar.calendarData.events_support
+    ];
+
+    // Filter out past events
+    const filteredEvents = mergedEvents.filter(event => {
+        return !dayjs(event.start).isBefore(currentDate, "day");
+    });
+
+    // Group events by date
+    const groupedEvents = filteredEvents.reduce((acc, event) => {
+
+        let eventDate = dayjs(event.start)
+
+        // Extract date key from event start date
+        const dateKey = eventDate.format('YYYY-MM-DD');
+
+        // Create array for the date key if it doesn't exist
+        if (!acc[dateKey]) {
+
+            let dayName = "Today"
+            let dayNumber = eventDate.format("HH:mm")
+
+            if (!eventDate.isSame(currentDate, "day")) {
+                dayName = eventDate.format("ddd")
+                dayNumber = eventDate.format("DD")
+            }
+
+            acc[dateKey] = {
+                dayName: dayName,
+                dayNumber: dayNumber,
+                events: []
+            }
+        }
+
+        if (event.description) { 
+            event.description = event.description
+            .replace(/<[^>]*>?/gm, '') // remove html tags from string
+            .substring(0, 40) + '...'  // get a excerpt of the description
+        }
+
+        // Add event to the array corresponding to its date
+        acc[dateKey].events.push(event);
+
+        return acc;
+    }, {});
+
+    // Sort the groups by date
+    const sortedGroupedEvents = Object.keys(groupedEvents)
+        .sort()
+        .reduce((acc, key) => {
+            acc[key] = groupedEvents[key];
+            return acc;
+        }, {});
+
+    agenda.value = sortedGroupedEvents;
+}
+
+
+
 // · 
-watch(() => storeCalendar.calendarData.events_support, () => merge())
+watch(() => storeCalendar.calendarData.id, (a,b) => {
+    //merge()
+    mergeAndGroupEvents()
+})
 
 </script>
 <template>
     <div class="lesli-calendar-agenda">
         <h3>Upcoming events</h3>
-        <div 
-            class="is-flex is-align-items-center event" 
-            v-for="(event, index) in agenda"
-            :key="index">
-            <div class="date">
-                <p class="day-name">{{ event.dayName }}</p>
-                <p class="day-number">{{ event.dayNumber }}</p>
+        <template v-for="day in agenda">
+            <div class="event is-flex is-align-items-center">
+                <div class="date">
+                    <p class="day-name">{{ day.dayName }}</p>
+                    <p class="day-number">{{ day.dayNumber }}</p>
+                </div>
+                <div class="description">
+                    <div :class="event.classNames" v-for="(event, index) in day.events" :key="index">
+                        <p>{{ event.title }}</p>
+                        <p>{{ event.description }}</p>
+                    </div>
+                </div>
             </div>
-            <div :class="['description', event.classNames]">
-                <p>{{ event.title }}</p>
-                <p>{{ event.description }}</p>
-            </div>
-        </div>
+        </template>
     </div>
 </template>

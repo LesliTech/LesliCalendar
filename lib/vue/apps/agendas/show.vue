@@ -1,3 +1,5 @@
+<script setup>
+/*
 Lesli
 
 Copyright (c) 2023, Lesli Technologies, S. A.
@@ -26,3 +28,44 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
+*/
+
+
+// · import vue tools
+import { ref, reactive, onMounted, watch, computed, inject } from "vue"
+import { useRouter, useRoute } from "vue-router"
+
+
+// · 
+import { useCalendar } from "LesliCalendar/vue/stores/calendar.js"
+
+
+// · 
+const storeCalendar = useCalendar()
+const date = inject("date")
+
+
+// · Import components
+import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
+import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
+import componentPanelEvent from "LesliCalendar/vue/components/event.vue"
+
+onMounted(() => {
+    storeCalendar.getCalendar()
+})
+
+</script>
+<template>
+    <lesli-application-container>
+        <lesli-header :title="date.dateWords()">
+            <lesli-button solid icon="add">
+                Add event
+            </lesli-button>
+        </lesli-header>
+
+        <component-agenda>
+        </component-agenda>
+
+        <component-panel-event></component-panel-event>
+    </lesli-application-container>
+</template>

@@ -21,7 +21,7 @@ For more information read the license file including with this software.
 # you must use the initializer method in the Engine account model
 if Rails.env.development? 
     L2.msg(
-        "Loading seeds for LesliCalendar environment", 
+        "LesliCalendar", 
         "Version: #{LesliCalendar::VERSION}", 
         "Build: #{LesliCalendar::BUILD}")
     load LesliCalendar::Engine.root.join("db", "seed", "#{ Rails.env.downcase }.rb")

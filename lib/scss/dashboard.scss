@@ -42,6 +42,65 @@ $support-color: #a56de2;
 
 
 // · 
+.lesli-calendar-agenda {
+
+    h3 {
+        color: lesli-css-color(silver, 900);
+        padding: 14px 0;
+    }
+
+    .event {
+        border-bottom: 1px solid lesli-css-color(silver, 300);
+        min-height: 100px;
+
+        .date {
+            flex: 0 0 70px;            
+            text-align: center;
+            color: lesli-css-color(silver, 900);
+
+            .day-number {
+                font-weight: 700;
+                font-size: 1.2rem;
+            }
+        }
+
+        .description {
+            line-height: 1.2;
+            font-size: 0.9rem;
+
+            p:nth-child(odd) {
+                margin: 0;
+                font-weight: 700;
+                font-size: 0.9rem;
+            }
+
+            p:nth-child(even):not(:last-child) {
+                margin-bottom: 8px;
+            }
+
+            .lesli-calendar,
+            .lesli-support {
+                padding: 3px 0 3px 18px;
+                border-left: 3px solid lesli-css-color(silver);
+            }
+
+            .lesli-calendar {
+                border-left-color: $driver-color;
+            }
+
+            .lesli-support {
+                border-left-color: $support-color;
+            }
+
+            .cloud-focus-tasks {
+                border-left-color: $focus-color;
+            }
+        }
+    }
+}
+
+
+// · 
 #lesli-calendar {
     background-color: white;
     box-shadow: $lesli-box-shadow;

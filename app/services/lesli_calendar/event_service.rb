@@ -40,18 +40,18 @@ module LesliCalendar
 
         def index()
             events = current_user.account.calendar.calendars.first.events
-            .select(:id, :title, :description, :date, :start, :end, :url, :location, :status, "'lesli-calendar' as classNames")
-
-            tickets = ::LesliSupport::TicketService.new(current_user, query).index.map do |ticket|
-                {
-                    id: ticket.id,
-                    title: ticket.subject,
-                    date: ticket.deadline,
-                    classNames: 'lesli-support'
-                }
-            end
-
-            return events + tickets
+            .select(
+                :id, 
+                :title, 
+                :description, 
+                :date, 
+                :start, 
+                :end, 
+                :url, 
+                :location, 
+                :status, 
+                "'lesli-calendar' as classNames"
+            )
         end
     end
 end

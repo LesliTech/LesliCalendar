@@ -36,6 +36,9 @@ LesliCalendar::Engine.routes.draw do
     resource :calendar, only: [:show] do
     end
 
+    resource :agenda, only: [:show] do
+    end
+
     resources :events, only: [:index, :create] do
     end
 end

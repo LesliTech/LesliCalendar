@@ -1,0 +1,102 @@
+/*
+
+Lesli
+
+Copyright (c) 2023, Lesli Technologies, S. A.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
+
+Lesli · Ruby on Rails SaaS Development Framework.
+
+Made with ♥ by https://www.lesli.tech
+Building a better future, one line of code at a time.
+
+@contact  hello@lesli.tech
+@website  https://www.lesli.tech
+@license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · 
+*/
+
+
+// · 
+@import "Lesli/scss/templates/dashboards";
+
+
+// · 
+$driver-color: #3689e6;
+$focus-color: #28bca3;
+$support-color: #a56de2;
+
+
+// · 
+.lesli-calendar-agenda {
+
+    background-color: white;
+
+    h3 {
+        color: lesli-css-color(silver, 900);
+        padding: 14px 0;
+    }
+
+    .event {
+        border-bottom: 1px solid lesli-css-color(silver, 300);
+        min-height: 100px;
+
+        .date {
+            flex: 0 0 70px;            
+            text-align: center;
+            color: lesli-css-color(silver, 900);
+
+            .day-number {
+                font-weight: 700;
+                font-size: 1.2rem;
+            }
+        }
+
+        .description {
+            line-height: 1.2;
+            font-size: 0.9rem;
+
+            p:nth-child(odd) {
+                margin: 0;
+                font-weight: 700;
+                font-size: 0.9rem;
+            }
+
+            p:nth-child(even):not(:last-child) {
+                margin-bottom: 8px;
+            }
+
+            .lesli-calendar,
+            .lesli-support {
+                padding: 3px 0 3px 18px;
+                border-left: 3px solid lesli-css-color(silver);
+            }
+
+            .lesli-calendar {
+                border-left-color: $driver-color;
+            }
+
+            .lesli-support {
+                border-left-color: $support-color;
+            }
+
+            .cloud-focus-tasks {
+                border-left-color: $focus-color;
+            }
+        }
+    }
+}

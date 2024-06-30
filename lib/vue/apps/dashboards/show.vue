@@ -56,7 +56,7 @@ onMounted(() => {
 
 </script>
 <template>
-    <lesli-application-container>
+    <lesli-application-container dashboard>
         <lesli-header :title="date.dateWords()">
             <div class="field has-addons m-0">
                 <div class="control">
@@ -85,8 +85,16 @@ onMounted(() => {
             </lesli-button>
         </lesli-header>
 
-        <component-calendar class="mt-4">
-        </component-calendar>
+        <div class="columns">
+            <div class="column is-3">
+                <component-agenda>
+                </component-agenda>
+            </div>
+            <div class="column">
+                <component-calendar class="mt-4">
+                </component-calendar>
+            </div>
+        </div>
 
         <component-panel-event></component-panel-event>
     </lesli-application-container>
