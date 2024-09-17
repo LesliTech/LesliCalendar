@@ -41,19 +41,20 @@ import { useCalendar } from "LesliCalendar/vue/stores/calendar.js"
 
 
 // · 
-const storeCalendar = useCalendar()
 const date = inject("date")
+const storeCalendar = useCalendar()
 
 
 // · Import components
-import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
 import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
+import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
 import componentPanelEvent from "LesliCalendar/vue/components/event.vue"
 
+
+// · 
 onMounted(() => {
     storeCalendar.getCalendar()
 })
-
 </script>
 <template>
     <lesli-application-container dashboard>
@@ -85,14 +86,14 @@ onMounted(() => {
             </lesli-button>
         </lesli-header>
 
+        <!-- <pre><code>{{ storeCalendar.calendar }}</code></pre> -->
+
         <div class="columns">
             <div class="column is-3">
-                <component-agenda>
-                </component-agenda>
+                <component-agenda></component-agenda>
             </div>
             <div class="column">
-                <component-calendar class="mt-4">
-                </component-calendar>
+                <component-calendar class="mt-4"></component-calendar>
             </div>
         </div>
 

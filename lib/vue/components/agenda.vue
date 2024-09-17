@@ -61,67 +61,6 @@ const agenda = ref([])
 const today = dayjs()
 
 
-// · 
-function merge() {
-
-    console.log(events)
-
-    let events = [
-        ...storeCalendar.calendarData.events, 
-        ...storeCalendar.calendarData.events_support
-    ]
-
-    let count = 0
-
-    events = events.filter(event => {
-
-        // limit the number of events to show in the agenda
-        if (count >= 6) {
-            return 
-        }
-
-        let eventDate = dayjs(event.start)
-        
-        // Do not process past events
-        if (eventDate.isBefore(today, "day")) {
-            return 
-        } 
-
-        // show today event description by default
-        event.dayName = "Today"
-        event.dayNumber = eventDate.format("HH:mm")
-
-        // If the event is NOT today, show only the time
-        if (!eventDate.isSame(today, "day")) {
-            event.dayName = eventDate.format("ddd")
-            event.dayNumber = eventDate.format("DD")
-        }
-
-
-        if (event.description) { 
-            event.description = event.description
-            .replace(/<[^>]*>?/gm, '') // remove html tags from string
-            .substring(0, 40) + '...'  // get a excerpt of the description
-        }
-
-        event.classNames = event.classNames
-
-        count++
-
-        return event
-
-    })
-    
-    // ordenar por hora
-    //console.log(events)
-    events = events.sort((a,b) => a.time > b.time)
-    //console.log(events)
-
-    agenda.value = events
-}
-
-
-
 // Function to merge and group events by date
 function mergeAndGroupEvents() {
 
@@ -130,8 +69,8 @@ function mergeAndGroupEvents() {
 
     // Combine events and support events into one array
     const mergedEvents = [
-        ...storeCalendar.calendarData.events, 
-        ...storeCalendar.calendarData.events_support
+        ...storeCalendar.calendar.events, 
+        ...storeCalendar.calendar.events_support
     ];
 
     // Filter out past events
@@ -188,11 +127,12 @@ function mergeAndGroupEvents() {
     agenda.value = sortedGroupedEvents;
 }
 
-
+onMounted(() => {
+    mergeAndGroupEvents()
+})
 
 // · 
-watch(() => storeCalendar.calendarData.id, (a,b) => {
-    //merge()
+watch(() => storeCalendar.calendar.id, (a,b) => {
     mergeAndGroupEvents()
 })
 

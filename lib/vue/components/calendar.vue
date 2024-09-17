@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 
 
 // · Import components, libraries and tools
-import { onMounted, inject, ref } from "vue"
+import { onMounted, watch, inject, ref } from "vue"
 
 import { Calendar } from "@fullcalendar/core";
 import listPlugin from "@fullcalendar/list";
@@ -51,6 +51,7 @@ const storeCalendar = useCalendar()
 
 // · 
 const date = inject("date")
+const calendar = ref(false)
 
 
 function onDateClick() {
@@ -104,10 +105,37 @@ function onEventContent(args) {
 
 }
 
+
+function loadEvents() {
+
+    // Add calendar events 
+    storeCalendar.calendar.events.forEach(event => {
+        calendar.value.addEvent({
+            title: event.title,
+            start: event.date,
+            description: event.description,
+            classNames: event.classNames
+        })
+    })
+
+    // Add calendar events 
+    storeCalendar.calendar.events_support.forEach(event => {
+        calendar.value.addEvent({
+            title: event.title,
+            start: event.date,
+            description: event.description,
+            classNames: event.classNames
+        })
+    })
+
+}
+
+
+
 // · 
 onMounted(() => {
 
-    storeCalendar.calendar = new Calendar(document.getElementById("lesli-calendar"), {
+    calendar.value = new Calendar(document.getElementById("lesli-calendar"), {
         plugins: [
             dayGridPlugin,
             interactionPlugin,
@@ -126,8 +154,15 @@ onMounted(() => {
         //eventContent: onEventContent
     });
 
-    setTimeout(() => { storeCalendar.calendar.render(); }, 200)
+    loadEvents()
 
+    setTimeout(() => { calendar.value.render(); }, 200)
+})
+
+
+// · 
+watch(() => storeCalendar.calendar.id, (a,b) => {
+    loadEvents()
 })
 </script>
 <template>
