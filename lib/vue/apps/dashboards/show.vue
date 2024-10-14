@@ -93,7 +93,7 @@ onMounted(() => {
                 <component-agenda></component-agenda>
             </div>
             <div class="column">
-                <component-calendar class="mt-4"></component-calendar>
+                <component-calendar></component-calendar>
             </div>
         </div>
 

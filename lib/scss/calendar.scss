@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 
 
 // · 
-@import "Lesli/scss/templates/dashboards";
+@import "Lesli/scss/templates/component";
 
 
 // · 
@@ -44,7 +44,7 @@ $support-color: #a56de2;
 // · 
 #lesli-calendar {
     background-color: white;
-    box-shadow: $lesli-box-shadow;
+    //box-shadow: $lesli-box-shadow;
 
     .fc-header-toolbar {
         height: 0px !important;
@@ -58,19 +58,24 @@ $support-color: #a56de2;
     .fc-scrollgrid {
         border: none !important;
 
+        // remove the last right border for the header
+        th[role="presentation"] {
+            border: none;
+        }
+
         // calendar header (day names)
         .fc-scrollgrid-section-header {
 
             .fc-col-header-cell {
-                padding: .8rem 0;
+                padding: 0 0 .8rem;
                 text-align: center;
                 border-left-width: 0;
                 border-right-width: 0;
+
                 a {
                     color: lesli-css-color(silver, 900)
                 }
             }
-
         }
 
         .fc-scrollgrid-section-body {

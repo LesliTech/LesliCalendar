@@ -107,7 +107,7 @@ function mergeAndGroupEvents() {
         if (event.description) { 
             event.description = event.description
             .replace(/<[^>]*>?/gm, '') // remove html tags from string
-            .substring(0, 40) + '...'  // get a excerpt of the description
+            .substring(0, 35) + '...'  // get a excerpt of the description
         }
 
         // Add event to the array corresponding to its date
@@ -138,7 +138,7 @@ watch(() => storeCalendar.calendar.id, (a,b) => {
 
 </script>
 <template>
-    <div class="lesli-calendar-agenda">
+    <div class="lesli-calendar-agenda box">
         <h3>Upcoming events</h3>
         <template v-for="day in agenda">
             <div class="event is-flex is-align-items-center">

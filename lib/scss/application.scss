@@ -30,11 +30,14 @@ Building a better future, one line of code at a time.
 */
 
 body.lesli-calendar {
+    @import "./agenda.scss";
+    @import "./calendar.scss";
     @import "./dashboard.scss";
 }
 
 body.lesli-calendar-calendar {
     @import "./calendar.scss";
+    @import "./agenda.scss";
 }
 
 body.lesli-calendar-agenda {

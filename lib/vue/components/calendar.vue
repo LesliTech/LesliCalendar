@@ -166,5 +166,5 @@ watch(() => storeCalendar.calendar.id, (a,b) => {
 })
 </script>
 <template>
-    <div id="lesli-calendar"></div>
+    <div id="lesli-calendar" class="box"></div>
 </template>

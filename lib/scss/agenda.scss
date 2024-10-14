@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 
 
 // · 
-@import "Lesli/scss/templates/dashboards";
+@import "Lesli/scss/templates/component";
 
 
 // · 
@@ -43,7 +43,6 @@ $support-color: #a56de2;
 
 // · 
 .lesli-calendar-agenda {
-
     background-color: white;
 
     h3 {
