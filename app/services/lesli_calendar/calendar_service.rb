@@ -59,7 +59,7 @@ module LesliCalendar
                         description: ticket.description,
                         date: ticket.deadline,
                         start: ticket.deadline,
-                        classNames: 'lesli-support'
+                        classnames: 'lesli-support'
                     }
                 end
             }

@@ -147,7 +147,7 @@ watch(() => storeCalendar.calendar.id, (a,b) => {
                     <p class="day-number">{{ day.dayNumber }}</p>
                 </div>
                 <div class="description">
-                    <div :class="event.classNames" v-for="(event, index) in day.events" :key="index">
+                    <div :class="event.classnames" v-for="(event, index) in day.events" :key="index">
                         <p>{{ event.title }}</p>
                         <p>{{ event.description }}</p>
                     </div>

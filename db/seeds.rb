@@ -17,12 +17,10 @@ For more information read the license file including with this software.
 =end
 
 
-# IMPORTANT: Seed files are only for development, if you need to create default resources for production
-# you must use the initializer method in the Engine account model
-if Rails.env.development? 
-    L2.msg(
-        "LesliCalendar", 
-        "Version: #{LesliCalendar::VERSION}", 
-        "Build: #{LesliCalendar::BUILD}")
-    load LesliCalendar::Engine.root.join("db", "seed", "#{ Rails.env.downcase }.rb")
-end 
+L2.msg("LesliCalendar", "Version: #{LesliCalendar::VERSION}", "Build: #{LesliCalendar::BUILD}")
+
+
+# · load specific environment seeds
+if Rails.env.development? || Lesli.config.demo 
+    load LesliCalendar::Engine.root.join("db", "seed", "events.rb")
+end

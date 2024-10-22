@@ -75,14 +75,10 @@ $support-color: #a56de2;
                 font-size: 0.9rem;
             }
 
-            p:nth-child(even):not(:last-child) {
-                margin-bottom: 8px;
-            }
-
             .lesli-calendar,
             .lesli-support {
-                padding: 3px 0 3px 18px;
-                border-left: 3px solid lesli-css-color(silver);
+                padding: 3px 0 10px 12px;
+                border-left: 4px solid lesli-css-color(silver);
             }
 
             .lesli-calendar {

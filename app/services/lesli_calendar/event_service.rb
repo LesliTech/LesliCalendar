@@ -50,7 +50,7 @@ module LesliCalendar
                 :url, 
                 :location, 
                 :status, 
-                "'lesli-calendar' as classNames"
+                "'lesli-calendar' as classnames"
             )
         end
     end
