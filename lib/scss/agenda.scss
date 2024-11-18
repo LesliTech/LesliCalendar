@@ -77,8 +77,10 @@ $support-color: #a56de2;
 
             .lesli-calendar,
             .lesli-support {
-                padding: 3px 0 10px 12px;
+                padding-top: 12px;
+                padding-left: 12px;
                 border-left: 4px solid lesli-css-color(silver);
+                &:last-child { padding-bottom: 14px; }
             }
 
             .lesli-calendar {

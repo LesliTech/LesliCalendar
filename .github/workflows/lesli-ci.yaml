@@ -1,0 +1,10 @@
+name: Lesli workflows
+on:
+  pull_request:
+    branches: [master, production]
+  push:
+    branches: [master]
+
+jobs:
+  call-lesli-ci:
+    uses: LesliTech/Lesli/.github/workflows/lesli-ci.yaml@master

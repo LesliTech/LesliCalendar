@@ -107,7 +107,7 @@ function mergeAndGroupEvents() {
         if (event.description) { 
             event.description = event.description
             .replace(/<[^>]*>?/gm, '') // remove html tags from string
-            .substring(0, 35) + '...'  // get a excerpt of the description
+            .substring(0, 85) + '...'  // get a excerpt of the description
         }
 
         // Add event to the array corresponding to its date
