@@ -1,4 +1,4 @@
-name: Lesli workflows
+name: Lesli workflow
 on:
   pull_request:
     branches: [master, production]
