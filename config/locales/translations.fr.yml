@@ -9,6 +9,11 @@
       view_event_public: ":lesli_calendar.events.view_event_public:"
       column_status: ":lesli_calendar.events.column_status:"
       view_add_new_event: ":lesli_calendar.events.view_add_new_event:"
+    calendars:
+      toolbar_prev: ":lesli_calendar.calendars.toolbar_prev:"
+      toolbar_today: ":lesli_calendar.calendars.toolbar_today:"
+      toolbar_next: ":lesli_calendar.calendars.toolbar_next:"
+      toolbar_add_event: ":lesli_calendar.calendars.toolbar_add_event:"
   lesli:
     shared:
       view_discussions: ":lesli.shared.view_discussions:"

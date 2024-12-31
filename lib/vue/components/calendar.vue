@@ -110,7 +110,7 @@ function loadEvents() {
 
     // Add calendar events 
     storeCalendar.calendar.events.forEach(event => {
-        calendar.value.addEvent({
+        storeCalendar.calendarObject.addEvent({
             title: event.title,
             start: event.date,
             description: event.description,
@@ -120,7 +120,7 @@ function loadEvents() {
 
     // Add calendar events 
     storeCalendar.calendar.events_support.forEach(event => {
-        calendar.value.addEvent({
+        storeCalendar.calendarObject.addEvent({
             title: event.title,
             start: event.date,
             description: event.description,
@@ -135,7 +135,7 @@ function loadEvents() {
 // · 
 onMounted(() => {
 
-    calendar.value = new Calendar(document.getElementById("lesli-calendar"), {
+    storeCalendar.calendarObject = new Calendar(document.getElementById("lesli-calendar"), {
         plugins: [
             dayGridPlugin,
             interactionPlugin,
@@ -155,8 +155,9 @@ onMounted(() => {
     });
 
     loadEvents()
+    storeCalendar.setTitle()
 
-    setTimeout(() => { calendar.value.render(); }, 200)
+    setTimeout(() => { storeCalendar.calendarObject.render(); }, 200)
 })
 
 

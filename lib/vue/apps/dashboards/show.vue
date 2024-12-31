@@ -47,6 +47,12 @@ const storeEvents = useEvents()
 const storeCalendar = useCalendar()
 
 
+// · 
+const translations = {
+    calendar: i18n.t("lesli_calendar.calendars")
+}
+
+
 // · Import components
 import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
 import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
@@ -60,21 +66,21 @@ onMounted(() => {
 </script>
 <template>
     <lesli-application-container dashboard>
-        <lesli-header :title="date.dateWords()">
+        <lesli-header :title="storeCalendar.title">
             <div class="field has-addons m-0">
                 <div class="control">
-                    <lesli-button icon="arrow_back_ios">
-                        prev
+                    <lesli-button @click="storeCalendar.prevMonth()" icon="arrow_back_ios">
+                        {{ translations.calendar.toolbar_prev }}
                     </lesli-button>
                 </div>
                 <div class="control">
-                    <lesli-button>
-                        today
+                    <lesli-button @click="storeCalendar.todayMonth()">
+                        {{ translations.calendar.toolbar_today }}
                     </lesli-button>
                 </div>
                 <div class="control">
-                    <button class="button is-primary is-light is-outlined">
-                        <span>next</span>
+                    <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
+                        <span>{{ translations.calendar.toolbar_next }}</span>
                         <span class="icon">
                             <span class="material-icons">
                                 arrow_forward_ios
@@ -84,11 +90,9 @@ onMounted(() => {
                 </div>
             </div>
             <lesli-button solid icon="add" @click="storeEvents.showModal = true">
-                Add event
+                {{ translations.calendar.toolbar_add_event }}
             </lesli-button>
         </lesli-header>
-
-        <!-- <pre><code>{{ storeCalendar.calendar }}</code></pre> -->
 
         <div class="columns">
             <div class="column is-3">

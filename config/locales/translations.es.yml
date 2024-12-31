@@ -9,6 +9,11 @@
       view_event_public: Evento publico
       column_status: Estado
       view_add_new_event: Crear nuevo evento
+    calendars:
+      toolbar_prev: Prev.
+      toolbar_today: Hoy
+      toolbar_next: Sig.
+      toolbar_add_event: Crear evento
   lesli:
     shared:
       view_discussions: Discusiones

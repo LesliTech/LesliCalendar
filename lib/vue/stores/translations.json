@@ -31,6 +31,12 @@
       }
     },
     "lesli_calendar": {
+      "calendars": {
+        "toolbar_add_event": "Add event",
+        "toolbar_next": "Next",
+        "toolbar_prev": "Prev",
+        "toolbar_today": "Today"
+      },
       "events": {
         "column_description": "Description",
         "column_end": "End",
@@ -74,6 +80,12 @@
       }
     },
     "lesli_calendar": {
+      "calendars": {
+        "toolbar_add_event": "Crear evento",
+        "toolbar_next": "Sig.",
+        "toolbar_prev": "Prev.",
+        "toolbar_today": "Hoy"
+      },
       "events": {
         "column_description": "Descripción",
         "column_end": "Final",
@@ -117,6 +129,12 @@
       }
     },
     "lesli_calendar": {
+      "calendars": {
+        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
+        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
+        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
+        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+      },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
         "column_end": ":lesli_calendar.events.column_end:",
@@ -160,6 +178,12 @@
       }
     },
     "lesli_calendar": {
+      "calendars": {
+        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
+        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
+        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
+        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+      },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
         "column_end": ":lesli_calendar.events.column_end:",
@@ -203,6 +227,12 @@
       }
     },
     "lesli_calendar": {
+      "calendars": {
+        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
+        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
+        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
+        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+      },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
         "column_end": ":lesli_calendar.events.column_end:",
