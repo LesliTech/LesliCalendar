@@ -1,8 +1,8 @@
-=begin
+=begin 
 
 Lesli
 
-Copyright (c) 2023, Lesli Technologies, S. A.
+Copyright (c) 2024, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 
 Lesli · Ruby on Rails SaaS Development Framework.
 
-Made with ♥ by https://www.lesli.tech
+Made with ♥ by LesliTech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
@@ -52,6 +52,31 @@ module LesliCalendar
                 :status, 
                 "'lesli-calendar' as classnames"
             )
+        end
+
+        def create(event_params)
+
+            # Setting the default calendar if not provided
+            calendar = CalendarService.new(current_user).find_default
+
+            # Creating the event
+            event = calendar.events.new(event_params)
+            event.account = calendar.account
+            event.user = current_user
+
+            pp "--------"
+            pp event.save
+            pp event.errors.full_messages.to_sentence
+            pp "--------"
+
+            if event.save
+            #     #Event.log_activity_create(current_user, event)
+
+            #     # Adding the main user as an attendant too
+            #     #event.attendants.create(users_id: event.user_main.id)
+            end
+            #self.resource = resource if resource
+            self
         end
     end
 end

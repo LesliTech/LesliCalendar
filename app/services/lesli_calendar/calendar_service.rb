@@ -40,6 +40,7 @@ module LesliCalendar
 
         def find_default
             find(current_user.account.calendar.calendars.find_by(:name => "default"))
+            current_user.account.calendar.calendars.first
         end
 
         def show()

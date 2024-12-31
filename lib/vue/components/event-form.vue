@@ -38,7 +38,7 @@ import { useEvents } from 'LesliCalendar/vue/stores/events'
 
 // · implement stores
 const storeCalendar = useCalendar()
-const storeEvent = useEvents()
+const storeEvents = useEvents()
 
 
 // · 
@@ -51,11 +51,11 @@ const translations = {
 
 // · 
 const submitEvent = () => {
-    if (storeCalendar.event.id) {
-        storeCalendar.putEvent()
+    if (storeEvents.event.id) {
+        storeEvents.put()
     }
     else {
-        storeCalendar.postEvent()
+        storeEvents.post()
     }
 }
 </script>
@@ -64,22 +64,22 @@ const submitEvent = () => {
 
         <lesli-input
             required
-            v-model="storeCalendar.event.title"
+            v-model="storeEvents.event.title"
             :label="translations.events.column_title"
         />
 
         <lesli-field :label="translations.events.column_start">
-            <lesli-calendar v-model="storeCalendar.event.start" mode="dateTime">
+            <lesli-calendar v-model="storeEvents.event.start" mode="dateTime">
             </lesli-calendar>
         </lesli-field>
 
         <lesli-field :label="translations.events.column_end">
-            <lesli-calendar v-model="storeCalendar.event.end" mode="dateTime">
+            <lesli-calendar v-model="storeEvents.event.end" mode="dateTime">
             </lesli-calendar>
         </lesli-field>
 
         <lesli-field :label="translations.events.column_description">
-            <textarea v-model="storeCalendar.event.description" class="textarea" name="description"></textarea>
+            <textarea v-model="storeEvents.event.description" class="textarea" name="description"></textarea>
         </lesli-field>        
 
         <lesli-field :label="translations.events.column_status">
@@ -99,112 +99,12 @@ const submitEvent = () => {
         </lesli-field>
 
         <lesli-field>
-            <input type="checkbox" name="public" v-model="storeCalendar.event.public">
+            <input type="checkbox" name="public" v-model="storeEvents.event.public">
             {{ translations.events.view_event_public }}
         </lesli-field>
 
         <lesli-field>
             <lesli-button type="submit" icon="save">{{ translations.lesli.button_save }}</lesli-button>  
         </lesli-field>
-
-
-        <!--
-        <br><br>
-
-        <div class="columns">
-            <div class="column">
-                <div label="column_user_main_id">
-                    <p>{{ translations.events.column_user_main_id }}</p>
-                    <input class="input is-default" type="text" name="organizer_name"
-                        v-model="storeCalendar.event.organizer_name" readonly />
-                </div>
-                <div>
-                    <p>{{ translations.events.column_title }}</p>
-                    <input class="input is-default" type="text" name="title" v-model="storeCalendar.event.title"
-                        required />
-                </div>
-                <div>
-                    <p>{{ translations.events.column_time_start }}</p>
-                    <lesli-calendar v-model="storeCalendar.event.time_start" mode="dateTime">
-                    </lesli-calendar>
-                </div>
-                <div>
-                    <p>{{ translations.events.column_budget }}
-                        ({{ storeCalendar.lesli.settings.currency.symbol }})</p>
-                    <input class="input is-default" type="number" name="budget" min="0" step="0.01"
-                        v-model="storeCalendar.event.budget" />
-                </div>
-                <div>
-                    <p>{{ translations.events.column_showed_up_count }}</p>
-                    <input class="input is-default" type="number" name="showed_up_count" min="0" step="1"
-                        v-model="storeCalendar.event.showed_up_count" />
-                </div>
-            </div>
-            <div class="column">
-                <div>
-                    <p>{{ translations.events.column_cloud_driver_catalog_event_types_id }}</p>
-                    <lesli-select v-model="storeCalendar.event.cloud_driver_catalog_event_types_id" icon="public"
-                        :options="storeEvent.options.event_types">
-                    </lesli-select>
-                </div>
-                <div>
-                    <p>{{ translations.events.column_location }}</p>
-                    <input class="input is-default" type="text" name="address"
-                        v-model="storeCalendar.event.location" />
-                </div>
-                <div>
-                    <p>{{ translations.events.column_time_end }}</p>
-                    <lesli-calendar v-model="storeCalendar.event.time_end" mode="dateTime">
-                    </lesli-calendar>
-                </div>
-                <div>
-                    <p>{{ translations.events.column_real_cost }}
-                        ({{ storeCalendar.lesli.settings.currency.symbol }})</p>
-                    <input class="input is-default" type="number" name="real_cost" min="0" step="0.01"
-                        v-model="storeCalendar.event.real_cost" />
-                </div>
-                <div>
-                    <p>{{ translations.events.column_signed_up_count }}</p>
-                    <input class="input is-default" type="number" name="signed_up_count" min="0" step="1"
-                        v-model="storeCalendar.event.signed_up_count" />
-                </div>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column">
-                <div>
-                    <p>{{ translations.events.column_description }}</p>
-                    <div class="control">
-                        <textarea v-model="storeCalendar.event.description" class="textarea"
-                            name="description"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column">
-                <div>
-                    <label class="checkbox">
-                        {{ translations.events.view_text_mark_as_public }}
-                        <input type="checkbox" name="public" v-model="storeCalendar.event.public">
-                    </label>
-                </div>
-            </div>
-            <div class="column">
-                <div>
-                    <label class="checkbox">
-                        {{ "Is proposal?" }}
-                        <input type="checkbox" name="is_proposal" v-model="storeCalendar.event.is_proposal">
-                    </label>
-                </div>
-                <div v-show="storeCalendar.event.is_proposal">
-                    <p>{{ translations.events.column_estimated_duration }}</p>
-                    <input class="input is-default" type="number" name="estimated_mins_durations" min="10" step="10"
-                        v-model="storeCalendar.event.estimated_mins_durations" />
-                </div>
-            </div>
-        </div>
-        <lesli-button type="submit" icon="save">{{ translations.core.view_btn_save }}</lesli-button>  
-        -->
     </lesli-form>
 </template>

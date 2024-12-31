@@ -35,6 +35,7 @@ module LesliCalendar
         belongs_to :account, class_name: "Lesli::Account"
 
         has_many :calendars
+        has_many :events
 
         after_create :initialize_engine
 

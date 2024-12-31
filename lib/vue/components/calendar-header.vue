@@ -71,7 +71,7 @@ const translations = {
                 </button>
             </div>
         </div>
-        <lesli-button solid icon="add" @click="storeEvents.showModal = true">
+        <lesli-button solid icon="add" @click="storeEvents.showPanel = true">
             {{ translations.calendar.button_add_event }}
         </lesli-button>
     </lesli-header>

@@ -42,7 +42,7 @@ import ComponentEventForm from "./event-form.vue"
 </script>
 
 <template>
-    <lesli-panel v-model:open="storeEvents.showModal">
+    <lesli-panel v-model:open="storeEvents.showPanel">
         <template #header>
             {{ translations.events.view_add_new_event }}
         </template>
