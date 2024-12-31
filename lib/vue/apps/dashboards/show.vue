@@ -37,26 +37,18 @@ import { useRouter, useRoute } from "vue-router"
 
 
 // · 
-import { useEvents } from "LesliCalendar/vue/stores/events.js"
 import { useCalendar } from "LesliCalendar/vue/stores/calendar.js"
 
 
 // · 
-const date = inject("date")
-const storeEvents = useEvents()
 const storeCalendar = useCalendar()
-
-
-// · 
-const translations = {
-    calendar: i18n.t("lesli_calendar.calendars")
-}
 
 
 // · Import components
 import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
 import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
 import componentPanelEvent from "LesliCalendar/vue/components/event-panel.vue"
+import componentCalendarHeader from "LesliCalendar/vue/components/calendar-header.vue"
 
 
 // · 
@@ -66,33 +58,8 @@ onMounted(() => {
 </script>
 <template>
     <lesli-application-container dashboard>
-        <lesli-header :title="storeCalendar.title">
-            <div class="field has-addons m-0">
-                <div class="control">
-                    <lesli-button @click="storeCalendar.prevMonth()" icon="arrow_back_ios">
-                        {{ translations.calendar.toolbar_prev }}
-                    </lesli-button>
-                </div>
-                <div class="control">
-                    <lesli-button @click="storeCalendar.todayMonth()">
-                        {{ translations.calendar.toolbar_today }}
-                    </lesli-button>
-                </div>
-                <div class="control">
-                    <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
-                        <span>{{ translations.calendar.toolbar_next }}</span>
-                        <span class="icon">
-                            <span class="material-icons">
-                                arrow_forward_ios
-                            </span>
-                        </span>
-                    </button>
-                </div>
-            </div>
-            <lesli-button solid icon="add" @click="storeEvents.showModal = true">
-                {{ translations.calendar.toolbar_add_event }}
-            </lesli-button>
-        </lesli-header>
+
+        <component-calendar-header></component-calendar-header>
 
         <div class="columns">
             <div class="column is-3">

@@ -10,10 +10,10 @@
       column_status: Status
       view_add_new_event: Add new event
     calendars:
-      toolbar_prev: Prev
-      toolbar_today: Today
-      toolbar_next: Next
-      toolbar_add_event: Add event
+      button_prev: Prev
+      button_today: Today
+      button_next: Next
+      button_add_event: Add event
   lesli:
     shared:
       view_discussions: Discussions

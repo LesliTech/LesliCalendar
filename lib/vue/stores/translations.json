@@ -32,10 +32,10 @@
     },
     "lesli_calendar": {
       "calendars": {
-        "toolbar_add_event": "Add event",
-        "toolbar_next": "Next",
-        "toolbar_prev": "Prev",
-        "toolbar_today": "Today"
+        "button_add_event": "Add event",
+        "button_next": "Next",
+        "button_prev": "Prev",
+        "button_today": "Today"
       },
       "events": {
         "column_description": "Description",
@@ -81,10 +81,10 @@
     },
     "lesli_calendar": {
       "calendars": {
-        "toolbar_add_event": "Crear evento",
-        "toolbar_next": "Sig.",
-        "toolbar_prev": "Prev.",
-        "toolbar_today": "Hoy"
+        "button_add_event": "Crear evento",
+        "button_next": "Sig.",
+        "button_prev": "Prev.",
+        "button_today": "Hoy"
       },
       "events": {
         "column_description": "Descripción",
@@ -130,10 +130,10 @@
     },
     "lesli_calendar": {
       "calendars": {
-        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
-        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
-        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
-        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+        "button_add_event": ":lesli_calendar.calendars.button_add_event:",
+        "button_next": ":lesli_calendar.calendars.button_next:",
+        "button_prev": ":lesli_calendar.calendars.button_prev:",
+        "button_today": ":lesli_calendar.calendars.button_today:"
       },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
@@ -179,10 +179,10 @@
     },
     "lesli_calendar": {
       "calendars": {
-        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
-        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
-        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
-        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+        "button_add_event": ":lesli_calendar.calendars.button_add_event:",
+        "button_next": ":lesli_calendar.calendars.button_next:",
+        "button_prev": ":lesli_calendar.calendars.button_prev:",
+        "button_today": ":lesli_calendar.calendars.button_today:"
       },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
@@ -228,10 +228,10 @@
     },
     "lesli_calendar": {
       "calendars": {
-        "toolbar_add_event": ":lesli_calendar.calendars.toolbar_add_event:",
-        "toolbar_next": ":lesli_calendar.calendars.toolbar_next:",
-        "toolbar_prev": ":lesli_calendar.calendars.toolbar_prev:",
-        "toolbar_today": ":lesli_calendar.calendars.toolbar_today:"
+        "button_add_event": ":lesli_calendar.calendars.button_add_event:",
+        "button_next": ":lesli_calendar.calendars.button_next:",
+        "button_prev": ":lesli_calendar.calendars.button_prev:",
+        "button_today": ":lesli_calendar.calendars.button_today:"
       },
       "events": {
         "column_description": ":lesli_calendar.events.column_description:",
