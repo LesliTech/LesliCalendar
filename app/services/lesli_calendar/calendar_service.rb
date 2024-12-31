@@ -40,7 +40,6 @@ module LesliCalendar
 
         def find_default
             find(current_user.account.calendar.calendars.find_by(:name => "default"))
-            current_user.account.calendar.calendars.first
         end
 
         def show()
@@ -52,8 +51,7 @@ module LesliCalendar
                 user_id: self.resource.user_id,
                 events: EventService.new(current_user, query).index(),
                 events_support: ::Lesli::Courier.new(:lesli_support, [])
-                .from(:ticket_service)
-                .with(current_user, query)
+                .from(:ticket_service, current_user, query)
                 .call(:index_with_deadline)
                 .map do |ticket|
                     {

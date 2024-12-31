@@ -112,7 +112,7 @@ function loadEvents() {
     storeCalendar.calendar.events.forEach(event => {
         storeCalendar.calendarObject.addEvent({
             title: event.title,
-            start: event.date,
+            start: event.start,
             description: event.description,
             classNames: event.classnames
         })

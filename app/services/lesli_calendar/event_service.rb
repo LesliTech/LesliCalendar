@@ -57,25 +57,19 @@ module LesliCalendar
         def create(event_params)
 
             # Setting the default calendar if not provided
-            calendar = CalendarService.new(current_user).find_default
+            calendar = CalendarService.new(current_user).find_default.result
 
             # Creating the event
             event = calendar.events.new(event_params)
             event.account = calendar.account
             event.user = current_user
 
-            pp "--------"
-            pp event.save
-            pp event.errors.full_messages.to_sentence
-            pp "--------"
-
             if event.save
-            #     #Event.log_activity_create(current_user, event)
-
-            #     # Adding the main user as an attendant too
-            #     #event.attendants.create(users_id: event.user_main.id)
+                #Event.log_activity_create(current_user, event)
+                # Adding the main user as an attendant too
+                #event.attendants.create(users_id: event.user_main.id)
+                self.resource = event
             end
-            #self.resource = resource if resource
             self
         end
     end

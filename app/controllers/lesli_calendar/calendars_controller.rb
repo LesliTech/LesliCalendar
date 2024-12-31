@@ -17,7 +17,6 @@ module LesliCalendar
             respond_to do |format|
                 format.html { }
                 format.json { respond_with_successful(@calendar.show()) }
-                #format.json { respond_with_successful(@calendar.show(@query)) }
             end
         end
 

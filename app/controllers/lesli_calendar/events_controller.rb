@@ -59,7 +59,7 @@ module LesliCalendar
             event_create_response = EventService.new(current_user).create(event_params)
 
             if event_create_response.successful?
-                respond_with_successful(event_create_response)
+                respond_with_successful(event_create_response.result)
             else
                 respond_with_error(event_create_response.error.errors.full_messages.to_sentence)
             end
