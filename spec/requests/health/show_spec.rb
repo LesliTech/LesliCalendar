@@ -30,17 +30,20 @@ Building a better future, one line of code at a time.
 // · 
 =end
 
-LesliCalendar::Engine.routes.draw do
-    root to: "calendars#show"
+# ·
+require "rails_helper"
+require Lesli::Engine.root.join("lib/rspec/testers/request")
 
-    resource :calendar, only: [:show] do
+# ·
+RSpec.describe ::Rails::HealthController, type: :request do
+
+    include_context "request user authentication"
+
+    it "test health rails controller" do
+
+        get("#{LESLI_CALENDAR_ENGINE_MOUNTED_PATH}/up")
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to eq("text/html; charset=utf-8")
     end
-
-    resource :agenda, only: [:show] do
-    end
-
-    resources :events, only: [:index, :create] do
-    end
-
-    get "up" => "/rails/health#show"
 end

@@ -1,5 +1,5 @@
 /*!************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-27.use[1]!./node_modules/sass-loader/dist/cjs.js!../LesliCalendar/lib/scss/application.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-11.use[1]!./node_modules/sass-loader/dist/cjs.js!../LesliCalendar/lib/scss/application.scss ***!
   \************************************************************************************************************************************************************/
 @charset "UTF-8";
 /*
@@ -98,6 +98,36 @@ body.lesli-calendar {
   /*
   Lesli
 
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
   Copyright (c) 2022, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
@@ -129,6 +159,36 @@ body.lesli-calendar {
   Lesli
 
   Copyright (c) 2022, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  LesliCSS - SCSS Utilities for websites, apps and web applications
+
+  Powered by https://www.lesli.tech
+  Building a better future, one line of code at a time.
+
+  @contact  <hello@lesli.tech>
+  @website  <https://lesli.tech>
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2020, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -203,7 +263,7 @@ body.lesli-calendar {
   You should have received a copy of the GNU General Public License
   along with this program. If not, see http://www.gnu.org/licenses/.
 
-  LesliCSS - SCSS Utilities for websites, apps and web applications
+  Lesli - SCSS Utilities for websites, apps and web applications
 
   Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
@@ -215,37 +275,7 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
-  Lesli
-
-  Copyright (c) 2022, Lesli Technologies, S. A.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-  LesliCSS - SCSS Utilities for websites, apps and web applications
-
-  Powered by https://www.lesli.tech
-  Building a better future, one line of code at a time.
-
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
-  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-  // · 
-  */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -335,7 +365,7 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -365,10 +395,10 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /**
+  /*
   Lesli
 
-  Copyright (c) 2020, Lesli Technologies, S. A.
+  Copyright (c) 2024, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -381,18 +411,168 @@ body.lesli-calendar {
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
 
   LesliCSS - SCSS Utilities for websites, apps and web applications
 
-  Powered by https://www.lesli.tech
+  Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
 
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
   @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
   /*
@@ -490,6 +670,36 @@ body.lesli-calendar {
   /*
   Lesli
 
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
   Copyright (c) 2022, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
@@ -521,6 +731,36 @@ body.lesli-calendar {
   Lesli
 
   Copyright (c) 2022, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  LesliCSS - SCSS Utilities for websites, apps and web applications
+
+  Powered by https://www.lesli.tech
+  Building a better future, one line of code at a time.
+
+  @contact  <hello@lesli.tech>
+  @website  <https://lesli.tech>
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2020, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -595,7 +835,7 @@ body.lesli-calendar {
   You should have received a copy of the GNU General Public License
   along with this program. If not, see http://www.gnu.org/licenses/.
 
-  LesliCSS - SCSS Utilities for websites, apps and web applications
+  Lesli - SCSS Utilities for websites, apps and web applications
 
   Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
@@ -607,37 +847,7 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
-  Lesli
-
-  Copyright (c) 2022, Lesli Technologies, S. A.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-  LesliCSS - SCSS Utilities for websites, apps and web applications
-
-  Powered by https://www.lesli.tech
-  Building a better future, one line of code at a time.
-
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
-  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-  // · 
-  */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -727,7 +937,7 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -757,10 +967,10 @@ body.lesli-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /**
+  /*
   Lesli
 
-  Copyright (c) 2020, Lesli Technologies, S. A.
+  Copyright (c) 2024, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -773,18 +983,168 @@ body.lesli-calendar {
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
 
   LesliCSS - SCSS Utilities for websites, apps and web applications
 
-  Powered by https://www.lesli.tech
+  Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
 
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
   @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
   /*
@@ -1019,32 +1379,32 @@ body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .
   border-radius: 3px;
   padding-left: 4px;
   border-left: 5px solid #3689e6;
-  background-color: #ebf4fd;
+  background-color: rgb(235.4336283186, 243.5132743363, 252.5663716814);
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event .event-title {
   flex: 1;
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support {
   border-left-color: #a56de2;
-  background-color: #f9f5fd;
+  background-color: rgb(248.9314285714, 245.1554285714, 253.0445714286);
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-event-time,
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-daygrid-event-dot {
   display: none !important;
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-event-title {
-  color: #581e98;
+  color: rgb(88.4, 30.16, 151.84);
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.cloud-focus-tasks {
   border-left-color: #28bca3;
-  background-color: #e0f8f4;
+  background-color: rgb(224.3263157895, 248.4736842105, 244.3947368421);
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.cloud-focus-tasks .event-title {
-  color: #0d3e36;
+  color: rgb(13.1578947368, 61.8421052632, 53.6184210526);
 }
 body.lesli-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event .fc-event-title {
   text-transform: capitalize;
-  color: #0e3f75;
+  color: rgb(14.4911504425, 62.6017699115, 116.5088495575);
   font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", sans-serif;
 }
 
@@ -1114,6 +1474,36 @@ body.lesli-calendar-calendar {
   /*
   Lesli
 
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
   Copyright (c) 2022, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
@@ -1145,6 +1535,36 @@ body.lesli-calendar-calendar {
   Lesli
 
   Copyright (c) 2022, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  LesliCSS - SCSS Utilities for websites, apps and web applications
+
+  Powered by https://www.lesli.tech
+  Building a better future, one line of code at a time.
+
+  @contact  <hello@lesli.tech>
+  @website  <https://lesli.tech>
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2020, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1219,7 +1639,7 @@ body.lesli-calendar-calendar {
   You should have received a copy of the GNU General Public License
   along with this program. If not, see http://www.gnu.org/licenses/.
 
-  LesliCSS - SCSS Utilities for websites, apps and web applications
+  Lesli - SCSS Utilities for websites, apps and web applications
 
   Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
@@ -1231,37 +1651,7 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
-  Lesli
-
-  Copyright (c) 2022, Lesli Technologies, S. A.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-  LesliCSS - SCSS Utilities for websites, apps and web applications
-
-  Powered by https://www.lesli.tech
-  Building a better future, one line of code at a time.
-
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
-  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-  // · 
-  */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -1351,7 +1741,7 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -1381,10 +1771,10 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /**
+  /*
   Lesli
 
-  Copyright (c) 2020, Lesli Technologies, S. A.
+  Copyright (c) 2024, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1397,18 +1787,168 @@ body.lesli-calendar-calendar {
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
 
   LesliCSS - SCSS Utilities for websites, apps and web applications
 
-  Powered by https://www.lesli.tech
+  Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
 
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
   @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
   /*
@@ -1506,6 +2046,36 @@ body.lesli-calendar-calendar {
   /*
   Lesli
 
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
   Copyright (c) 2022, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
@@ -1537,6 +2107,36 @@ body.lesli-calendar-calendar {
   Lesli
 
   Copyright (c) 2022, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  LesliCSS - SCSS Utilities for websites, apps and web applications
+
+  Powered by https://www.lesli.tech
+  Building a better future, one line of code at a time.
+
+  @contact  <hello@lesli.tech>
+  @website  <https://lesli.tech>
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2020, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1611,7 +2211,7 @@ body.lesli-calendar-calendar {
   You should have received a copy of the GNU General Public License
   along with this program. If not, see http://www.gnu.org/licenses/.
 
-  LesliCSS - SCSS Utilities for websites, apps and web applications
+  Lesli - SCSS Utilities for websites, apps and web applications
 
   Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
@@ -1623,37 +2223,7 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
-  Lesli
-
-  Copyright (c) 2022, Lesli Technologies, S. A.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-  LesliCSS - SCSS Utilities for websites, apps and web applications
-
-  Powered by https://www.lesli.tech
-  Building a better future, one line of code at a time.
-
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
-  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-  // · 
-  */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -1743,7 +2313,7 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -1773,10 +2343,10 @@ body.lesli-calendar-calendar {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /**
+  /*
   Lesli
 
-  Copyright (c) 2020, Lesli Technologies, S. A.
+  Copyright (c) 2024, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1789,18 +2359,168 @@ body.lesli-calendar-calendar {
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
 
   LesliCSS - SCSS Utilities for websites, apps and web applications
 
-  Powered by https://www.lesli.tech
+  Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
 
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
   @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
   /*
@@ -1914,32 +2634,32 @@ body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-secti
   border-radius: 3px;
   padding-left: 4px;
   border-left: 5px solid #3689e6;
-  background-color: #ebf4fd;
+  background-color: rgb(235.4336283186, 243.5132743363, 252.5663716814);
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event .event-title {
   flex: 1;
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support {
   border-left-color: #a56de2;
-  background-color: #f9f5fd;
+  background-color: rgb(248.9314285714, 245.1554285714, 253.0445714286);
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-event-time,
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-daygrid-event-dot {
   display: none !important;
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.lesli-support .fc-event-title {
-  color: #581e98;
+  color: rgb(88.4, 30.16, 151.84);
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.cloud-focus-tasks {
   border-left-color: #28bca3;
-  background-color: #e0f8f4;
+  background-color: rgb(224.3263157895, 248.4736842105, 244.3947368421);
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event.cloud-focus-tasks .event-title {
-  color: #0d3e36;
+  color: rgb(13.1578947368, 61.8421052632, 53.6184210526);
 }
 body.lesli-calendar-calendar #lesli-calendar .fc-scrollgrid .fc-scrollgrid-section-body .fc-daygrid-day .fc-daygrid-event .fc-event-title {
   text-transform: capitalize;
-  color: #0e3f75;
+  color: rgb(14.4911504425, 62.6017699115, 116.5088495575);
   font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", sans-serif;
 }
 body.lesli-calendar-calendar :root {
@@ -2099,6 +2819,36 @@ body.lesli-calendar-agenda {
   /*
   Lesli
 
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
   Copyright (c) 2022, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
@@ -2130,6 +2880,36 @@ body.lesli-calendar-agenda {
   Lesli
 
   Copyright (c) 2022, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  LesliCSS - SCSS Utilities for websites, apps and web applications
+
+  Powered by https://www.lesli.tech
+  Building a better future, one line of code at a time.
+
+  @contact  <hello@lesli.tech>
+  @website  <https://lesli.tech>
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2020, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2204,7 +2984,7 @@ body.lesli-calendar-agenda {
   You should have received a copy of the GNU General Public License
   along with this program. If not, see http://www.gnu.org/licenses/.
 
-  LesliCSS - SCSS Utilities for websites, apps and web applications
+  Lesli - SCSS Utilities for websites, apps and web applications
 
   Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
@@ -2216,37 +2996,7 @@ body.lesli-calendar-agenda {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
-  Lesli
-
-  Copyright (c) 2022, Lesli Technologies, S. A.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-  LesliCSS - SCSS Utilities for websites, apps and web applications
-
-  Powered by https://www.lesli.tech
-  Building a better future, one line of code at a time.
-
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
-  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-  // · 
-  */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -2336,7 +3086,7 @@ body.lesli-calendar-agenda {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /*
+  /**
   Lesli
 
   Copyright (c) 2020, Lesli Technologies, S. A.
@@ -2366,10 +3116,10 @@ body.lesli-calendar-agenda {
   // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
-  /**
+  /*
   Lesli
 
-  Copyright (c) 2020, Lesli Technologies, S. A.
+  Copyright (c) 2024, Lesli Technologies, S. A.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2382,18 +3132,168 @@ body.lesli-calendar-agenda {
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
 
   LesliCSS - SCSS Utilities for websites, apps and web applications
 
-  Powered by https://www.lesli.tech
+  Made with ♥ by LesliTech
   Building a better future, one line of code at a time.
 
-  @contact  <hello@lesli.tech>
-  @website  <https://lesli.tech>
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
   @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+  // · 
+  */
+  /*
+  Lesli
+
+  Copyright (c) 2024, Lesli Technologies, S. A.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+
+  Lesli - SCSS Utilities for websites, apps and web applications
+
+  Made with ♥ by LesliTech
+  Building a better future, one line of code at a time.
+
+  @contact  hello@lesli.tech
+  @website  https://www.lesli.tech
+  @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
+
+  // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
   // · 
   */
   /*

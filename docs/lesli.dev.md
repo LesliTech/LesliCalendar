@@ -1,4 +1,4 @@
-<header align="center" class="lesli-documentation-header">
+<header align="center" class="lesli-markdown-header">
     <img width="75" class="engine-logo" alt="LesliCalendar logo" src="../app/assets/images/lesli_calendar/calendar-logo.svg" />
     <h1 align="center">
         Unified calendar app for<br />

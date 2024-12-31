@@ -50,19 +50,21 @@ module LesliCalendar
                 name: self.resource.name,
                 user_id: self.resource.user_id,
                 events: EventService.new(current_user, query).index(),
-                events_support: []
-                # events_support: ::LesliSupport::TicketService.new(current_user, query)
-                # .index_with_deadline.map do |ticket|
-                #     {
-                #         id: ticket.id,
-                #         title: ticket.subject,
-                #         deadline: ticket.deadline,
-                #         description: ticket.description,
-                #         date: ticket.deadline,
-                #         start: ticket.deadline,
-                #         classnames: 'lesli-support'
-                #     }
-                # end
+                events_support: ::Lesli::Courier.new(:lesli_support, [])
+                .from(:ticket_service)
+                .with(current_user, query)
+                .call(:index_with_deadline)
+                .map do |ticket|
+                    {
+                        id: ticket.id,
+                        title: ticket.subject,
+                        deadline: ticket.deadline,
+                        description: ticket.description,
+                        date: ticket.deadline,
+                        start: ticket.deadline,
+                        classnames: 'lesli-support'
+                    }
+                end
             }
         end
     end

@@ -47,13 +47,13 @@ const date = inject("date")
 
 // · Import components
 import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
-import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
-import componentPanelEvent from "LesliCalendar/vue/components/event.vue"
+import componentPanelEvent from "LesliCalendar/vue/components/event-panel.vue"
 
+
+// · 
 onMounted(() => {
     storeCalendar.getCalendar()
 })
-
 </script>
 <template>
     <lesli-application-container>

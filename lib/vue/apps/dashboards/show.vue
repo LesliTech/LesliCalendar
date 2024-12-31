@@ -37,18 +37,20 @@ import { useRouter, useRoute } from "vue-router"
 
 
 // · 
+import { useEvents } from "LesliCalendar/vue/stores/events.js"
 import { useCalendar } from "LesliCalendar/vue/stores/calendar.js"
 
 
 // · 
 const date = inject("date")
+const storeEvents = useEvents()
 const storeCalendar = useCalendar()
 
 
 // · Import components
 import componentAgenda from "LesliCalendar/vue/components/agenda.vue"
 import componentCalendar from "LesliCalendar/vue/components/calendar.vue"
-import componentPanelEvent from "LesliCalendar/vue/components/event.vue"
+import componentPanelEvent from "LesliCalendar/vue/components/event-panel.vue"
 
 
 // · 
@@ -81,7 +83,7 @@ onMounted(() => {
                     </button>
                 </div>
             </div>
-            <lesli-button solid icon="add">
+            <lesli-button solid icon="add" @click="storeEvents.showModal = true">
                 Add event
             </lesli-button>
         </lesli-header>

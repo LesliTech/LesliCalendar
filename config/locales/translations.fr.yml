@@ -1,5 +1,14 @@
 ---
 :fr:
+  lesli_calendar:
+    events:
+      column_title: ":lesli_calendar.events.column_title:"
+      column_start: ":lesli_calendar.events.column_start:"
+      column_end: ":lesli_calendar.events.column_end:"
+      column_description: ":lesli_calendar.events.column_description:"
+      view_event_public: ":lesli_calendar.events.view_event_public:"
+      column_status: ":lesli_calendar.events.column_status:"
+      view_add_new_event: ":lesli_calendar.events.view_add_new_event:"
   lesli:
     shared:
       view_discussions: ":lesli.shared.view_discussions:"

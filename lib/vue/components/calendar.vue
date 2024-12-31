@@ -114,7 +114,7 @@ function loadEvents() {
             title: event.title,
             start: event.date,
             description: event.description,
-            classNames: event.classNames
+            classNames: event.classnames
         })
     })
 
@@ -124,7 +124,7 @@ function loadEvents() {
             title: event.title,
             start: event.date,
             description: event.description,
-            classNames: event.classNames
+            classNames: event.classnames
         })
     })
 

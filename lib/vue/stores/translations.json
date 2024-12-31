@@ -29,6 +29,17 @@
         "view_status_active": "Active",
         "view_status_inactive": "Inactive"
       }
+    },
+    "lesli_calendar": {
+      "events": {
+        "column_description": "Description",
+        "column_end": "End",
+        "column_start": "Start",
+        "column_status": "Status",
+        "column_title": "Title",
+        "view_add_new_event": "Add new event",
+        "view_event_public": "Public event"
+      }
     }
   },
   "es": {
@@ -60,6 +71,17 @@
         "view_quick_actions": "Acciones rapidas",
         "view_status_active": "Activo",
         "view_status_inactive": "Inactivo"
+      }
+    },
+    "lesli_calendar": {
+      "events": {
+        "column_description": "Descripción",
+        "column_end": "Final",
+        "column_start": "Inicio",
+        "column_status": "Estado",
+        "column_title": "Titulo",
+        "view_add_new_event": "Crear nuevo evento",
+        "view_event_public": "Evento publico"
       }
     }
   },
@@ -93,6 +115,17 @@
         "view_status_active": ":lesli.shared.view_status_active:",
         "view_status_inactive": ":lesli.shared.view_status_inactive:"
       }
+    },
+    "lesli_calendar": {
+      "events": {
+        "column_description": ":lesli_calendar.events.column_description:",
+        "column_end": ":lesli_calendar.events.column_end:",
+        "column_start": ":lesli_calendar.events.column_start:",
+        "column_status": ":lesli_calendar.events.column_status:",
+        "column_title": ":lesli_calendar.events.column_title:",
+        "view_add_new_event": ":lesli_calendar.events.view_add_new_event:",
+        "view_event_public": ":lesli_calendar.events.view_event_public:"
+      }
     }
   },
   "it": {
@@ -125,6 +158,17 @@
         "view_status_active": ":lesli.shared.view_status_active:",
         "view_status_inactive": ":lesli.shared.view_status_inactive:"
       }
+    },
+    "lesli_calendar": {
+      "events": {
+        "column_description": ":lesli_calendar.events.column_description:",
+        "column_end": ":lesli_calendar.events.column_end:",
+        "column_start": ":lesli_calendar.events.column_start:",
+        "column_status": ":lesli_calendar.events.column_status:",
+        "column_title": ":lesli_calendar.events.column_title:",
+        "view_add_new_event": ":lesli_calendar.events.view_add_new_event:",
+        "view_event_public": ":lesli_calendar.events.view_event_public:"
+      }
     }
   },
   "pt": {
@@ -156,6 +200,17 @@
         "view_quick_actions": ":lesli.shared.view_quick_actions:",
         "view_status_active": ":lesli.shared.view_status_active:",
         "view_status_inactive": ":lesli.shared.view_status_inactive:"
+      }
+    },
+    "lesli_calendar": {
+      "events": {
+        "column_description": ":lesli_calendar.events.column_description:",
+        "column_end": ":lesli_calendar.events.column_end:",
+        "column_start": ":lesli_calendar.events.column_start:",
+        "column_status": ":lesli_calendar.events.column_status:",
+        "column_title": ":lesli_calendar.events.column_title:",
+        "view_add_new_event": ":lesli_calendar.events.view_add_new_event:",
+        "view_event_public": ":lesli_calendar.events.view_event_public:"
       }
     }
   }

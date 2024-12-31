@@ -1,5 +1,14 @@
 ---
 :en:
+  lesli_calendar:
+    events:
+      column_title: Title
+      column_start: Start
+      column_end: End
+      column_description: Description
+      view_event_public: Public event
+      column_status: Status
+      view_add_new_event: Add new event
   lesli:
     shared:
       view_discussions: Discussions

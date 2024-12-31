@@ -34,12 +34,11 @@ class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
         create_table :lesli_calendar_events do |t|
             t.string    :title, required: true
             t.string    :description
-            t.date      :date # migrate to start column
             t.datetime  :start
             t.datetime  :end
             t.string    :url
             t.string    :location
-            t.string    :status # proposal, draft
+            t.string    :status # proposal, draft, approved
             t.boolean   :public
 
             t.datetime  :deleted_at, index: true
@@ -50,8 +49,11 @@ class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
         add_reference(:lesli_calendar_events, :calendar, foreign_key: { to_table: :lesli_calendar_calendars })
         add_reference(:lesli_calendar_events, :user,     foreign_key: { to_table: :lesli_users })
 
+        # add_reference(:lesli_calendar_events, :owner,    foreign_key: { to_table: :lesli_users })
+        # add_reference(:lesli_calendar_events, :assign,   foreign_key: { to_table: :lesli_users })
+        # add_reference(:lesli_calendar_events, :creator,  foreign_key: { to_table: :lesli_users })
+
         #add_reference(:cloud_driver_events, :assign,   foreign_key: { to_table: :users })
         #add_reference(:cloud_driver_events, :type,     foreign_key: { to_table: :cloud_driver_catalog_event_types})
-        #add_reference(:cloud_driver_events, :model, polymorphic: true)
     end
 end

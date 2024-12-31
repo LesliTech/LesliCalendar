@@ -24,24 +24,30 @@ import { onMounted } from 'vue'
 import { useEvents } from "LesliCalendar/vue/stores/events"
 
 
+// · 
 const storeEvents = useEvents()
+
+
+// · 
+const translations = {
+    events: i18n.t("lesli_calendar.events")
+}
 
 
 // import ComponentDiscussions from "LesliVue/cloud-objects/discussion.vue"
 // import ComponentFiles from "LesliVue/cloud-objects/file.vue"
 // import ComponentGuests from './guests.vue'
-import ComponentForm from './form.vue'
+import ComponentEventForm from "./event-form.vue"
 
 </script>
 
 <template>
-
     <lesli-panel v-model:open="storeEvents.showModal">
         <template #header>
+            {{ translations.events.view_add_new_event }}
         </template>
-
         <template #default>
-            
+            <component-event-form></component-event-form>
         </template>
     </lesli-panel>
 </template>
