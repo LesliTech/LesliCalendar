@@ -43,10 +43,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 // · import lesli stores
 import { useCalendar } from 'LesliCalendar/vue/stores/calendar'
+import { useEvents } from 'LesliCalendar/vue/stores/events'
 
 
 // · implement stores
 const storeCalendar = useCalendar()
+const storeEvents = useEvents()
 
 
 // · 
@@ -63,6 +65,8 @@ function onDateClick() {
 
 function onEventClick(args) {
 
+    console.log(args)
+
     if (args.event?._def?.extendedProps?.engine == "lesli-support") {
         window.open(
             "http://localhost:3000/support/tickets/" + args.event?._def?.extendedProps?.ticket, 
@@ -72,10 +76,12 @@ function onEventClick(args) {
         return 
     }
     
-    // const storeEvent = useEvent()
+    
     // const storeGuests = useGuests()
-    // arg.jsEvent.preventDefault()
-    // this.event_id = parseInt(arg.event.id)
+    args.jsEvent.preventDefault()
+    storeEvents.event.id = parseInt(args.event?._def?.extendedProps?.eventId)
+    storeEvents.showPanel = true
+    storeEvents.get()
     // this.http.get(this.url.driver(`events/${this.event_id}`))
     // .then(result => {
     //     this.event = result
@@ -112,9 +118,14 @@ function loadEvents() {
     storeCalendar.calendar.events.forEach(event => {
         storeCalendar.calendarObject.addEvent({
             title: event.title,
-            start: event.start,
+            start: event.start_at,
+            //end: event.end_at,
+            classNames: event.classnames,
+            // extended props
+            eventId: event.id,
+            engine: event.classnames,
+            //end: event.end_at,
             description: event.description,
-            classNames: event.classnames
         })
     })
 

@@ -40,7 +40,18 @@ seeds = JSON.parse(file)
 
 # · 
 current_user = ::Lesli::User.first
-calendar = LesliCalendar::Calendar.first
+calendar = LesliCalendar::CalendarService.new(current_user).find_default.result
+
+LesliCalendar::EventService.new(current_user).create({
+    title: "test",
+    description: "test",
+    start_at: "2025-01-05",
+    end_at: "2025-01-06",
+    url: "https://lesli.dev",
+    location: "Guatemala",
+    status: "draft",
+    public: true,
+})
 
 # · 
 seeds["events"].each_with_index do |event, index|
@@ -49,18 +60,15 @@ seeds["events"].each_with_index do |event, index|
     event_date = (index - 10).days.from_now 
 
     #
-    LesliCalendar::Event.create!({
+    LesliCalendar::EventService.new(current_user).create({
         title: event["title"],
         description: event["description"],
-        date: event_date,
-        start: event_date,
-        end: event_date,
+        start_at: event_date,
+        end_at: event_date,
         url: "",
         location: event["location"],
         status: "",
         public: true,
-        calendar: calendar,
-        # user: current_user
     })
 end
 

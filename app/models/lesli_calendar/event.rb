@@ -3,6 +3,11 @@ module LesliCalendar
         belongs_to :calendar
         belongs_to :account
         belongs_to :user, class_name: "Lesli::User"
-        #belongs_to :creator, class_name: "Lesli::User"
+
+        enum status: {
+            :draft => 'draft', 
+            :proposal => 'proposal', 
+            :approved => 'approved'
+        }
     end
 end

@@ -68,13 +68,13 @@ const submitEvent = () => {
             :label="translations.events.column_title"
         />
 
-        <lesli-field :label="translations.events.column_start">
-            <lesli-calendar v-model="storeEvents.event.start" mode="dateTime">
+        <lesli-field :label="translations.events.column_start_at">
+            <lesli-calendar v-model="storeEvents.event.start_at" mode="dateTime">
             </lesli-calendar>
         </lesli-field>
 
-        <lesli-field :label="translations.events.column_end">
-            <lesli-calendar v-model="storeEvents.event.end" mode="dateTime">
+        <lesli-field :label="translations.events.column_end_at">
+            <lesli-calendar v-model="storeEvents.event.end_at" mode="dateTime">
             </lesli-calendar>
         </lesli-field>
 

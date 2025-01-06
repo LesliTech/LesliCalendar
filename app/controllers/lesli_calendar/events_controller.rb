@@ -41,6 +41,10 @@ module LesliCalendar
 
         # GET /events/1
         def show
+            respond_to do |format|
+                format.html { }
+                format.json { respond_with_successful(@calendar.result) }
+            end
         end
 
         # GET /events/new
@@ -83,7 +87,8 @@ module LesliCalendar
         private
         # Use callbacks to share common setup or constraints between actions.
         def set_event
-        @event = Event.find(params[:id])
+            @calendar = EventService.new(current_user,query).show(params[:id])
+            return respond_with_not_found unless @calendar.successful?
         end
 
         # Only allow a list of trusted parameters through.
@@ -93,10 +98,10 @@ module LesliCalendar
                 :title,
                 :description,
                 :location,
+                :start_at,
+                :end_at,
                 :status,
                 :public,
-                :start,
-                :end,
                 :url
             )
         end

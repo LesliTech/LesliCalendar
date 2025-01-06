@@ -44,9 +44,8 @@ module LesliCalendar
                 :id, 
                 :title, 
                 :description, 
-                :date, 
-                :start, 
-                :end, 
+                :start_at, 
+                :end_at, 
                 :url, 
                 :location, 
                 :status, 
@@ -61,8 +60,9 @@ module LesliCalendar
 
             # Creating the event
             event = calendar.events.new(event_params)
-            event.account = calendar.account
+            
             event.user = current_user
+            event.account = current_user.account.calendar
 
             if event.save
                 #Event.log_activity_create(current_user, event)
@@ -70,6 +70,12 @@ module LesliCalendar
                 #event.attendants.create(users_id: event.user_main.id)
                 self.resource = event
             end
+            self
+        end
+
+        def show (id)
+            event = current_user.account.calendar.events.find_by_id(id)
+            self.resource = event
             self
         end
     end
