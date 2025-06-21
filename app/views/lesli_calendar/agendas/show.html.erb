@@ -1,1 +1,26 @@
-<router-view></router-view>
+<%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
+
+    <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
+        <div class="field has-addons m-0">
+            <div class="control">
+                <%= render LesliView::Elements::Button.new("prev", icon:"arrow_back_ios") %>
+            </div>
+            <div class="control">
+                <%= render LesliView::Elements::Button.new("today", icon:"today") %>
+            </div>
+            <div class="control">
+                <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
+                    <span>next</span>
+                    <span class="icon">
+                        <span class="material-icons">
+                            arrow_forward_ios
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <%= render LesliView::Elements::Button.new("Add event", icon:"add", solid: true) %>
+    <% end %>
+
+    <%= render("lesli_calendar/partials/agenda") %>
+<% end %>

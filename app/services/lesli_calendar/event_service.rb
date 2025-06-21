@@ -39,7 +39,7 @@ module LesliCalendar
         end
 
         def index()
-            events = current_user.account.calendar.calendars.first.events
+            events_calendar = current_user.account.calendar.calendars.first.events
             .select(
                 :id, 
                 :title, 
@@ -51,6 +51,23 @@ module LesliCalendar
                 :status, 
                 "'lesli-calendar' as classnames"
             )
+
+            events_support = ::Lesli::Courier.new(:lesli_support, [])
+            .from(:ticket_service, current_user, query)
+            .call(:index_with_deadline)
+            .map do |ticket|
+                {
+                    id: ticket.id,
+                    title: ticket.subject,
+                    deadline: ticket.deadline,
+                    description: ticket.description,
+                    date: ticket.deadline,
+                    start: ticket.deadline,
+                    classnames: 'lesli-support'
+                }
+            end
+
+            events_calendar + events_support
         end
 
         def create(event_params)
@@ -78,5 +95,49 @@ module LesliCalendar
             self.resource = event
             self
         end
+
+        def agenda
+            # Get current date and time
+            current_date = Time.now
+
+            # Combine events and support events into one array
+            merged_events = self.index
+
+            # Filter out past events
+            filtered_events = merged_events.select do |event|
+                event[:start_at] >= current_date.beginning_of_day
+            end
+
+            # Group events by date
+            grouped_events = filtered_events.each_with_object({}) do |event, acc|
+
+                date_key = event[:start_at].strftime('%Y-%m-%d')
+
+                unless acc.key?(date_key)
+                    day_name = event[:start_at].to_date == current_date.to_date ? 'Today' : event[:start_at].strftime('%a')
+                    day_number = event[:start_at].to_date == current_date.to_date ? event[:start_at].strftime('%H:%M') : event[:start_at].strftime('%d')
+
+                    acc[date_key] = {
+                        day_name: day_name,
+                        day_number: day_number,
+                        events: []
+                    }
+                end
+
+                if event[:description]
+                    # Remove HTML tags and truncate description
+                    event[:description] = event[:description].gsub(/<[^>]*>?/, '')[0, 85] + '...'
+                end
+
+                # Add event to the array corresponding to its date
+                acc[date_key][:events] << event
+            end
+
+            # Sort the groups by date
+            sorted_grouped_events = grouped_events.sort.to_h
+
+            # Assign to agenda
+            sorted_grouped_events
+        end 
     end
 end

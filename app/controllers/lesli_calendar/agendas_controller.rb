@@ -9,6 +9,7 @@ module LesliCalendar
 
     # GET /agendas/1
     def show
+        @agenda = EventService.new(current_user, query).agenda
     end
 
     # GET /agendas/new

@@ -14,10 +14,13 @@ module LesliCalendar
 
         # GET /calendars/1
         def show
-            respond_to do |format|
-                format.html { }
-                format.json { respond_with_successful(@calendar.show()) }
-            end
+            #@calendar = @calendar.show
+            @event = Event.new
+            @agenda = EventService.new(current_user, query).agenda
+            # respond_to do |format|
+            #     format.html { }
+            #     format.json { respond_with_successful(@calendar.show()) }
+            # end
         end
 
         # GET /calendars/new

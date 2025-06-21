@@ -1,1 +1,43 @@
-<router-view></router-view>
+
+<% content_for(:application_lesli_javascript) do %>
+    <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
+<% end %>
+
+<%= render(LesliView::Layout::Container.new("calendar-calendar", dashboard: true)) do %>
+    <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
+        <div class="field has-addons m-0">
+            <div class="control">
+                <%= render LesliView::Elements::Button.new("prev", icon:"arrow_back_ios") %>
+            </div>
+            <div class="control">
+                <%= render LesliView::Elements::Button.new("today", icon:"today") %>
+            </div>
+            <div class="control">
+                <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
+                    <span>next</span>
+                    <span class="icon">
+                        <span class="material-icons">
+                            arrow_forward_ios
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <%= render LesliView::Elements::Button.new("Add event", icon:"add", solid: true, dispatch:"panel") %>
+    <% end %>
+
+    <div class="columns">
+        <div class="column is-3">
+            <%= render("lesli_calendar/partials/agenda") %>
+        </div>
+        <div class="column">
+            <%= render("lesli_calendar/partials/calendar") %>
+        </div>
+    </div>
+<% end %>
+
+<%= render(LesliView::Components::Panel.new("Create new event", :overlay => true)) do %>
+    <%= form_for(@event, builder: LesliView::Forms::Builder) do |form| %>
+        <%= form.field_control(:title) %>
+    <% end %>
+<% end %>

@@ -1,0 +1,20 @@
+
+<div class="lesli-calendar-agenda box mt-4">
+    <h3>Upcoming events</h3>
+    <% @agenda.each do |day2, day| %>
+        <div class="event is-flex is-align-items-center">
+            <div class="date">
+                <p class="day-name"><%= day[:day_name] %></p>
+                <p class="day-number"><%= day[:day_number] %></p>
+            </div>
+            <div class="description">
+                <% day[:events].each do |event| %>
+                    <div class="<%= event[:classnames] %>">
+                        <p><%= event[:title] %></p>
+                        <p><%= event[:description] %></p>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    <% end %>
+</div>

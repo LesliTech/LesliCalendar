@@ -44,26 +44,32 @@ module LesliCalendar
 
         def show()
 
-            # Calendar data
-            calendar_data = {
+            # # Calendar data
+            # calendar_data = {
+            #     id: self.resource.id,
+            #     name: self.resource.name,
+            #     user_id: self.resource.user_id,
+            #     events: EventService.new(current_user, query).index(),
+            #     events_support: ::Lesli::Courier.new(:lesli_support, [])
+            #     .from(:ticket_service, current_user, query)
+            #     .call(:index_with_deadline)
+            #     .map do |ticket|
+            #         {
+            #             id: ticket.id,
+            #             title: ticket.subject,
+            #             deadline: ticket.deadline,
+            #             description: ticket.description,
+            #             date: ticket.deadline,
+            #             start: ticket.deadline,
+            #             classnames: 'lesli-support'
+            #         }
+            #     end
+            # }
+
+            {
                 id: self.resource.id,
                 name: self.resource.name,
-                user_id: self.resource.user_id,
-                events: EventService.new(current_user, query).index(),
-                events_support: ::Lesli::Courier.new(:lesli_support, [])
-                .from(:ticket_service, current_user, query)
-                .call(:index_with_deadline)
-                .map do |ticket|
-                    {
-                        id: ticket.id,
-                        title: ticket.subject,
-                        deadline: ticket.deadline,
-                        description: ticket.description,
-                        date: ticket.deadline,
-                        start: ticket.deadline,
-                        classnames: 'lesli-support'
-                    }
-                end
+                user_id: self.resource.user_id
             }
         end
     end
