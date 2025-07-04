@@ -1,52 +1,67 @@
-<p align="center">
-	<img width="90" alt="LesliCloud logo" src="./app/assets/images/lesli_calendar/calendar-logo.svg" />
+<div align="center" class="documentation-header">
+    <img width="100" alt="LesliCalendar logo" src="./app/assets/images/lesli_calendar/calendar-logo.svg" />
     <h3 align="center">Unified calendar app for The Lesli Framework.</h3>
-</p>
+</div>
+
+
+<br />
+<hr/>
+
+<div align="center" class="documentation-statics">
+    <a target="blank" href="https://rubygems.org/gems/lesli">
+        <img height="22" alt="Gem Version" src="https://badge.fury.io/rb/lesli.svg"/>
+    </a>
+    <a class="mx-2" href="https://codecov.io/github/LesliTech/Lesli"> 
+        <img height="22" src="https://codecov.io/github/LesliTech/Lesli/graph/badge.svg?token=2O12NENK5Y"/> 
+    </a>
+    <a href="https://codecov.io/github/LesliTech/LesliBabel"> 
+        <img height="22" src="https://sonarcloud.io/api/project_badges/measure?project=LesliTech_LesliBabel&metric=sqale_rating"/> 
+    </a>
+</div>
 
 <hr/>
-    <p align="center">
-        <a target="blank" href="https://rubygems.org/gems/lesli_calendar">
-            <img src="https://badge.fury.io/rb/lesli_calendar.svg" alt="Gem Version" height="18">
-        </a>
-    </p>
-<hr/>
+<br />
+
 
 ### Quick start
 
 ```shell
-# Add lesli_calendar engine
+# Add LesliCalendar engine gem
 bundle add lesli_calendar
 ```
 
 ```shell
-# Setup database
+# Setup & initialize the database
 rake lesli:db:setup
 ```
 
 ```ruby
-# Load lesli_calendar
+# Load LesliCalendar engine
 Rails.application.routes.draw do
-    mount lesli_calendar::Engine => "/calendar"
+    mount LesliCalendar::Engine => "/calendar"
 end
 ```
 
 
 ### Documentation
-* [website](https://www.lesli.dev/engines/calendar/)
-* [database](./docs/database.md)
-* [documentation](https://www.lesli.dev/documentation/)
 
 
-### Get in touch
 
-* [Website: https://www.lesli.tech](https://www.lesli.tech)
+### Lesli Documentation
+* [website](https://www.lesli.dev/)
+* [documentation](https://www.lesli.dev/engines/calendar/)
+
+
+### Get in touch with Lesli
+
 * [Email: hello@lesli.tech](hello@lesli.tech)
+* [Website: https://www.lesli.tech](https://www.lesli.tech)
 * [Twitter: @LesliTech](https://twitter.com/LesliTech)
 
 
 ### License
 -------
-Copyright (c) 2023, Lesli Technologies, S. A.
+Copyright (c) 2025, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -64,8 +79,7 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 <hr />
 <br />
 
-<p align="center">
+<div align="center" class="has-text-centered">
     <img width="200" alt="Lesli logo" src="https://cdn.lesli.tech/lesli/brand/app-logo.svg" />
-    <h4 align="center">Ruby on Rails SaaS Development Framework.</h4>
-</p>
-
+    <h4 align="center" class="mt-0">Ruby on Rails SaaS Development Framework.</h4>
+</div>
