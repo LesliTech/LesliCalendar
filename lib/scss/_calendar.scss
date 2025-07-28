@@ -39,7 +39,7 @@ Building a better future, one line of code at a time.
 $lesli-calendar-color: #3689e6;
 $lesli-support-color: #a56de2;
 $lesli-tasks-color: #28bca3;
-$border-grid: 6px solid darken(lesli.lesli-color(silver, 100), 3);
+$border-grid: 6px solid lesli.lesli-color-darken(lesli.lesli-color(silver, 100), 3);
 
 
 // · 
@@ -113,22 +113,22 @@ body.lesli-calendar.calendars #lesli-calendar-engine {
 
                     &.lesli-calendar {
                         border-left-color: $lesli-calendar-color;
-                        background-color: lighten($lesli-calendar-color, 30);
-                        .fc-event-title { color: darken($lesli-calendar-color, 30) }
+                        background-color: lesli.lesli-color-lighten($lesli-calendar-color, 30);
+                        .fc-event-title { color: lesli.lesli-color-darken($lesli-calendar-color, 30) }
                     }
 
                     // ticket events
                     &.lesli-support {
                         border-left-color: $lesli-support-color;
-                        background-color: lighten($lesli-support-color, 30);
-                        .fc-event-title { color: darken($lesli-support-color, 30) }
+                        background-color: lesli.lesli-color-lighten($lesli-support-color, 30);
+                        .fc-event-title { color: lesli.lesli-color-darken($lesli-support-color, 30) }
                     }
 
                     // focus events
                     &.lesli-tasks {
                         border-left-color: $lesli-tasks-color;
-                        background-color: lighten($lesli-tasks-color, 30);
-                        .fc-event-title { color: darken($lesli-tasks-color, 30) }
+                        background-color: lesli.lesli-color-lighten($lesli-tasks-color, 30);
+                        .fc-event-title { color: lesli.lesli-color-darken($lesli-tasks-color, 30) }
                     }
                 }
             }
