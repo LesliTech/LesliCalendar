@@ -2,7 +2,7 @@
 
 Lesli
 
-Copyright (c) 2023, Lesli Technologies, S. A.
+Copyright (c) 2025, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 
 Lesli · Ruby on Rails SaaS Development Framework.
 
-Made with ♥ by https://www.lesli.tech
+Made with ♥ by LesliTech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
@@ -31,8 +31,8 @@ Building a better future, one line of code at a time.
 =end
 
 LesliCalendar::Engine.routes.draw do
-  
-    root to: "calendars#show"
+
+    Lesli::Routing.mount_routes_for(LesliCalendar)
 
     resource :calendar, only: [:show] do
     end
@@ -42,7 +42,7 @@ LesliCalendar::Engine.routes.draw do
 
     resources :events, only: [:show, :index, :create] do
         scope module: :events do
-            resources :guests, only: [:index, :create, :update, :delete]
+            resources :attendants, only: [:index, :create, :update, :destroy]
         end
     end
 

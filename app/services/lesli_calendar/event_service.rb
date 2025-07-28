@@ -105,7 +105,7 @@ module LesliCalendar
 
             # Filter out past events
             filtered_events = merged_events.select do |event|
-                event[:start_at] >= current_date.beginning_of_day
+                #event[:start_at] >= current_date.beginning_of_day
             end
 
             # Group events by date

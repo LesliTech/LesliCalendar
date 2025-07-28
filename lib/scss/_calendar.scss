@@ -2,7 +2,7 @@
 
 Lesli
 
-Copyright (c) 2023, Lesli Technologies, S. A.
+Copyright (c) 2025, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 
 Lesli · Ruby on Rails SaaS Development Framework.
 
-Made with ♥ by https://www.lesli.tech
+Made with ♥ by LesliTech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
@@ -32,53 +32,52 @@ Building a better future, one line of code at a time.
 
 
 // · 
-@import "Lesli/scss/templates/component";
+@use "lesli-css" as lesli;
+
+
+// · Event colors
+$lesli-calendar-color: #3689e6;
+$lesli-support-color: #a56de2;
+$lesli-tasks-color: #28bca3;
+$border-grid: 6px solid darken(lesli.lesli-color(silver, 100), 3);
 
 
 // · 
-$driver-color: #3689e6;
-$focus-color: #28bca3;
-$support-color: #a56de2;
+body.lesli-calendar.calendars #lesli-calendar-engine {
 
-
-// · 
-#lesli-calendar {
-    background-color: white;
-    //box-shadow: $lesli-box-shadow;
-
-    .fc-header-toolbar {
-        height: 0px !important;
-        margin-bottom: 0;
-        h2 {
-            color: transparent;
-        }
-    }
-
-    // remove outside border of the calendar grid
     .fc-scrollgrid {
+
+        // remove outside border of the calendar grid
         border: none !important;
 
         // remove the last right border for the header
         th[role="presentation"] {
             border: none;
+            border-bottom: $border-grid
         }
 
         // calendar header (day names)
         .fc-scrollgrid-section-header {
 
             .fc-col-header-cell {
-                padding: 0 0 .8rem;
+                padding: .8rem 0;
                 text-align: center;
                 border-left-width: 0;
                 border-right-width: 0;
 
                 a {
-                    color: lesli-css-color(silver, 900)
+                    font-family: "OpenSans";
+                    font-weight: 600;
+                    color: lesli.lesli-color(silver, 900)
                 }
             }
         }
 
         .fc-scrollgrid-section-body {
+
+            .fc-day {
+                border: $border-grid
+            }
 
             // grid of days of the month
             .fc-daygrid-day  {
@@ -90,43 +89,46 @@ $support-color: #a56de2;
 
                 // change current day indicator
                 &.fc-day-today .fc-daygrid-day-top .fc-daygrid-day-number {
-                    color: $lesli-color-primary;
+                    color: lesli.lesli-color(lesli, primary);
                     font-weight: 800;
                 }
 
                 // event in the calendar
                 .fc-daygrid-event {
                     border: none;
-                    margin: 0 .25rem .2rem;
+                    display: block;
+                    border-left: 5px solid;
                     border-radius: 3px;
-                    padding-left: 4px;
-                    border-left: 5px solid $driver-color;
-                    background-color: lighten($driver-color, 40);
-
-                    .event-title { 
-                        flex: 1;
-                     }
-
-                    // ticket events
-                    &.lesli-support {
-                        border-left-color: $support-color;
-                        background-color: lighten($support-color, 32);
-                        .fc-event-time,
-                        .fc-daygrid-event-dot { display: none !important; }
-                        .fc-event-title { color: darken($support-color, 30) }
-                    }
-
-                    // focus events
-                    &.cloud-focus-tasks {
-                        border-left-color: $focus-color;
-                        background-color: lighten($focus-color, 48  );
-                        .event-title { color: darken($focus-color, 30) }
-                    }
+                    padding: .3rem;
+                    overflow: hidden;
+                    margin-bottom: .2rem;
 
                     .fc-event-title {
                         text-transform: capitalize;
-                        color: darken($driver-color, 30);
-                        font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", sans-serif;
+                        font-family: "OpenSans";
+                    }
+
+                    .fc-event-time,
+                    .fc-daygrid-event-dot { display: none !important; }
+
+                    &.lesli-calendar {
+                        border-left-color: $lesli-calendar-color;
+                        background-color: lighten($lesli-calendar-color, 30);
+                        .fc-event-title { color: darken($lesli-calendar-color, 30) }
+                    }
+
+                    // ticket events
+                    &.lesli-support {
+                        border-left-color: $lesli-support-color;
+                        background-color: lighten($lesli-support-color, 30);
+                        .fc-event-title { color: darken($lesli-support-color, 30) }
+                    }
+
+                    // focus events
+                    &.lesli-tasks {
+                        border-left-color: $lesli-tasks-color;
+                        background-color: lighten($lesli-tasks-color, 30);
+                        .fc-event-title { color: darken($lesli-tasks-color, 30) }
                     }
                 }
             }

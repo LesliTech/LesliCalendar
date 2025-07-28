@@ -1,22 +1,23 @@
 
-<% content_for(:application_lesli_javascript) do %>
-    <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
-<% end %>
+<%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
 
-<%= render(LesliView::Layout::Container.new("calendar-calendar", dashboard: true)) do %>
+    <% content_for(:application_lesli_javascript) do %>
+        <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
+    <% end %>
+
     <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
         <div class="field has-addons m-0">
             <div class="control">
-                <%= render LesliView::Elements::Button.new("prev", icon:"arrow_back_ios") %>
+                <%= render LesliView::Elements::Button.new("Prev", icon:"arrow_back_ios") %>
             </div>
             <div class="control">
-                <%= render LesliView::Elements::Button.new("today", icon:"today") %>
+                <%= render LesliView::Elements::Button.new("Today", icon:"today") %>
             </div>
             <div class="control">
                 <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
-                    <span>next</span>
+                    <span>Next</span>
                     <span class="icon">
-                        <span class="material-icons">
+                        <span class="material-symbols">
                             arrow_forward_ios
                         </span>
                     </span>
@@ -26,14 +27,7 @@
         <%= render LesliView::Elements::Button.new("Add event", icon:"add", solid: true, dispatch:"panel") %>
     <% end %>
 
-    <div class="columns">
-        <div class="column is-3">
-            <%= render("lesli_calendar/partials/agenda") %>
-        </div>
-        <div class="column">
-            <%= render("lesli_calendar/partials/calendar") %>
-        </div>
-    </div>
+    <%= render("lesli_calendar/partials/calendar") %>
 <% end %>
 
 <%= render(LesliView::Components::Panel.new("Create new event", :overlay => true)) do %>

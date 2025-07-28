@@ -4,7 +4,7 @@ module LesliCalendar
         belongs_to :account
         belongs_to :user, class_name: "Lesli::User"
 
-        enum status: {
+        enum :status, {
             :draft => 'draft', 
             :proposal => 'proposal', 
             :approved => 'approved'
