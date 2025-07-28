@@ -2,7 +2,7 @@
 
 Lesli
 
-Copyright (c) 2024, Lesli Technologies, S. A.
+Copyright (c) 2025, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ module LesliCalendar
         # GET /events
         def index
 
-            @events = LesliCalendar::Event.all
+            #@events = LesliCalendar::Event.all
+            @events = LesliCalendar::EventService.new(current_user, query).index()
 
             respond_to do |format|
                 format.html { }

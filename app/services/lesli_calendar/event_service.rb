@@ -2,7 +2,7 @@
 
 Lesli
 
-Copyright (c) 2024, Lesli Technologies, S. A.
+Copyright (c) 2025, Lesli Technologies, S. A.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ module LesliCalendar
     class EventService < Lesli::ApplicationLesliService
 
         def find calendar_id
-            #super(current_user.account.calendar.calendar.find_by(id: calendar_id))
             super(current_user.account.calendar.calendars.first)
         end
 
@@ -49,8 +48,24 @@ module LesliCalendar
                 :url, 
                 :location, 
                 :status, 
+                :public,
                 "'lesli-calendar' as classnames"
-            )
+            ).map do |event|
+                {
+                    id: event.id,
+                    title: event.title,
+                    start: event.start_at.present? ? event.start_at : nil, 
+                    end: event.end_at.present? ? event[:end_at].iso8601 : nil, 
+                    url: event.url, 
+                    classNames: event.classnames,
+                    extendedProps: {
+                        description: event.description,
+                        location: event.location,
+                        status: event.status,
+                        public: event.public
+                    }
+                }
+            end
 
             events_support = ::Lesli::Courier.new(:lesli_support, [])
             .from(:ticket_service, current_user, query)
@@ -59,11 +74,13 @@ module LesliCalendar
                 {
                     id: ticket.id,
                     title: ticket.subject,
-                    deadline: ticket.deadline,
-                    description: ticket.description,
-                    date: ticket.deadline,
                     start: ticket.deadline,
-                    classnames: 'lesli-support'
+                    end: ticket.deadline,
+                    classNames: 'lesli-support',
+                    extendedProps: {
+                        description: ticket.description,
+                        public: true,
+                    }
                 }
             end
 
