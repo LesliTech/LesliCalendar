@@ -39,7 +39,7 @@ Building a better future, one line of code at a time.
 $lesli-calendar-color: #3689e6;
 $lesli-support-color: #a56de2;
 $lesli-tasks-color: #28bca3;
-$border-grid: 6px solid lesli.lesli-color-darken(lesli.lesli-color(silver, 100), 3);
+$border-grid: 6px solid var(--lesli-color-background);
 
 
 // · 
