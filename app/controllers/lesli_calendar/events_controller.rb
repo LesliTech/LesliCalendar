@@ -37,12 +37,10 @@ module LesliCalendar
         # GET /events
         def index
 
-            #@events = LesliCalendar::Event.all
             @events = LesliCalendar::EventService.new(current_user, query).index()
-
             respond_to do |format|
-                format.html { }
-                format.json { respond_with_successful(@events.as_json) }
+                format.html
+                format.json { respond_with_json_success(@events.as_json) }
             end
         end
 

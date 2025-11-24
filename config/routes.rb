@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 
 LesliCalendar::Engine.routes.draw do
 
-    Lesli::Routing.mount_routes_for(LesliCalendar)
+    Lesli::Router.mount_routes_for(LesliCalendar)
 
     resource :calendar, only: [:show] do
     end
