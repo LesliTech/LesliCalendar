@@ -1,4 +1,4 @@
 module LesliCalendar
-  class Dashboard < ApplicationRecord
-  end
+    class Dashboard < Lesli::Shared::Dashboard
+    end
 end
