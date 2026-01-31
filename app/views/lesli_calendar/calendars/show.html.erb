@@ -1,9 +1,8 @@
+<% content_for(:application_lesli_javascript) do %>
+    <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
+<% end %>
 
 <%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
-
-    <% content_for(:application_lesli_javascript) do %>
-        <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
-    <% end %>
 
     <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
         <div class="field has-addons m-0">
