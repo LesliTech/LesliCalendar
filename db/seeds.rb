@@ -16,8 +16,7 @@ For more information read the license file including with this software.
 // · 
 =end
 
-
-L2.msg("LesliCalendar", "Version: #{LesliCalendar::VERSION}", "Build: #{LesliCalendar::BUILD}")
+Termline.info("Loading seeds for: LesliCalendar #{LesliCalendar::VERSION} (#{LesliCalendar::BUILD})")
 
 
 # · load specific environment seeds
