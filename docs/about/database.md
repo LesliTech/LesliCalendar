@@ -1,32 +1,21 @@
-### 03.01. LesliCalendar
+# Database
+
+LesliCalendar uses collection code `03` and engine code `01`. Only tables created by the current migrations are part of its schema contract.
+
+| Migration code | Table | Responsibility | Important relationships |
+| --- | --- | --- | --- |
+| `03.01.00.01.10` | `lesli_calendar_accounts` | Engine state for a Lesli account | Required core account reference |
+| `03.01.10.01.10` | `lesli_calendar_calendars` | Account calendars | Calendar account and core user |
+| `03.01.11.01.10` | `lesli_calendar_events` | Scheduled event data | Calendar, core account, and core user |
+| `03.01.11.10.10` | `lesli_calendar_event_attendants` | Users attending an event | Event and core user |
+
+Calendars, events, and attendants include indexed `deleted_at` columns. Events reference both the engine calendar and core account; queries must preserve both ownership boundaries.
+
+The previous documentation listed planned catalogs, workflows, discussions, attachments, guests, and proposals. Those tables do not exist in the current migrations and are not part of the supported schema.
+
+```shell
+bin/rails lesli:db:prepare
+bin/rails db:migrate:status
 ```
-    00.01. driver/account 
 
-    01.01. driver/catalog
-    01.02. driver/catalog/event_types
-
-    02.01. driver/workflows
-    02.02. driver/workflow/statuses
-    02.03. driver/workflow/associations
-    02.04. driver/workflow/actions
-
-    05.01. help/dashboards
-    05.02 help/dashboard/components
-
-    10.01. driver/calendars
-    10.03. driver/calendar/actions 
-    10.04. driver/calendar/activities 
-    10.05. driver/calendar/discussions 
-    10.06. driver/calendar/files
-    10.07. driver/calendar/subscribers
-
-    11.01. driver/events
-    11.03. driver/event/actions 
-    11.04. driver/event/activities 
-    11.05. driver/event/discussions 
-    11.06. driver/event/files 
-    11.07. driver/event/subscribers
-    11.10. driver/event/attendants
-    11.11. driver/event/guests
-    11.12. driver/event/proposals
-```
+See [Database Architecture](/engines/lesli/database/structure) and [Migration Versioning](/engines/lesli/database/versioning).
