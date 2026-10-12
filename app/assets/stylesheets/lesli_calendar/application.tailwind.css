@@ -181,9 +181,9 @@
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar {
     border-left-color: #3689e6;
     background-color: #bed8f7;
-    padding-left: calc(var(--spacing) * 1.5);
   }
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar .fc-event-title {
+    padding-left: var(--spacing);
     font-family: 'OpenSans';
     --tw-font-weight: var(--font-weight-normal);
     font-weight: var(--font-weight-normal);
