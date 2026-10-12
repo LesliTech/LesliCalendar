@@ -7,6 +7,8 @@
         Upcoming events
     </h2>
 
+    <%= dd @agenda %>
+
     <div class="divide-y divide-slate-200">
         <% @agenda.each do |_date, day| %>
             <article class="flex min-h-24 items-stretch">
