@@ -5,21 +5,20 @@
 <%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
 
     <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
-        <div class="field has-addons m-0">
-            <div class="control">
+        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Calendar navigation">
+            <div>
                 <%= render LesliView::Elements::Button.new("Prev", icon:"arrow_back_ios") %>
             </div>
-            <div class="control">
+            <div>
                 <%= render LesliView::Elements::Button.new("Today", icon:"today") %>
             </div>
-            <div class="control">
-                <button @click="storeCalendar.nextMonth()" class="button is-primary is-light is-outlined">
+            <div>
+                <button
+                    type="button"
+                    @click="storeCalendar.nextMonth()"
+                    class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-info-600 bg-white px-4 py-2 text-sm font-semibold text-info-700 shadow-sm transition-colors hover:bg-info-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info-500/40">
                     <span>Next</span>
-                    <span class="icon">
-                        <span class="material-symbols">
-                            arrow_forward_ios
-                        </span>
-                    </span>
+                    <span class="material-symbols text-lg leading-none" aria-hidden="true">arrow_forward_ios</span>
                 </button>
             </div>
         </div>

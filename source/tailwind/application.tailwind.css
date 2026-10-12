@@ -1,0 +1,76 @@
+/* Tailwind utilities and component rules used by LesliCalendar. */
+@layer theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@reference "../../../../gems/LesliAssets/source/tailwind/settings/theme.css";
+
+@source "../../app/views/lesli_calendar/calendars/show.html.erb";
+@source "../../app/views/lesli_calendar/partials/_calendar.html.erb";
+
+@layer components {
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-scrollgrid {
+        border: 0 !important;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-scrollgrid th[role="presentation"] {
+        @apply border-0 border-b-[6px] border-b-[var(--lesli-color-background)];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-col-header-cell {
+        @apply border-x-0 py-3 text-center;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-col-header-cell a {
+        @apply font-semibold text-slate-800;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-day {
+        @apply border-[6px] border-[var(--lesli-color-background)];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-day-number {
+        @apply px-2.5 py-[5px];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-day-today .fc-daygrid-day-number {
+        @apply font-extrabold text-primary;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event {
+        @apply mb-0.5 ml-1.5 block overflow-hidden rounded-sm border-0 border-l-[5px] p-1.5;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-title {
+        @apply font-['OpenSans'] capitalize;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-time,
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event-dot {
+        display: none !important;
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar {
+        @apply border-l-[#3689e6] bg-[#bed8f7];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar .fc-event-title {
+        @apply text-[#0e3f75];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-support {
+        @apply border-l-[#a56de2] bg-[#f4edfb];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-support .fc-event-title {
+        @apply text-[#581e98];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-tasks {
+        @apply border-l-[#28bca3] bg-[#95e8da];
+    }
+
+    body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-tasks .fc-event-title {
+        @apply text-[#0d3e36];
+    }
+}
