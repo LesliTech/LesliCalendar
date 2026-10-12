@@ -11,6 +11,7 @@
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-lg: 1.125rem;
     --text-lg--line-height: calc(1.75 / 1.125);
+    --font-weight-normal: 400;
     --font-weight-semibold: 600;
     --font-weight-extrabold: 800;
     --radius-sm: 0.25rem;
@@ -162,6 +163,7 @@
   }
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event {
     margin-bottom: calc(var(--spacing) * 0.5);
+    margin-left: calc(var(--spacing) * 2);
     display: block;
     overflow: hidden;
     border-radius: var(--radius-sm);
@@ -169,10 +171,9 @@
     border-width: 0px;
     border-left-style: var(--tw-border-style);
     border-left-width: 5px;
-    padding: calc(var(--spacing) * 1.5);
-  }
-  body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-title {
-    text-transform: capitalize;
+    padding-block: calc(var(--spacing) * 1.5);
+    padding-right: calc(var(--spacing) * 1.5);
+    padding-left: calc(var(--spacing) * 3);
   }
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-time, body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event-dot {
     display: none !important;
@@ -180,9 +181,14 @@
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar {
     border-left-color: #3689e6;
     background-color: #bed8f7;
+    padding-left: calc(var(--spacing) * 1.5);
   }
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar .fc-event-title {
+    font-family: 'OpenSans';
+    --tw-font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-normal);
     color: #0e3f75;
+    text-transform: capitalize;
   }
   body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-support {
     border-left-color: #a56de2;

@@ -38,11 +38,7 @@
     }
 
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event {
-        @apply mb-0.5 ml-1.5 block overflow-hidden rounded-sm border-0 border-l-[5px] p-1.5;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-title {
-        @apply font-['OpenSans'] capitalize;
+        @apply mb-0.5 ml-2 block overflow-hidden rounded-sm border-0 border-l-[5px] py-1.5 pr-1.5 pl-3;
     }
 
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-event-time,
@@ -55,7 +51,7 @@
     }
 
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-calendar .fc-event-title {
-        @apply text-[#0e3f75];
+        @apply text-[#0e3f75] font-['OpenSans'] font-normal capitalize pl-1.5;
     }
 
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-support {
