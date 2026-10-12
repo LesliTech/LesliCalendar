@@ -1,20 +1,31 @@
 
-<div class="lesli-calendar-agenda box mt-4">
-    <h3>Upcoming events</h3>
-    <% @agenda.each do |day2, day| %>
-        <div class="event is-flex is-align-items-center">
-            <div class="date">
-                <p class="day-name"><%= day[:day_name] %></p>
-                <p class="day-number"><%= day[:day_number] %></p>
-            </div>
-            <div class="description">
+<section
+    class="lesli-calendar-agenda mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    aria-labelledby="upcoming-events-title">
+
+    <h2 id="upcoming-events-title" class="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-800">
+        Upcoming events
+    </h2>
+
+    <div class="divide-y divide-slate-200">
+        <% @agenda.each do |_date, day| %>
+            <article class="flex min-h-24 items-stretch">
+                <div class="flex w-20 shrink-0 flex-col items-center justify-center border-r border-slate-200 bg-slate-50 px-3 py-4 text-center text-slate-700">
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500"><%= day[:day_name] %></p>
+                    <p class="mt-1 text-xl font-semibold"><%= day[:day_number] %></p>
+                </div>
+
+                <div class="min-w-0 flex-1 py-2">
                 <% day[:events].each do |event| %>
-                    <div class="<%= event[:classnames] %>">
-                        <p><%= event[:title] %></p>
-                        <p><%= event[:description] %></p>
+                    <div class="agenda-event <%= event[:classnames] %> border-l-4 px-4 py-2">
+                        <p class="font-['OpenSans'] text-sm font-medium text-slate-800"><%= event[:title] %></p>
+                        <% if event[:description].present? %>
+                            <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>
+                        <% end %>
                     </div>
                 <% end %>
-            </div>
-        </div>
-    <% end %>
-</div>
+                </div>
+            </article>
+        <% end %>
+    </div>
+</section>

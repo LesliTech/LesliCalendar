@@ -6,7 +6,9 @@
 @reference "../../../../gems/LesliAssets/source/tailwind/settings/theme.css";
 
 @source "../../app/views/lesli_calendar/calendars/show.html.erb";
+@source "../../app/views/lesli_calendar/agendas/show.html.erb";
 @source "../../app/views/lesli_calendar/partials/_calendar.html.erb";
+@source "../../app/views/lesli_calendar/partials/_agenda.html.erb";
 
 @layer components {
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-scrollgrid {
@@ -68,5 +70,22 @@
 
     body.lesli-calendar.calendars #lesli-calendar-engine .fc-daygrid-event.lesli-tasks .fc-event-title {
         @apply text-[#0d3e36];
+    }
+
+    .lesli-calendar-agenda .agenda-event {
+        @apply border-l-slate-400;
+    }
+
+    .lesli-calendar-agenda .agenda-event.lesli-calendar {
+        @apply border-l-[#3689e6];
+    }
+
+    .lesli-calendar-agenda .agenda-event.lesli-support {
+        @apply border-l-[#a56de2];
+    }
+
+    .lesli-calendar-agenda .agenda-event.cloud-focus-tasks,
+    .lesli-calendar-agenda .agenda-event.lesli-tasks {
+        @apply border-l-[#28bca3];
     }
 }
