@@ -47,9 +47,6 @@
   .min-h-10 {
     min-height: calc(var(--spacing) * 10);
   }
-  .min-h-24 {
-    min-height: calc(var(--spacing) * 24);
-  }
   .w-20 {
     width: calc(var(--spacing) * 20);
   }

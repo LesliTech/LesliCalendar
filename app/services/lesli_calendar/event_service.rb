@@ -114,47 +114,69 @@ module LesliCalendar
         end
 
         def agenda
-            # Get current date and time
-            current_date = Time.now
+            current_time = Time.current
 
-            # Combine events and support events into one array
-            merged_events = self.index
+            # Convert FullCalendar's payload into the simpler shape consumed by the agenda view.
+            upcoming_events = index.filter_map do |event|
+                start_at = normalize_agenda_time(value_from(event, :start))
+                next if start_at.nil? || start_at < current_time.beginning_of_day
 
-            # Filter out past events
-            filtered_events = merged_events.select do |event|
-                #event[:start_at] >= current_date.beginning_of_day
+                extended_props = value_from(event, :extendedProps) || {}
+
+                {
+                    id: value_from(event, :id),
+                    title: value_from(event, :title),
+                    description: agenda_description(value_from(extended_props, :description)),
+                    start_at: start_at,
+                    end_at: normalize_agenda_time(value_from(event, :end)),
+                    url: value_from(event, :url),
+                    classnames: Array(value_from(event, :classNames)).join(" ")
+                }
             end
 
-            # Group events by date
-            grouped_events = filtered_events.each_with_object({}) do |event, acc|
+            # Sorting first preserves chronological order for both days and their events.
+            upcoming_events.sort_by { |event| event[:start_at] }.each_with_object({}) do |event, agenda|
+                start_at = event[:start_at]
+                date_key = start_at.to_date.iso8601
+                today = start_at.to_date == current_time.to_date
 
-                date_key = event[:start_at].strftime('%Y-%m-%d')
+                agenda[date_key] ||= {
+                    day_name: today ? "Today" : start_at.strftime("%a"),
+                    day_number: today ? start_at.strftime("%H:%M") : start_at.strftime("%d"),
+                    events: []
+                }
 
-                unless acc.key?(date_key)
-                    day_name = event[:start_at].to_date == current_date.to_date ? 'Today' : event[:start_at].strftime('%a')
-                    day_number = event[:start_at].to_date == current_date.to_date ? event[:start_at].strftime('%H:%M') : event[:start_at].strftime('%d')
-
-                    acc[date_key] = {
-                        day_name: day_name,
-                        day_number: day_number,
-                        events: []
-                    }
-                end
-
-                if event[:description]
-                    # Remove HTML tags and truncate description
-                    event[:description] = event[:description].gsub(/<[^>]*>?/, '')[0, 85] + '...'
-                end
-
-                # Add event to the array corresponding to its date
-                acc[date_key][:events] << event
+                agenda[date_key][:events] << event
             end
+        end
 
-            # Sort the groups by date
-            sorted_grouped_events = grouped_events.sort.to_h
+        private
 
-            # Assign to agenda
-            sorted_grouped_events
-        end 
+        def value_from(hash, key)
+            return unless hash.respond_to?(:[])
+
+            hash[key] || hash[key.to_s]
+        end
+
+        # FullCalendar sources may provide dates as Rails objects or ISO 8601 strings.
+        def normalize_agenda_time(value)
+            case value
+            when ActiveSupport::TimeWithZone
+                value
+            when Time, DateTime, Date
+                value.in_time_zone
+            when String
+                Time.zone.parse(value)
+            end
+        rescue ArgumentError, TypeError
+            nil
+        end
+
+        def agenda_description(description)
+            return if description.blank?
+
+            text = ActionController::Base.helpers.strip_tags(description.to_s).squish
+            ActionController::Base.helpers.truncate(text, length: 88)
+        end
     end
 end
