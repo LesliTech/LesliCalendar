@@ -46,9 +46,10 @@ It provides account-scoped calendars, events, agendas, and attendee management f
 ## Features
 
 - Account-scoped calendars
-- Calendar and agenda views
+- Responsive FullCalendar grid and chronological agenda views
 - Event creation and scheduling
 - Event attendee management
+- Optional LesliSupport deadline integration
 - Integration with Lesli users, permissions, and navigation
 
 <br />
@@ -137,10 +138,27 @@ cd engines/LesliCalendar
 bin/rails test
 ```
 
+### Tailwind styles
+
+Calendar and agenda templates use Tailwind CSS. FullCalendar-specific rules are maintained in `source/tailwind/application.tailwind.css`; the file under `app/assets/stylesheets` is generated and should not be edited directly.
+
+From a complete Lesli workspace, rebuild the engine stylesheet through LesliAssets:
+
+```shell
+cd gems/LesliAssets
+make build.tailwind
+```
+
+See [Calendar and Agenda](./docs/about/calendar-and-agenda.md) for the event pipeline, agenda data shape, and frontend conventions.
+
 <br />
 
 ## Documentation
 
+- [Installation](./docs/about/installation.md)
+- [Calendar and agenda](./docs/about/calendar-and-agenda.md)
+- [Translations](./docs/about/translations.md)
+- [Database](./docs/about/database.md)
 - [Lesli website](https://www.lesli.dev/)
 - [Documentation](https://www.lesli.dev/engines/calendar)
 - [Release notes](https://github.com/LesliTech/LesliCalendar/releases)
