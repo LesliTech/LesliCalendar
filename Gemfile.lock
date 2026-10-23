@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lesli_calendar (1.1.0)
+    lesli_calendar (1.1.2)
       lesli (~> 5.1.0)
 
 GEM
@@ -102,7 +102,6 @@ GEM
       railties (>= 7.0)
       responders
       warden (~> 1.2.3)
-    docile (1.4.1)
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
@@ -145,12 +144,11 @@ GEM
     lesli_assets (1.1.2)
     lesli_date (1.1.0)
     lesli_system (1.1.0)
-    lesli_testing (1.4.0)
+    lesli_testing (1.4.2)
       minitest (~> 6.0.0)
-      simplecov (~> 0.22.0)
-      simplecov-cobertura (~> 3.1.0)
+      simplecov (~> 1.3.2)
+      simplecov-cobertura (~> 4.0.0)
       simplecov-console (~> 0.9.0)
-      simplecov-html (~> 0.13.2)
       termline (~> 1.1.0)
     lesli_view (1.1.3)
       lexxy (~> 0.9.9.beta)
@@ -292,24 +290,19 @@ GEM
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (3.1.2)
+    simplecov (1.3.2)
+    simplecov-cobertura (4.0.0)
       rexml
-      simplecov (~> 0.19)
+      simplecov (~> 1.0)
     simplecov-console (0.9.5)
       ansi
       simplecov
       terminal-table
-    simplecov-html (0.13.2)
-    simplecov_json_formatter (0.1.4)
     sqlite3 (2.9.6-x86_64-darwin)
     sqlite3 (2.9.6-x86_64-linux-gnu)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
-    termline (1.1.2)
+    termline (1.1.3)
     thor (1.5.0)
     timeout (0.6.1)
     tsort (0.2.0)
