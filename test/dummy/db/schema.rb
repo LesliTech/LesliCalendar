@@ -33,7 +33,7 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "account_id", null: false
-    t.index ["account_id"], name: "index_lesli_calendar_accounts_on_account_id"
+    t.index ["account_id"], name: "index_lesli_calendar_accounts_on_account_id", unique: true
     t.index ["deleted_at"], name: "index_lesli_calendar_accounts_on_deleted_at"
   end
 
@@ -44,7 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.integer "account_id"
+    t.integer "account_id", null: false
     t.index ["account_id"], name: "index_lesli_calendar_calendars_on_account_id"
     t.index ["deleted_at"], name: "index_lesli_calendar_calendars_on_deleted_at"
     t.index ["user_id"], name: "index_lesli_calendar_calendars_on_user_id"
@@ -75,7 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "account_id"
+    t.integer "account_id", null: false
     t.integer "calendar_id"
     t.integer "user_id"
     t.index ["account_id"], name: "index_lesli_calendar_events_on_account_id"
@@ -178,7 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
   add_foreign_key "lesli_calendar_calendars", "lesli_users", column: "user_id"
   add_foreign_key "lesli_calendar_event_attendants", "lesli_calendar_events", column: "event_id"
   add_foreign_key "lesli_calendar_event_attendants", "lesli_users", column: "user_id"
-  add_foreign_key "lesli_calendar_events", "lesli_accounts", column: "account_id"
+  add_foreign_key "lesli_calendar_events", "lesli_calendar_accounts", column: "account_id"
   add_foreign_key "lesli_calendar_events", "lesli_calendar_calendars", column: "calendar_id"
   add_foreign_key "lesli_calendar_events", "lesli_users", column: "user_id"
   add_foreign_key "lesli_resources", "lesli_resources", column: "parent_id"

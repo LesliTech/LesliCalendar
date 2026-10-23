@@ -46,7 +46,12 @@ class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
             t.timestamps
         end
         
-        add_reference(:lesli_calendar_events, :account,  foreign_key: { to_table: :lesli_accounts })
+        add_reference(
+            :lesli_calendar_events,
+            :account,
+            null: false,
+            foreign_key: { to_table: :lesli_calendar_accounts }
+        )
         add_reference(:lesli_calendar_events, :calendar, foreign_key: { to_table: :lesli_calendar_calendars })
         add_reference(:lesli_calendar_events, :user,     foreign_key: { to_table: :lesli_users })
 

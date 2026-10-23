@@ -1,7 +1,7 @@
 module LesliCalendar
     class Event < ApplicationRecord
         belongs_to :calendar
-        belongs_to :account
+        belongs_to :account, class_name: "LesliCalendar::Account"
         belongs_to :user, class_name: "Lesli::User"
 
         enum :status, {

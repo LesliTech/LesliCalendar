@@ -140,7 +140,7 @@ bin/rails test
 
 ### Tailwind styles
 
-Calendar and agenda templates use Tailwind CSS. FullCalendar-specific rules are maintained in `source/tailwind/application.tailwind.css`; the file under `app/assets/stylesheets` is generated and should not be edited directly.
+Calendar and agenda templates use Tailwind CSS. FullCalendar-specific rules are maintained in `source/tailwind/application.css`; the file under `app/assets/stylesheets` is generated and should not be edited directly.
 
 From a complete Lesli workspace, rebuild the engine stylesheet through LesliAssets:
 

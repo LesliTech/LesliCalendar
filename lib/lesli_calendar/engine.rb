@@ -34,10 +34,6 @@ module LesliCalendar
         isolate_namespace LesliCalendar
 
         initializer :lesli_calendar do |app|
-
-            # register assets manifest
-            config.assets.precompile += %w[lesli_calendar_manifest.js]
-
             # register engine migrations path
             unless app.root.to_s.match root.to_s
                 config.paths["db/migrate"].expanded.each do |expanded_path|
