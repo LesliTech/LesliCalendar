@@ -17,7 +17,7 @@
 
                 <div class="min-w-0 flex-1 py-2">
                 <% day[:events].each do |event| %>
-                    <div class="agenda-event <%= event[:classnames] %> border-l-4 px-4 py-2">
+                    <div class="agenda-event <%= event[:class_name] %> border-l-4 px-4 py-2">
                         <p class="font-['OpenSans'] text-sm font-medium text-slate-800"><%= event[:title] %></p>
                         <% if event[:description].present? %>
                             <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>

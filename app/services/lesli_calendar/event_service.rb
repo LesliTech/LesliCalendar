@@ -49,7 +49,7 @@ module LesliCalendar
                 :location, 
                 :status, 
                 :public,
-                "'lesli-calendar' as classnames"
+                "'lesli-calendar' as fullcalendar_class_name"
             ).map do |event|
                 {
                     id: event.id,
@@ -57,7 +57,7 @@ module LesliCalendar
                     start: event.start_at.present? ? event.start_at : nil, 
                     end: event.end_at.present? ? event[:end_at].iso8601 : nil, 
                     url: event.url, 
-                    classNames: event.classnames,
+                    className: event.fullcalendar_class_name,
                     extendedProps: {
                         description: event.description,
                         location: event.location,
@@ -80,7 +80,7 @@ module LesliCalendar
                     title: ticket.subject,
                     start: ticket.deadline_at,
                     end: ticket.deadline_at,
-                    classNames: 'lesli-support',
+                    className: 'lesli-support',
                     extendedProps: {
                         description: ticket.description,
                         public: true,
@@ -134,7 +134,7 @@ module LesliCalendar
                     start_at: start_at,
                     end_at: normalize_agenda_time(value_from(event, :end)),
                     url: value_from(event, :url),
-                    classnames: Array(value_from(event, :classNames)).join(" ")
+                    class_name: Array(value_from(event, :className)).join(" ")
                 }
             end
 

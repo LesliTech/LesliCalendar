@@ -9,14 +9,14 @@ module LesliCalendar
                         id: 3,
                         title: "Tomorrow afternoon",
                         start: "2026-10-12T15:00:00Z",
-                        classNames: ["lesli-calendar", "featured"],
+                        className: "lesli-calendar featured",
                         extendedProps: { description: "<p>Planning session</p>" }
                     },
                     {
                         id: 2,
                         title: "Today at noon",
                         start: Time.zone.local(2026, 10, 11, 12, 0),
-                        classNames: "lesli-support",
+                        className: "lesli-support",
                         extendedProps: { description: "Customer follow-up" }
                     }
                 ])
@@ -24,9 +24,9 @@ module LesliCalendar
                 assert_equal ["2026-10-11", "2026-10-12"], agenda.keys
                 assert_equal "Today", agenda["2026-10-11"][:day_name]
                 assert_equal "12:00", agenda["2026-10-11"][:day_number]
-                assert_equal "lesli-support", agenda["2026-10-11"][:events].first[:classnames]
+                assert_equal "lesli-support", agenda["2026-10-11"][:events].first[:class_name]
                 assert_equal "Planning session", agenda["2026-10-12"][:events].first[:description]
-                assert_equal "lesli-calendar featured", agenda["2026-10-12"][:events].first[:classnames]
+                assert_equal "lesli-calendar featured", agenda["2026-10-12"][:events].first[:class_name]
             end
         end
 
@@ -64,7 +64,7 @@ module LesliCalendar
                         "title" => "String payload",
                         "start" => "2026-10-11T09:00:00Z",
                         "end" => "2026-10-11T10:00:00Z",
-                        "classNames" => "lesli-calendar",
+                        "className" => "lesli-calendar",
                         "extendedProps" => { "description" => "Details" }
                     }
                 ])
