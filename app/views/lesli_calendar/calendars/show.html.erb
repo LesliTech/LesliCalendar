@@ -2,6 +2,10 @@
     <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
 <% end %>
 
+<% content_for(:head) do %>
+    <%= stylesheet_link_tag(lesli_asset_path(:lesli_assets, "calendar"), media: "all", "data-turbo-track": "reload") %>
+<% end %>
+
 <%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
 
     <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>

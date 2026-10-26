@@ -3,9 +3,6 @@
 
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
-@import "../../../../gems/LesliAssets/node_modules/fullcalendar/skeleton.css" layer(components);
-@import "../../../../gems/LesliAssets/node_modules/fullcalendar/themes/classic/theme.css" layer(components);
-@import "../../../../gems/LesliAssets/node_modules/fullcalendar/themes/classic/palette.css" layer(components);
 @reference "../../../../gems/LesliAssets/source/tailwind/settings/theme.css";
 
 @source "../../app/views/lesli_calendar/calendars/show.html.erb";
@@ -14,58 +11,6 @@
 @source "../../app/views/lesli_calendar/partials/_agenda.html.erb";
 
 @layer components {
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-day-header {
-        @apply border-x-0 py-3 text-center;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-day-header-label {
-        @apply font-semibold text-slate-800;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-day {
-        @apply border-[6px] border-[var(--lesli-color-background)];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-day-number {
-        @apply px-2.5 py-[5px];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-day.is-today .lesli-calendar-day-number {
-        @apply font-extrabold text-primary;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event {
-        @apply mb-0.5 ml-2 block overflow-hidden rounded-sm border-0 border-l-[5px] py-1.5 pr-1.5 pl-1.5;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event-dot {
-        display: none !important;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-calendar {
-        @apply border-l-[#3689e6] bg-[#bed8f7];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-calendar .lesli-calendar-event-title {
-        @apply text-[#0e3f75] font-['OpenSans'] font-normal capitalize;
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-support {
-        @apply border-l-[#a56de2] bg-[#f4edfb];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-support .lesli-calendar-event-title {
-        @apply text-[#581e98];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-tasks {
-        @apply border-l-[#28bca3] bg-[#95e8da];
-    }
-
-    body.lesli-calendar.calendars #lesli-calendar-engine .lesli-calendar-event.lesli-tasks .lesli-calendar-event-title {
-        @apply text-[#0d3e36];
-    }
-
     .lesli-calendar-agenda .agenda-event {
         @apply border-l-slate-400;
     }
