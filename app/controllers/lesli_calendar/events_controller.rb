@@ -36,7 +36,13 @@ module LesliCalendar
 
         # GET /events
         def index
-            @events = LesliCalendar::EventService.new(current_user, query).index()
+            # FullCalendar sends the visible range with every event request.
+            calendar_query = query.merge(
+                start: params[:start],
+                end: params[:end]
+            )
+
+            @events = LesliCalendar::EventService.new(current_user, calendar_query).index()
             respond_with_lesli(
                 json: @events.as_json
             )
