@@ -21,5 +21,5 @@ Termline.info("Loading seeds for: LesliCalendar #{LesliCalendar::VERSION} (#{Les
 
 # · load specific environment seeds
 if Rails.env.development? || Lesli.config.demo 
-    load LesliCalendar::Engine.root.join("db", "seed", "events.rb")
+    load LesliCalendar::Engine.root.join("db", "seed", "development.rb")
 end

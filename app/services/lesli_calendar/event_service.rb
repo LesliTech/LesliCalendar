@@ -67,15 +67,19 @@ module LesliCalendar
                 }
             end
 
-            events_support = ::Lesli::Courier.new(:lesli_support, [])
+            events_support = ::Lesli::Courier.new(
+                :lesli_support,
+                [],
+                fallback_on_error: false
+            )
             .from(:ticket_service, current_user, query)
-            .call(:index_with_deadline)
+            .call(:with_deadline)
             .map do |ticket|
                 {
                     id: ticket.id,
                     title: ticket.subject,
-                    start: ticket.deadline,
-                    end: ticket.deadline,
+                    start: ticket.deadline_at,
+                    end: ticket.deadline_at,
                     classNames: 'lesli-support',
                     extendedProps: {
                         description: ticket.description,

@@ -79,5 +79,53 @@
         "title": "Charity Gala",
         "description": "Attend our elegant charity gala to support a worthy cause. Enjoy a night of fine dining, live entertainment, and silent auctions. All proceeds go to our charitable foundation. RSVP by [RSVP Date] to reserve your seat.",
         "location": "London, UK"
+    },{
+        "title": "Product Design Review",
+        "description": "Review the latest product designs with the engineering and customer experience teams. We will collect feedback and agree on the next iteration.",
+        "location": "Guatemala City, Guatemala"
+    },{
+        "title": "Community Volunteer Day",
+        "description": "Join colleagues for a community volunteer day focused on restoring public spaces and supporting local organizations.",
+        "location": "Antigua Guatemala, Guatemala"
+    },{
+        "title": "Cybersecurity Training",
+        "description": "Learn practical techniques for identifying phishing attempts, protecting credentials, and reporting potential security incidents.",
+        "location": "Online"
+    },{
+        "title": "Customer Success Workshop",
+        "description": "Share customer insights and develop practical improvements for onboarding, support, and long-term product adoption.",
+        "location": "Mexico City, Mexico"
+    },{
+        "title": "Quarterly Planning Session",
+        "description": "Align priorities, define measurable objectives, and coordinate the work planned for the upcoming quarter.",
+        "location": "Guatemala City, Guatemala"
+    },{
+        "title": "Developer Meetup",
+        "description": "Meet local developers for short technical talks, project demonstrations, and an open networking session.",
+        "location": "San Salvador, El Salvador"
+    },{
+        "title": "Marketing Campaign Kickoff",
+        "description": "Review the campaign strategy, creative direction, launch schedule, and responsibilities for each participating team.",
+        "location": "Online"
+    },{
+        "title": "Team Breakfast",
+        "description": "Start the day with an informal team breakfast to welcome new colleagues and celebrate recent achievements.",
+        "location": "Guatemala City, Guatemala"
+    },{
+        "title": "Data Analytics Seminar",
+        "description": "Explore useful approaches to dashboards, business metrics, data quality, and communicating insights clearly.",
+        "location": "Bogota, Colombia"
+    },{
+        "title": "Open Source Contribution Day",
+        "description": "Work together on documentation, issue triage, testing, and small improvements for open source projects.",
+        "location": "Online"
+    },{
+        "title": "Leadership Roundtable",
+        "description": "Discuss team development, communication practices, decision making, and lessons learned with other leaders.",
+        "location": "Panama City, Panama"
+    },{
+        "title": "End of Month Review",
+        "description": "Review monthly results, recognize accomplishments, document lessons learned, and identify the next priorities.",
+        "location": "Guatemala City, Guatemala"
     }]    
 }

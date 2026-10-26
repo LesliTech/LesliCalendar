@@ -22,7 +22,7 @@
                 </button>
             </div>
         </div>
-        <%= render LesliView::Elements::Button.new("Add event", icon:"add", solid: true, dispatch:"panel") %>
+        <%= render(LesliView::Elements::Button.new("Add event", icon:"add", solid: true, dispatch:"panel")) %>
     <% end %>
 
     <%= render("lesli_calendar/partials/calendar") %>
