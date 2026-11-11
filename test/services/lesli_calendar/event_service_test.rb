@@ -100,7 +100,7 @@ module LesliCalendar
         private
 
         def agenda_for(events)
-            EventService.new.tap do |service|
+            EventService.new(nil).tap do |service|
                 service.define_singleton_method(:index) { events }
             end.agenda
         end
