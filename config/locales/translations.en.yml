@@ -1,3 +1,12 @@
 ---
 en:
-  lesli_calendar: {}
+  lesli_calendar:
+    agendas: {}
+    calendars: {}
+    dashboards: {}
+    events: {}
+    events/attendants: {}
+    items/attachments: {}
+    items/discussions: {}
+    items/tasks: {}
+    shared: {}
