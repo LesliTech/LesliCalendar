@@ -1,5 +1,7 @@
 # Calendar and Agenda
 
+This page describes the existing implementation. The [Functional Contract](/engines/calendar/about/functional-contract) defines the target visibility, invitation, response, and Agenda behavior for the upcoming implementation phases.
+
 LesliCalendar presents the same event collection in two forms:
 
 - The calendar uses FullCalendar to render a responsive day, week, or month grid.
