@@ -11,7 +11,7 @@ Both views use `LesliCalendar::EventService` as their data source.
 
 ## Event Sources
 
-`EventService#index` combines events from the account's default calendar with ticket deadlines from LesliSupport. The LesliSupport integration is optional; `Lesli::Courier` returns an empty collection when that engine or service is unavailable.
+`EventService#calendar_entries` combines local events the user organizes or has accepted and can still access with ticket deadlines from LesliSupport. The LesliSupport integration is optional; `Lesli::Courier` returns an empty collection when that engine is absent. Errors from an installed provider still propagate in this implementation.
 
 The resulting hashes follow FullCalendar's event-object structure:
 
@@ -21,7 +21,7 @@ The resulting hashes follow FullCalendar's event-object structure:
 | `title` | Text displayed for the event |
 | `start` and `end` | Event timestamps |
 | `url` | Optional event destination |
-| `classNames` | Source-specific CSS classes such as `lesli-calendar` or `lesli-support` |
+| `className` | Source-specific CSS classes such as `lesli-calendar` or `lesli-support` |
 | `extendedProps` | Description, location, status, and visibility metadata |
 
 The JSON endpoint consumed by FullCalendar is:
@@ -32,7 +32,7 @@ GET /calendar/events.json
 
 ## Agenda Transformation
 
-`EventService#agenda` converts the FullCalendar payload into the structure used by the server-rendered agenda partial. It:
+`EventService#agenda` converts the `calendar_entries` FullCalendar payload into the structure used by the server-rendered agenda partial. It:
 
 1. Parses Rails date objects and ISO 8601 strings in the application timezone.
 2. Excludes events before the beginning of the current day.
@@ -55,14 +55,14 @@ Each group has the following shape:
         start_at: Time.zone.parse("2026-10-11T14:30:00-06:00"),
         end_at: nil,
         url: nil,
-        classnames: "lesli-calendar"
+        class_name: "lesli-calendar"
       }
     ]
   }
 }
 ```
 
-Keep `index` compatible with FullCalendar. When adding another event source, map its records to the FullCalendar structure in `index`; `agenda` will then normalize that shared payload for the list view.
+Keep `calendar_entries` compatible with FullCalendar; CRUD `index` returns a service whose `result` is the visible event relation. When adding another event source, map its records to the FullCalendar structure in `calendar_entries`; `agenda` will then normalize that shared payload for the list view.
 
 ## Frontend Styles
 

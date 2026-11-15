@@ -4,7 +4,14 @@ en:
     agendas: {}
     calendars: {}
     dashboards: {}
-    events: {}
+    events:
+      errors:
+        cancelled: "This event has been cancelled."
+        ended: "This event has already ended."
+        organizer_response: "The organizer does not need to respond."
+        invalid_response: "Choose accepted or declined."
+        invalid_users: "Invited users must belong to this account."
+        invalid_roles: "Invited roles must belong to this account and require LesliShield."
     events/attendants: {}
     items/attachments: {}
     items/discussions: {}

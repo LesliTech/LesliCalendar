@@ -27,13 +27,13 @@ The model defaults to `status: "scheduled"` and `public: false`. The only status
 
 Events expose `user_invitations`, `role_invitations`, `invited_users`, `invited_roles`, and `attendants`. Each invitation belongs to an event and an explicit Core user or role. Recipients must belong to the event's Core account. Both invitation tables have required foreign keys and a unique event/recipient pair.
 
-`Event::Attendant` stores `response` (`pending`, `accepted`, or `declined`) and `responded_at`. Pending is the model default and requires a null response timestamp. Accepted and declined require a valid timestamp. The model alone validates the response states and their timestamp requirements, so these business rules can change without a database migration. A unique event/user index prevents duplicate responses; repeated responses will update the same record in the next implementation phase.
+`Event::Attendant` stores `response` (`pending`, `accepted`, or `declined`) and `responded_at`. Pending is the model default and requires a null response timestamp. Accepted and declined require a valid timestamp. The model alone validates the response states and their timestamp requirements, so these business rules can change without a database migration. A unique event/user index prevents duplicate responses; the response operator updates the same record for a changed answer and preserves timestamps on repeated identical answers.
 
-Invitation and response models inherit directly from Active Record and do not have `deleted_at`. Removing an invitation is a physical deletion. Declining is a response update, not a deletion. Role availability, authorization to respond, response timestamps, and transactional response transitions will be handled by the operations introduced in phase 3.
+Invitation and response models inherit directly from Active Record and do not have `deleted_at`. Removing an invitation is a physical deletion. Declining is a response update, not a deletion. Role availability, authorization to respond, response timestamps, and transactional response transitions are handled by the [event operations](/engines/calendar/about/event-operations).
 
 ## Cancellation and Deletion
 
-Account, Calendar, and Event inherit Core's soft-delete behavior. Cancellation changes event status; deleting an event sets its `deleted_at`. Neither operation destroys invitations or responses, so history remains stored. No cascading foreign-key deletion is configured. Filtering cancelled events out of feeds and preventing new responses to them are responsibilities of the following service/query phases, not features provided by these associations alone.
+Account, Calendar, and Event inherit Core's soft-delete behavior. Cancellation changes event status; deleting an event sets its `deleted_at`. Neither operation destroys invitations or responses, so history remains stored. No cascading foreign-key deletion is configured. The local calendar feed excludes cancelled events, and the response operator rejects new responses to them. The associations alone do not enforce those operations.
 
 ## Development Schema Changes
 

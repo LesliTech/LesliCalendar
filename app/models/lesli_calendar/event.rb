@@ -26,6 +26,35 @@ module LesliCalendar
         validate :relations_belong_to_account
         validate :url_is_supported
 
+        # Visibility is independent from acceptance. Every branch keeps the account boundary.
+        def self.visible_to(user)
+            records = where(account_id: user.account.calendar.id)
+            direct = Event::UserInvitation.where(user_id: user.id).select(:event_id)
+            visible = records.where(user_id: user.id).or(records.where(public: true))
+                .or(records.where(id: direct))
+            if defined?(LesliShield)
+                roles = user.roles.where(account_id: user.account_id).select(:id)
+                invited = Event::RoleInvitation.where(role_id: roles).select(:event_id)
+                visible = visible.or(records.where(id: invited))
+            end
+            visible
+        end
+
+        # Submitted selections stay on the record when a transaction fails.
+        attr_writer :user_ids, :role_ids
+
+        def user_ids
+            @user_ids || user_invitations.pluck(:user_id)
+        end
+
+        def role_ids
+            @role_ids || role_invitations.pluck(:role_id)
+        end
+
+        def clear_invitation_selection
+            @user_ids = @role_ids = nil
+        end
+
         private
 
         # Rails casts malformed datetimes to nil; do not silently accept that input.

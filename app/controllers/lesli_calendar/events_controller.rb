@@ -42,7 +42,7 @@ module LesliCalendar
                 end: params[:end]
             )
 
-            @events = LesliCalendar::EventService.new(current_user, calendar_query).index()
+            @events = LesliCalendar::EventService.new(current_user, calendar_query).calendar_entries
             respond_with_lesli(
                 json: @events.as_json
             )

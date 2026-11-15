@@ -33,12 +33,22 @@ Building a better future, one line of code at a time.
 module LesliCalendar
     class EventService < Lesli::ApplicationLesliService
 
-        def find(id)
-            response(current_user.account.calendar.events.find_by(id: id))
+        EDITABLE_ATTRIBUTES = %i[title description location start_at end_at public url].freeze
+
+        def index
+            response(Event.visible_to(current_user).order(:start_at, :id))
         end
 
-        def index()
-            events_calendar = current_user.account.calendar.default_calendar.events
+        def show(id)
+            response(Event.visible_to(current_user).find(id))
+        end
+
+        alias_method :find, :show
+
+        def calendar_entries
+            accepted = Event::Attendant.where(user_id: current_user.id, response: :accepted).select(:event_id)
+            visible = Event.visible_to(current_user).where(status: :scheduled)
+            events_calendar = visible.where(user_id: current_user.id).or(visible.where(id: accepted))
             .select(
                 :id, 
                 :title, 
@@ -91,32 +101,32 @@ module LesliCalendar
             events_calendar + events_support
         end
 
-        def create(event_params)
-
-            # Setting the default calendar if not provided
-            calendar = CalendarService.new(current_user).find_default.result
-
-            # Creating the event
-            event = calendar.events.new(event_params)
-            
-            event.user = current_user
-            event.account = current_user.account.calendar
-
-            error(event.errors.full_messages.to_sentence) unless event.save
-            response(event)
+        def create(attributes)
+            event = current_user.account.calendar.events.build(
+                calendar: current_user.account.calendar.default_calendar, user: current_user
+            )
+            persist(event, attributes)
         end
 
-        def show (id)
-            event = current_user.account.calendar.events.find_by_id(id)
-            self.resource = event
-            self
+        def update(attributes)
+            # Use a fresh account/organizer-scoped lookup, not a caller-supplied record.
+            persist(owned_events.find(resource.id), attributes)
+        end
+
+        def destroy
+            event = owned_events.find(resource.id)
+            event.with_lock do
+                owned_events.find(event.id)
+                event.destroy!
+            end
+            response(event)
         end
 
         def agenda
             current_time = Time.current
 
             # Convert FullCalendar's payload into the simpler shape consumed by the agenda view.
-            upcoming_events = index.filter_map do |event|
+            upcoming_events = calendar_entries.filter_map do |event|
                 start_at = normalize_agenda_time(value_from(event, :start))
                 next if start_at.nil? || start_at < current_time.beginning_of_day
 
@@ -150,6 +160,72 @@ module LesliCalendar
         end
 
         private
+
+        def owned_events
+            current_user.account.calendar.events.where(user_id: current_user.id)
+        end
+
+        def persist(event, attributes)
+            attributes = attributes.to_h.symbolize_keys
+            Event.transaction do
+                if event.persisted?
+                    event.lock!
+                    # A deletion may have committed while this request waited for the lock.
+                    owned_events.find(event.id)
+                end
+                event.assign_attributes(attributes.slice(*EDITABLE_ATTRIBUTES))
+                assign_invitations(event, attributes)
+                event.valid?
+                validate_invitations(event, attributes)
+                if event.cancelled?
+                    event.errors.add(:base, I18n.t("lesli_calendar.events.errors.cancelled"))
+                end
+                raise ActiveRecord::RecordInvalid.new(event) if event.errors.any?
+
+                rescheduled = event.persisted? && (event.start_at_changed? || event.end_at_changed?)
+                event.save!
+                replace_invitations(event.user_invitations, :user_id, event.user_ids)
+                replace_invitations(event.role_invitations, :role_id, event.role_ids)
+                if rescheduled
+                    # Preserve declined responses. Former public participants also become pending.
+                    event.attendants.where(response: :accepted).each do |attendant|
+                        attendant.update!(response: :pending, responded_at: nil)
+                    end
+                end
+                event.clear_invitation_selection
+            end
+            response(event)
+        rescue ActiveRecord::RecordInvalid => exception
+            event.errors.add(:base, exception.record.errors.full_messages.to_sentence) unless exception.record == event
+            error(event.errors.full_messages.to_sentence)
+            response(event)
+        end
+
+        def assign_invitations(event, attributes)
+            [:user_ids, :role_ids].each do |key|
+                next unless attributes.key?(key)
+
+                event.public_send("#{key}=", Array(attributes[key]).reject(&:blank?).map(&:to_s).uniq)
+            end
+        end
+
+        def validate_invitations(event, attributes)
+            valid_users = current_user.account.users.where(id: event.user_ids).pluck(:id).map(&:to_s)
+            valid_roles = current_user.account.roles.where(id: event.role_ids).pluck(:id).map(&:to_s)
+            if (event.user_ids.map(&:to_s) - valid_users).any?
+                event.errors.add(:base, I18n.t("lesli_calendar.events.errors.invalid_users"))
+            end
+            if (event.role_ids.map(&:to_s) - valid_roles).any? ||
+                (attributes.key?(:role_ids) && event.role_ids.any? && !defined?(LesliShield))
+                event.errors.add(:base, I18n.t("lesli_calendar.events.errors.invalid_roles"))
+            end
+        end
+
+        def replace_invitations(association, foreign_key, ids)
+            existing_ids = association.pluck(foreign_key).map(&:to_s)
+            (ids.map(&:to_s) - existing_ids).each { |id| association.create!(foreign_key => id) }
+            association.where.not(foreign_key => ids).each(&:destroy!)
+        end
 
         def value_from(hash, key)
             return unless hash.respond_to?(:[])
