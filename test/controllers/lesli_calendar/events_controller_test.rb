@@ -78,6 +78,20 @@ module LesliCalendar
             end
         end
 
+        test "FullCalendar requests its visible range including adjacent months" do
+            spanning = EventService.new(@user).create(attributes.merge(
+                start_at: Time.utc(2027, 1, 30), end_at: Time.utc(2027, 2, 2))).result
+            EventService.new(@user).create(attributes.merge(
+                start_at: Time.utc(2027, 3, 1), end_at: Time.utc(2027, 3, 2)))
+            get :index, params: { start: "2027-01-31T00:00:00Z", end: "2027-03-01T00:00:00Z" }, format: :json
+            assert_response :success
+            assert_equal ["lesli_calendar:event:#{spanning.id}"], response.parsed_body.pluck("id")
+            get :index, params: { start: "invalid", end: "2027-03-01T00:00:00Z" }, format: :json
+            assert_response :bad_request
+            get :index, params: { start: "2027-01-31T00:00:00Z" }, format: :json
+            assert_response :bad_request
+        end
+
         test "panel detail and editing stay inside the frame" do
             event = EventService.new(@user).create(attributes.merge(url: "/support/tickets/42")).result
             @request.headers["Turbo-Frame"] = "calendar-event-detail"

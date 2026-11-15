@@ -31,7 +31,7 @@ Forms use UTC datetime fields, plain text descriptions, an optional complete des
 
 Validation failures return HTTP 422 and retain submitted fields and selections. Turbo replaces the form; HTML re-renders its page; JSON returns an `errors` object. Successful HTML/Turbo mutations redirect with HTTP 303. JSON creation returns 201 and subsequent mutations return 200. Page GETs following Turbo redirects render HTML. Account isolation and organizer rules are enforced in addition to the existing screen authorization.
 
-Prev, Today, and Next use the current custom element. The title follows the visible period and the feed receives one `month` parameter. Desktop shows a month, tablet a week, and mobile a day. Period changes, successful Turbo form submissions on the calendar page, and page restoration reload the feed. Empty, loading, and request-error messages are translated. Local destinations remain the stored event URL; optional sources supply their own destinations.
+Prev, Today, and Next use the current custom element. The title follows the visible period and the feed receives one `month` parameter. Desktop shows a month, tablet a week, and mobile a day. Period changes, successful Turbo form submissions inside the event detail panel, and page restoration reload the feed. Empty, loading, and request-error messages are translated. Local destinations remain the stored event URL; optional sources supply their own destinations.
 
 Agenda shows each entry's time in UTC, state, source, and destination. It has no persistent model or scaffold CRUD.
 
@@ -95,3 +95,8 @@ All views reuse EventService visibility and account scopes. Calendar events open
 in the shared detail panel; external ticket links continue to open LesliSupport.
 The previous HTML event-list URLs redirect to the corresponding Agenda view.
 Their JSON responses remain available, including the FullCalendar events feed.
+
+The shared event panel handles missing-frame responses and network errors with
+local Alpine listeners, in both Calendar and Agenda. It displays a translated
+alert without discarding the current form. Starting another request clears the
+alert. Normal validation responses continue to display their form errors.

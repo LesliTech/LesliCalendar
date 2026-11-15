@@ -76,7 +76,7 @@ module LesliCalendar
         end
 
         def load_service
-            @service = EventService.new(current_user, month: params[:month])
+            @service = EventService.new(current_user, month: params[:month], start: params[:start], end: params[:end])
         end
 
         def load_event

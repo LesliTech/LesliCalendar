@@ -4,18 +4,18 @@
 <% content_for(:head) do %>
     <%= stylesheet_link_tag(lesli_asset_path(:lesli_assets, "calendar"), media: "all", "data-turbo-track": "reload") %>
 <% end %>
-<%= render LesliView::Layout::Container.new("calendar-calendar") do %>
-    <%= render LesliView::Components::Header.new(content_tag(:span, t("lesli_calendar.calendars.title"), id: "calendar-period", aria: { live: "polite" })) do %>
-        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.new"), url: new_event_path, icon: "add") %>
-    <% end %>
-    <div class="flex flex-wrap gap-3" role="group" aria-label="<%= t('lesli_calendar.calendars.navigation') %>">
+<%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
+    <%= render(LesliView::Components::Header.new(content_tag(:span, t("lesli_calendar.calendars.title"), id: "calendar-period", aria: { live: "polite" }))) do %>
         <% { prev: "chevron_left", today: "today", next: "chevron_right" }.each do |action, icon| %>
-            <%= render LesliView::Elements::Button.new(t("lesli_calendar.calendars.#{action}"), icon: icon, solid: false,
-                data: { calendar_action: action, calendar_target: "lesli-calendar-engine" }) %>
+            <%= render(LesliView::Elements::Button.new(
+                t("lesli_calendar.calendars.#{action}"),
+                data: { calendar_action: action, calendar_target: "lesli-calendar-engine" },
+                icon: icon, solid: false
+            )) %>
         <% end %>
-        <%= render LesliView::Elements::Button.new(t("lesli_calendar.agendas.title"), url: agenda_path, solid: false) %>
-    </div>
-    <p id="calendar-status" class="mt-4 text-sm" role="status" aria-live="polite"></p>
+
+        <%= render(LesliView::Elements::Button.new(t("lesli_calendar.events.new"), url: new_event_path, icon: "add")) %>
+    <% end %>
     <%= render "lesli_calendar/partials/calendar" %>
 <% end %>
 

@@ -96,8 +96,14 @@ module LesliCalendar
         end
 
         def calendar_entries
-            start_at = query[:month].present? ? Time.find_zone!("UTC").iso8601("#{query[:month]}-01") : Time.current.utc.beginning_of_month
-            end_at = start_at.next_month
+            if query[:start].present? || query[:end].present?
+                # FullCalendar includes adjacent days and uses an exclusive end boundary.
+                start_at = Time.iso8601(query[:start].to_s).utc
+                end_at = Time.iso8601(query[:end].to_s).utc
+            else
+                start_at = query[:month].present? ? Time.find_zone!("UTC").iso8601("#{query[:month]}-01") : Time.current.utc.beginning_of_month
+                end_at = start_at.next_month
+            end
 
             events = personal_events.where("start_at < ? AND end_at > ?", end_at, start_at)
                 .order(:start_at, :id).map { |event| calendar_entry(event) }
