@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 301111010) do
+ActiveRecord::Schema[8.1].define(version: 301111110) do
   create_table "lesli_accounts", force: :cascade do |t|
     t.string "status", null: false
     t.string "name"
@@ -38,46 +38,63 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
   end
 
   create_table "lesli_calendar_calendars", force: :cascade do |t|
-    t.string "name"
-    t.string "color", default: "0d52bf"
+    t.string "name", null: false
+    t.string "color", null: false
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
     t.integer "account_id", null: false
+    t.index ["account_id", "name"], name: "index_calendar_names_per_account", unique: true, where: "deleted_at IS NULL"
     t.index ["account_id"], name: "index_lesli_calendar_calendars_on_account_id"
     t.index ["deleted_at"], name: "index_lesli_calendar_calendars_on_deleted_at"
-    t.index ["user_id"], name: "index_lesli_calendar_calendars_on_user_id"
   end
 
   create_table "lesli_calendar_event_attendants", force: :cascade do |t|
-    t.datetime "confirmed_at"
-    t.datetime "deleted_at"
+    t.string "response", null: false
+    t.datetime "responded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.integer "event_id"
-    t.index ["confirmed_at"], name: "index_lesli_calendar_event_attendants_on_confirmed_at"
-    t.index ["deleted_at"], name: "index_lesli_calendar_event_attendants_on_deleted_at"
+    t.integer "user_id", null: false
+    t.integer "event_id", null: false
+    t.index ["event_id", "user_id"], name: "index_calendar_event_responses", unique: true
     t.index ["event_id"], name: "index_lesli_calendar_event_attendants_on_event_id"
     t.index ["user_id"], name: "index_lesli_calendar_event_attendants_on_user_id"
   end
 
+  create_table "lesli_calendar_event_role_invitations", force: :cascade do |t|
+    t.integer "event_id", null: false
+    t.integer "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "role_id"], name: "index_calendar_event_role_invitations", unique: true
+    t.index ["role_id"], name: "index_lesli_calendar_event_role_invitations_on_role_id"
+  end
+
+  create_table "lesli_calendar_event_user_invitations", force: :cascade do |t|
+    t.integer "event_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "user_id"], name: "index_calendar_event_user_invitations", unique: true
+    t.index ["user_id"], name: "index_lesli_calendar_event_user_invitations_on_user_id"
+  end
+
   create_table "lesli_calendar_events", force: :cascade do |t|
-    t.string "title"
-    t.string "description"
-    t.datetime "start_at", precision: nil
-    t.datetime "end_at", precision: nil
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "start_at", precision: nil, null: false
+    t.datetime "end_at", precision: nil, null: false
     t.string "url"
     t.string "location"
-    t.string "status"
-    t.boolean "public"
+    t.string "status", null: false
+    t.boolean "public", null: false
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "account_id", null: false
-    t.integer "calendar_id"
-    t.integer "user_id"
+    t.integer "calendar_id", null: false
+    t.integer "user_id", null: false
+    t.index ["account_id", "start_at"], name: "index_calendar_events_account_start"
     t.index ["account_id"], name: "index_lesli_calendar_events_on_account_id"
     t.index ["calendar_id"], name: "index_lesli_calendar_events_on_calendar_id"
     t.index ["deleted_at"], name: "index_lesli_calendar_events_on_deleted_at"
@@ -86,6 +103,8 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
     t.index ["start_at"], name: "index_lesli_calendar_events_on_start_at"
     t.index ["status"], name: "index_lesli_calendar_events_on_status"
     t.index ["user_id"], name: "index_lesli_calendar_events_on_user_id"
+    t.check_constraint "end_at > start_at", name: "calendar_events_valid_dates"
+    t.check_constraint "status IN ('scheduled', 'cancelled')", name: "calendar_events_valid_status"
   end
 
   create_table "lesli_resources", force: :cascade do |t|
@@ -175,9 +194,12 @@ ActiveRecord::Schema[8.1].define(version: 301111010) do
   add_foreign_key "lesli_accounts", "lesli_users", column: "user_id"
   add_foreign_key "lesli_calendar_accounts", "lesli_accounts", column: "account_id"
   add_foreign_key "lesli_calendar_calendars", "lesli_calendar_accounts", column: "account_id"
-  add_foreign_key "lesli_calendar_calendars", "lesli_users", column: "user_id"
   add_foreign_key "lesli_calendar_event_attendants", "lesli_calendar_events", column: "event_id"
   add_foreign_key "lesli_calendar_event_attendants", "lesli_users", column: "user_id"
+  add_foreign_key "lesli_calendar_event_role_invitations", "lesli_calendar_events", column: "event_id"
+  add_foreign_key "lesli_calendar_event_role_invitations", "lesli_roles", column: "role_id"
+  add_foreign_key "lesli_calendar_event_user_invitations", "lesli_calendar_events", column: "event_id"
+  add_foreign_key "lesli_calendar_event_user_invitations", "lesli_users", column: "user_id"
   add_foreign_key "lesli_calendar_events", "lesli_calendar_accounts", column: "account_id"
   add_foreign_key "lesli_calendar_events", "lesli_calendar_calendars", column: "calendar_id"
   add_foreign_key "lesli_calendar_events", "lesli_users", column: "user_id"

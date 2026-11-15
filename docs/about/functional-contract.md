@@ -1,6 +1,6 @@
 # Functional Contract
 
-This document defines the behavior to implement in the next Calendar phases. It is the target contract, not a claim that the current controllers, models, or schema already enforce these rules. Phase 1 changes documentation only.
+This document defines the behavior to implement in the next Calendar phases. It is the target contract, not a claim that the current controllers, models, or schema already enforce these rules. Phase 1 changed documentation only. Phase 2 implements the model and database contract described in [Database](/engines/calendar/about/database); access control, invitation operations, and feed filtering still require subsequent phases.
 
 ## Account Boundary and Organizer
 
@@ -81,6 +81,8 @@ If eligibility is restored, the existing response remains applicable provided it
 Changing visibility from public to private immediately applies the private audience rules. Users without a current invitation lose access even if they previously accepted. Changing from private to public broadens discovery, but never automatically accepts the event for additional users.
 
 ## Schedule Changes
+
+Both start and end are mandatory. The end must be strictly later than the start; malformed dates are rejected. A scheduled event defaults to private visibility, with defaults defined in the models.
 
 Changing the actual start or end instant resets accepted responses to pending in the same transaction as the event update. Those users must accept the new schedule before it returns to their personal calendars. The organizer remains included automatically.
 

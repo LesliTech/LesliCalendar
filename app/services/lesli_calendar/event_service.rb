@@ -33,12 +33,12 @@ Building a better future, one line of code at a time.
 module LesliCalendar
     class EventService < Lesli::ApplicationLesliService
 
-        def find calendar_id
-            super(current_user.account.calendar.calendars.first)
+        def find(id)
+            response(current_user.account.calendar.events.find_by(id: id))
         end
 
         def index()
-            events_calendar = current_user.account.calendar.calendars.first.events
+            events_calendar = current_user.account.calendar.default_calendar.events
             .select(
                 :id, 
                 :title, 
@@ -102,13 +102,8 @@ module LesliCalendar
             event.user = current_user
             event.account = current_user.account.calendar
 
-            if event.save
-                #Event.log_activity_create(current_user, event)
-                # Adding the main user as an attendant too
-                #event.attendants.create(users_id: event.user_main.id)
-                self.resource = event
-            end
-            self
+            error(event.errors.full_messages.to_sentence) unless event.save
+            response(event)
         end
 
         def show (id)

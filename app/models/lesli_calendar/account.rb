@@ -32,15 +32,17 @@ Building a better future, one line of code at a time.
 
 module LesliCalendar
     class Account < ApplicationRecord
-        belongs_to :account,
-            class_name: "Lesli::Account",
-            inverse_of: :calendar
+        belongs_to :account, class_name: "Lesli::Account", inverse_of: :calendar
         validates :account_id, uniqueness: true
 
-        has_many :calendars
-        has_many :events
+        has_many :calendars, class_name: "LesliCalendar::Calendar", inverse_of: :account
+        has_many :events, class_name: "LesliCalendar::Event", inverse_of: :account
 
         after_create :initialize_engine
+
+        def default_calendar
+            calendars.find_by!(name: "default")
+        end
 
         def initialize_engine
             self.calendars.find_or_create_by!(:name => "default")

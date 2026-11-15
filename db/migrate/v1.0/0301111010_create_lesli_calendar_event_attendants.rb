@@ -33,11 +33,13 @@ Building a better future, one line of code at a time.
 class CreateLesliCalendarEventAttendants < ActiveRecord::Migration[7.0]
     def change
         create_table :lesli_calendar_event_attendants do |t|
-            t.datetime :confirmed_at, index: true
-            t.datetime :deleted_at, index: true
+            t.string :response, null: false
+            t.datetime :responded_at
             t.timestamps
         end
-        add_reference(:lesli_calendar_event_attendants, :user,  foreign_key: { to_table: :lesli_users })
-        add_reference(:lesli_calendar_event_attendants, :event, foreign_key: { to_table: :lesli_calendar_events })
+        add_reference(:lesli_calendar_event_attendants, :user, null: false, foreign_key: { to_table: :lesli_users })
+        add_reference(:lesli_calendar_event_attendants, :event, null: false, foreign_key: { to_table: :lesli_calendar_events })
+        add_index :lesli_calendar_event_attendants, [:event_id, :user_id], unique: true, name: "index_calendar_event_responses"
+
     end
 end

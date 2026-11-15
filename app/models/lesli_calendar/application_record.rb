@@ -1,5 +1,5 @@
 module LesliCalendar
-  class ApplicationRecord < ActiveRecord::Base
+  class ApplicationRecord < Lesli::ApplicationLesliRecord
     self.abstract_class = true
   end
 end

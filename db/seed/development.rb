@@ -64,14 +64,15 @@ end
 event_seeds.zip(date_ranges).each do |event, date_range|
     start_at = random_time_in.call(date_range)
 
-    LesliCalendar::EventService.new(current_user).create({
+    service = LesliCalendar::EventService.new(current_user).create({
         title: event["title"],
         description: event["description"],
         start_at: start_at,
         end_at: start_at + 1.hour,
         url: "",
         location: event["location"],
-        status: "approved",
+        status: "scheduled",
         public: true
     })
+    raise ActiveRecord::RecordInvalid.new(service.result) unless service.successful?
 end

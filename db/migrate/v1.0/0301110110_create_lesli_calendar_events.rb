@@ -33,14 +33,14 @@ Building a better future, one line of code at a time.
 class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
     def change
         create_table :lesli_calendar_events do |t|
-            t.string    :title, required: true
-            t.string    :description
-            t.datetime  :start_at, index: true
-            t.datetime  :end_at, index: true
+            t.string    :title, null: false
+            t.text      :description
+            t.datetime  :start_at, null: false, index: true
+            t.datetime  :end_at, null: false, index: true
             t.string    :url
             t.string    :location
-            t.string    :status, index: true # proposal, draft, approved
-            t.boolean   :public, index: true
+            t.string    :status, null: false, index: true
+            t.boolean   :public, null: false, index: true
 
             t.datetime  :deleted_at, index: true
             t.timestamps
@@ -52,10 +52,11 @@ class CreateLesliCalendarEvents < ActiveRecord::Migration[6.0]
             null: false,
             foreign_key: { to_table: :lesli_calendar_accounts }
         )
-        add_reference(:lesli_calendar_events, :calendar, foreign_key: { to_table: :lesli_calendar_calendars })
-        add_reference(:lesli_calendar_events, :user,     foreign_key: { to_table: :lesli_users })
+        add_reference(:lesli_calendar_events, :calendar, null: false, foreign_key: { to_table: :lesli_calendar_calendars })
+        add_reference(:lesli_calendar_events, :user, null: false, foreign_key: { to_table: :lesli_users })
 
-        #add_reference(:cloud_driver_events, :assign,   foreign_key: { to_table: :users })
-        #add_reference(:cloud_driver_events, :type,     foreign_key: { to_table: :cloud_driver_catalog_event_types})
+        add_index :lesli_calendar_events, [:account_id, :start_at], name: "index_calendar_events_account_start"
+        add_check_constraint :lesli_calendar_events, "end_at > start_at", name: "calendar_events_valid_dates"
+        add_check_constraint :lesli_calendar_events, "status IN ('scheduled', 'cancelled')", name: "calendar_events_valid_status"
     end
 end

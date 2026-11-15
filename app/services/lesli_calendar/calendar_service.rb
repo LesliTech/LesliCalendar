@@ -32,45 +32,16 @@ Building a better future, one line of code at a time.
 
 module LesliCalendar
     class CalendarService < Lesli::ApplicationLesliService
-
-        def find calendar_id
-            #super(current_user.account.calendar.calendar.find_by(id: calendar_id))
-            super(current_user.account.calendar.calendars.first)
+        def find(calendar_id)
+            response(current_user.account.calendar.calendars.find_by(id: calendar_id))
         end
 
         def find_default
-            find(current_user.account.calendar.calendars.find_by(:name => "default"))
+            response(current_user.account.calendar.default_calendar)
         end
 
-        def show()
-
-            # # Calendar data
-            # calendar_data = {
-            #     id: self.resource.id,
-            #     name: self.resource.name,
-            #     user_id: self.resource.user_id,
-            #     events: EventService.new(current_user, query).index(),
-            #     events_support: ::Lesli::Courier.new(:lesli_support, [])
-            #     .from(:ticket_service, current_user, query)
-            #     .call(:index_with_deadline)
-            #     .map do |ticket|
-            #         {
-            #             id: ticket.id,
-            #             title: ticket.subject,
-            #             deadline: ticket.deadline,
-            #             description: ticket.description,
-            #             date: ticket.deadline,
-            #             start: ticket.deadline,
-            #             classnames: 'lesli-support'
-            #         }
-            #     end
-            # }
-
-            {
-                id: self.resource.id,
-                name: self.resource.name,
-                user_id: self.resource.user_id
-            }
+        def show
+            { id: resource.id, name: resource.name }
         end
     end
 end

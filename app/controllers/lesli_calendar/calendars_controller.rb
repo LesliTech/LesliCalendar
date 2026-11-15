@@ -62,7 +62,7 @@ module LesliCalendar
                 @calendar = CalendarService.new(current_user).find(params[:id])
             end
 
-            return respond_with_not_found unless @calendar
+            return respond_with_not_found unless @calendar.found?
         end
 
         # Only allow a trusted parameter "white list" through.
