@@ -30,49 +30,87 @@ Building a better future, one line of code at a time.
 // ·
 =end
 
-
-# ·
 require "json"
 
-# ·
-seed_file = LesliCalendar::Engine.root.join("db", "seed", "seeds.json")
-event_seeds = JSON.parse(File.read(seed_file)).fetch("events")
+examples = JSON.parse(File.read(LesliCalendar::Engine.root.join("db/seed/seeds.json"))).fetch("events")
+now = Time.current.utc.change(usec: 0)
+month = now.beginning_of_month
 
-current_user = ::Lesli::User.first
-reference_time = Time.current
-date_range_start = reference_time - 1.month - 15.days
-date_range_end = reference_time + 1.month + 15.days
-current_month_start = reference_time.beginning_of_month
-current_month_end = reference_time.end_of_month
+LesliCalendar::Account.includes(:account).find_each do |workspace|
+    account = workspace.account
+    users = account.users.order(:id).limit(2).to_a
+    next if users.empty?
 
-# Keep most demo records in the current month while preserving data on both sides of it.
-current_month_count = (event_seeds.length * 0.6).round
-outside_month_count = event_seeds.length - current_month_count
-past_count = outside_month_count / 2
+    owner, colleague = users
+    scenarios = [
+        { title: "Personal focus time", start_at: now + 2.hours },
+        { title: "In progress", start_at: now - 30.minutes, end_at: now + 30.minutes },
+        { title: "Completed meeting", start_at: now - 2.days },
+        { title: "Overnight work", start_at: now.beginning_of_day - 2.hours, end_at: now + 1.hour },
+        { title: "Month boundary", start_at: month - 2.hours, end_at: month + 2.hours },
+        { title: "Next month planning", start_at: month.next_month + 10.days },
+        { title: "Cancelled meeting", cancel: true },
+        { title: "Public meeting by organizer", public: true }
+    ]
 
-date_ranges = [
-    *Array.new(past_count, date_range_start..(current_month_start - 1.second)),
-    *Array.new(current_month_count, current_month_start..current_month_end),
-    *Array.new(outside_month_count - past_count, (current_month_end + 1.second)..date_range_end)
-].shuffle
+    if colleague
+        scenarios += [
+            { title: "Private invitation pending", organizer: colleague, user_ids: [owner.id] },
+            { title: "Private invitation accepted", organizer: colleague, user_ids: [owner.id], response: :accepted },
+            { title: "Private invitation declined", organizer: colleague, user_ids: [owner.id], response: :declined },
+            { title: "Public event available", organizer: colleague, public: true },
+            { title: "Public event accepted", organizer: colleague, public: true, response: :accepted },
+            { title: "Public event declined", organizer: colleague, public: true, response: :declined },
+            { title: "Private event without access", organizer: colleague },
+            { title: "Rescheduled invitation", organizer: colleague, user_ids: [owner.id], response: :accepted, reschedule: true },
+            { title: "Cancelled accepted invitation", organizer: colleague, user_ids: [owner.id], response: :accepted, cancel: true },
+            { title: "Public invitation pending", organizer: colleague, public: true, user_ids: [owner.id] }
+        ]
+        if defined?(LesliShield) && (role = owner.roles.where(account_id: account.id).first)
+            scenarios += [
+                { title: "Role invitation pending", organizer: colleague, role_ids: [role.id] },
+                { title: "Role invitation accepted", organizer: colleague, role_ids: [role.id], response: :accepted },
+                { title: "Role invitation declined", organizer: colleague, role_ids: [role.id], response: :declined },
+                { title: "Public role invitation", organizer: colleague, public: true, role_ids: [role.id] },
+                { title: "Combined invitation accepted", organizer: colleague, role_ids: [role.id], user_ids: [owner.id], response: :accepted },
+                { title: "Combined invitation", organizer: colleague, role_ids: [role.id], user_ids: [owner.id] }
+            ]
+        end
+    end
 
-# Pick a random second inside the assigned period.
-random_time_in = ->(range) do
-    range.begin + rand(0..(range.end - range.begin).to_i).seconds
-end
+    # Keep the original examples, distributed predictably across neighboring months.
+    examples.each_with_index do |example, index|
+        offset = index % 5 == 0 ? -1 : (index % 5 == 1 ? 1 : 0)
+        scenarios << example.symbolize_keys.merge(start_at: month.advance(months: offset) + (index % 27).days + 10.hours)
+    end
 
-event_seeds.zip(date_ranges).each do |event, date_range|
-    start_at = random_time_in.call(date_range)
+    scenarios.each do |scenario|
+        title = "Demo: #{scenario.fetch(:title)}"
+        # Repeated seeding preserves edited and soft-deleted demo events.
+        next if account.calendar.events.with_deleted.exists?(title: title)
 
-    service = LesliCalendar::EventService.new(current_user).create({
-        title: event["title"],
-        description: event["description"],
-        start_at: start_at,
-        end_at: start_at + 1.hour,
-        url: "",
-        location: event["location"],
-        status: "scheduled",
-        public: true
-    })
-    raise ActiveRecord::RecordInvalid.new(service.result) unless service.successful?
+        organizer = scenario[:organizer] || owner
+        start_at = scenario[:start_at] || now + 1.day
+        LesliCalendar::Event.transaction do
+            service = LesliCalendar::EventService.new(organizer).create(
+                title: title, description: scenario[:description] || "Calendar demo: #{scenario[:title]}.",
+                location: scenario[:location] || "Demo meeting room",
+                start_at: start_at, end_at: scenario[:end_at] || start_at + 1.hour,
+                public: scenario.fetch(:public, false),
+                user_ids: scenario.fetch(:user_ids, []), role_ids: scenario.fetch(:role_ids, [])
+            )
+            raise ActiveRecord::RecordInvalid.new(service.result) unless service.successful?
+            event = service.result
+            # Persist the complete destination once the new record has its identifier.
+            event.update!(url: "/calendar/events/#{event.id}")
+            if scenario[:response]
+                LesliCalendar::EventResponseOperator.new(owner, event.id).operate(response: scenario[:response])
+            end
+            if scenario[:reschedule]
+                service.update(start_at: start_at + 1.hour, end_at: start_at + 2.hours)
+                raise ActiveRecord::RecordInvalid.new(service.result) unless service.successful?
+            end
+            LesliCalendar::EventCancellationOperator.new(organizer, event.id).operate if scenario[:cancel]
+        end
+    end
 end

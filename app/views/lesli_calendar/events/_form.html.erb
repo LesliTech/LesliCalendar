@@ -1,17 +1,28 @@
-<%= form_with(model: event) do |form| %>
-  <% if event.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
-
-      <ul>
-        <% event.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+<div id="event-form">
+    <%= form_with model: @event, scope: :event, builder: LesliView::Forms::Builder,
+        url: @event.persisted? ? event_path(@event) : events_path, data: { turbo_frame: "_top" } do |form| %>
+        <%= form.fieldset do %>
+            <% if @event.errors.any? %>
+                <div role="alert"><%= form.field_control_builder(message_text: @event.errors.full_messages.to_sentence, category: :danger) %></div>
+            <% end %>
+            <%= form.field_control(:title, label: t("lesli_calendar.events.title"), required: true) %>
+            <%= form.field_control_textarea(:description, label: t("lesli_calendar.events.description"), rows: 4) %>
+            <div class="grid gap-4 sm:grid-cols-2">
+                <% [:start_at, :end_at].each do |field| %>
+                    <%= form.field_control(field, label: "#{t("lesli_calendar.events.#{field}")} (UTC)", type: "datetime-local",
+                        value: @event.public_send(field)&.utc&.strftime("%Y-%m-%dT%H:%M:%S"), step: 1, required: true) %>
+                <% end %>
+            </div>
+            <%= form.field_control(:location, label: t("lesli_calendar.events.location")) %>
+            <%= form.field_control(:url, label: t("lesli_calendar.events.url"), message: t("lesli_calendar.events.url_hint")) %>
+            <%= form.field_control_checkbox(:public, label: t("lesli_calendar.events.public"), message: t("lesli_calendar.events.privacy_hint")) %>
+            <%= form.field_control_select(:user_ids, @invitation_users, label: t("lesli_calendar.events.users"), humanize: false,
+                html_options: { multiple: true, size: 5 }) %>
+            <% if @invitation_roles %>
+                <%= form.field_control_select(:role_ids, @invitation_roles, label: t("lesli_calendar.events.roles"), humanize: false,
+                    html_options: { multiple: true, size: 5 }) %>
+            <% end %>
+            <%= form.field_control_submit(t("lesli_calendar.events.save")) %>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+    <% end %>
+</div>

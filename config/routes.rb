@@ -34,16 +34,16 @@ LesliCalendar::Engine.routes.draw do
 
     Lesli::Router.mount_lesli_engine_routes(self)
 
-    resource :calendar, only: [:show] do
-    end
+    resource :calendar, only: :show
+    resource :agenda, only: :show
 
-    resource :agenda, only: [:show] do
-    end
-
-    resources :events, only: [:show, :index, :create] do
-        scope module: :events do
-            resources :attendants, only: [:index, :create, :update, :destroy]
+    resources :events do
+        collection do
+            get :pending
+            get :available
         end
+        patch :cancel, on: :member
+        resource :attendant, only: :update, module: :event
     end
 
     get "up" => "/rails/health#show"

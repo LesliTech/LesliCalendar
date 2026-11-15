@@ -1,6 +1,6 @@
 # Event Operations
 
-Phase 3 provides backend operations. Screen-level permissions remain the caller's responsibility through Core/LesliShield authorization. The services and operators additionally enforce account, event visibility, organizer ownership, and individual response rules. The new operations are not yet connected to invitation forms or new routes.
+Phase 3 provides backend operations. Screen-level permissions remain the caller's responsibility through Core/LesliShield authorization. The services and operators additionally enforce account, event visibility, organizer ownership, and individual response rules. The operations are connected to the [Calendar Interface](/engines/calendar/about/interface), including invitation forms and participant responses.
 
 ## CRUD
 

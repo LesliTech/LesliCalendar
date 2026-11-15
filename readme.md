@@ -157,6 +157,7 @@ See [Calendar and Agenda](./docs/about/calendar-and-agenda.md) for the event pip
 
 - [Installation](./docs/about/installation.md)
 - [Calendar and agenda](./docs/about/calendar-and-agenda.md)
+- [Interface, routes, and demo seeds](./docs/about/interface.md)
 - [Translations](./docs/about/translations.md)
 - [Database](./docs/about/database.md)
 - [Lesli website](https://www.lesli.dev/)

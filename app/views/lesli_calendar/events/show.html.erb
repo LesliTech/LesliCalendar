@@ -1,10 +1,14 @@
-<p style="color: green"><%= notice %></p>
-
-<%= render @event %>
-
-<div>
-  <%= link_to "Edit this event", edit_event_path(@event) %> |
-  <%= link_to "Back to events", events_path %>
-
-  <%= button_to "Destroy this event", @event, method: :delete %>
-</div>
+<%= render LesliView::Layout::Container.new("event-show") do %>
+    <%= render LesliView::Components::Header.new(@event.title, back: events_path) do %>
+        <% if @event.user_id == current_user.id %>
+            <% unless @event.cancelled? %>
+                <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.edit"), url: edit_event_path(@event), icon: "edit") %>
+                <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.cancel"), url: cancel_event_path(@event), method: :patch,
+                    data: { turbo_confirm: t("lesli_calendar.events.confirm_cancel") }, warning: true) %>
+            <% end %>
+            <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.delete"), url: event_path(@event), method: :delete,
+                data: { turbo_confirm: t("lesli_calendar.events.confirm_delete") }, danger: true) %>
+        <% end %>
+    <% end %>
+    <%= render "event" %>
+<% end %>

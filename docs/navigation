@@ -1,1 +1,1 @@
-<%= navigation_for_folder("engines", "calendar", "about", order:["installation", "functional-contract", "event-operations", "calendar-and-agenda", "translations", "database"]) %>
+<%= navigation_for_folder("engines", "calendar", "about", order:["installation", "functional-contract", "event-operations", "calendar-and-agenda", "interface", "translations", "database"]) %>

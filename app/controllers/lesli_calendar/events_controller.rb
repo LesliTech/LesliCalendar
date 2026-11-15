@@ -1,110 +1,115 @@
-=begin 
-
-Lesli
-
-Copyright (c) 2025, Lesli Technologies, S. A.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see http://www.gnu.org/licenses/.
-
-Lesli · Ruby on Rails SaaS Development Framework.
-
-Made with ♥ by LesliTech
-Building a better future, one line of code at a time.
-
-@contact  hello@lesli.tech
-@website  https://www.lesli.tech
-@license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
-
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
-// · 
-=end
-
 module LesliCalendar
     class EventsController < ApplicationController
-        before_action :set_event, only: %i[ show edit update destroy ]
+        prepend_before_action :use_html_for_page_navigation
+        before_action :load_service
+        before_action :load_event, only: [:show, :edit, :update, :destroy, :cancel]
+        before_action :load_invitation_options, only: [:new, :edit, :create, :update]
+        rescue_from ActiveRecord::RecordNotFound do
+            respond_with_not_found
+        end
 
-        # GET /events
         def index
-            events = EventService.new(current_user).calendar_entries
-            respond_with_lesli(json: events.as_json)
+            if request.format.json?
+                return respond_with_lesli(json: @service.calendar_entries)
+            end
+            @events = @service.my_calendar.result
+            @list_title = t("lesli_calendar.events.mine")
+            respond_with_lesli
+        rescue ArgumentError
+            head :bad_request
         end
 
-        # GET /events/1
+        def pending
+            @events = @service.pending_invitations.result
+            @list_title = t("lesli_calendar.events.pending")
+            respond_with_lesli(html: :index, json: @events.as_json)
+        end
+
+        def available
+            @events = @service.available_events.result
+            @list_title = t("lesli_calendar.events.available")
+            respond_with_lesli(html: :index, json: @events.as_json)
+        end
+
         def show
-            respond_to do |format|
-                format.html { }
-                format.json { respond_with_successful(@calendar.result) }
-            end
+            @participation = @event.attendants.find_by(user_id: current_user.id)
+            respond_with_lesli(json: event_json)
         end
 
-        # GET /events/new
         def new
-        @event = Event.new
+            @event = Event.new(start_at: 1.hour.from_now.change(min: 0), end_at: 2.hours.from_now.change(min: 0))
+            respond_with_lesli(json: @event.as_json)
         end
 
-        # GET /events/1/edit
         def edit
+            raise ActiveRecord::RecordNotFound unless @event.user_id == current_user.id
+            respond_with_lesli(json: event_json)
         end
 
-        # POST /events
         def create
-
-            # Creating the event
-            event_create_response = EventService.new(current_user).create(event_params)
-
-            if event_create_response.successful?
-                respond_with_successful(event_create_response.result)
-            else
-                respond_with_error(event_create_response.error.errors.full_messages.to_sentence)
-            end
+            @service.create(event_params)
+            save_response(:new, :created, :created)
         end
 
-            # PATCH/PUT /events/1
         def update
-            if @event.update(event_params)
-            redirect_to @event, notice: "Event was successfully updated.", status: :see_other
-            else
-            render :edit, status: :unprocessable_entity
-            end
+            @service.update(event_params)
+            save_response(:edit, :updated, :ok)
         end
 
-        # DELETE /events/1
         def destroy
-        @event.destroy
-        redirect_to events_url, notice: "Event was successfully destroyed.", status: :see_other
+            @service.destroy
+            success(t("lesli_calendar.events.deleted"))
+            respond_with_lesli(json: { id: @event.id }, redirect: events_path)
+        end
+
+        def cancel
+            @event = EventCancellationOperator.new(current_user, @event.id).operate
+            success(t("lesli_calendar.events.cancelled_notice"))
+            respond_with_lesli(json: event_json, redirect: event_path(@event))
+        rescue ActiveRecord::RecordInvalid => exception
+            @event = exception.record
+            respond_with_lesli(html: :show, json: { errors: @event.errors.to_hash },
+                turbo: stream_notification_danger(@event.errors.full_messages.to_sentence), status: :unprocessable_content)
         end
 
         private
-        # Use callbacks to share common setup or constraints between actions.
-        def set_event
-            @calendar = EventService.new(current_user,query).show(params[:id])
-            return respond_with_not_found unless @calendar.successful?
+
+        # Redirected Turbo form requests must render complete HTML pages on their next GET.
+        def use_html_for_page_navigation
+            request.format = :html if request.get? && request.format.turbo_stream?
         end
 
-        # Only allow a list of trusted parameters through.
+        def load_service
+            @service = EventService.new(current_user, month: params[:month])
+        end
+
+        def load_event
+            @event = @service.show(params[:id]).result
+        end
+
+        def load_invitation_options
+            @invitation_users = current_user.account.users.order(:email).pluck(:email, :id)
+            @invitation_roles = current_user.account.roles.order(:name).pluck(:name, :id) if defined?(LesliShield)
+        end
+
         def event_params
-            params.require(:event).permit(
-                :id,
-                :title,
-                :description,
-                :location,
-                :start_at,
-                :end_at,
-                :status,
-                :public,
-                :url
-            )
+            params.require(:event).permit(*EventService::EDITABLE_ATTRIBUTES, user_ids: [], role_ids: []).to_h
+        end
+
+        def event_json
+            @event.as_json.merge(user_ids: @event.user_ids, role_ids: @event.role_ids,
+                response: @participation&.response)
+        end
+
+        def save_response(template, message, status)
+            @event = @service.result
+            unless @service.successful?
+                return respond_with_lesli(html: template, json: { errors: @event.errors.to_hash },
+                    turbo: turbo_stream.replace("event-form", partial: "lesli_calendar/events/form"),
+                    status: :unprocessable_content)
+            end
+            success(t("lesli_calendar.events.#{message}"))
+            respond_with_lesli(json: event_json, status: status, redirect: event_path(@event))
         end
     end
 end

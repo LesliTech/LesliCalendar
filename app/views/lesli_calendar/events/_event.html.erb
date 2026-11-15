@@ -1,2 +1,30 @@
-<div id="<%= dom_id event %>">
-</div>
+<section id="event-detail" class="space-y-5 rounded-xl border border-slate-200 bg-white p-5">
+    <% if @event.errors.any? %>
+        <p role="alert"><%= @event.errors.full_messages.to_sentence %></p>
+    <% end %>
+    <dl class="grid gap-4 sm:grid-cols-2">
+        <% { organizer: @event.user.email, start_at: l(@event.start_at.utc, format: :long),
+             end_at: l(@event.end_at.utc, format: :long), location: @event.location,
+             status: t("lesli_calendar.events.statuses.#{@event.status}"),
+             privacy: t("lesli_calendar.events.#{@event.public? ? 'public' : 'private'}") }.each do |field, value| %>
+            <div><dt class="font-medium"><%= t("lesli_calendar.events.#{field}") %></dt><dd class="break-words"><%= value.presence || "—" %></dd></div>
+        <% end %>
+    </dl>
+    <p>UTC</p>
+    <p class="whitespace-pre-wrap break-words"><%= @event.description %></p>
+    <% if @event.url.present? %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.open"), url: @event.url, solid: false) %>
+    <% end %>
+    <% if @event.user_id != current_user.id %>
+        <p><%= t("lesli_calendar.events.your_response") %>: <%= t("lesli_calendar.events.responses.#{@participation&.response || 'pending'}") %></p>
+        <% if @event.scheduled? && @event.end_at > Time.current %>
+            <div class="flex flex-wrap gap-3">
+                <% [:accepted, :declined].each do |answer| %>
+                    <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.respond_#{answer}"),
+                        url: event_attendant_path(@event), method: :patch, params: { attendant: { response: answer } },
+                        solid: answer == :accepted) %>
+                <% end %>
+            </div>
+        <% end %>
+    <% end %>
+</section>

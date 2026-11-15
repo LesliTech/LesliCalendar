@@ -17,15 +17,15 @@ service = LesliCalendar::EventService.new(current_user)
 service.pending_invitations.result
 ```
 
-## Current Month
+## Visible Month
 
-`EventService#calendar_entries` returns FullCalendar entries for the current UTC month: from midnight on its first day to midnight on the first day of the next month (exclusive). Request range parameters are not used. Browsing another month does not fetch that month's events in this version.
+`EventService#calendar_entries` returns FullCalendar entries for the requested UTC month (`month=YYYY-MM`), defaulting to the current month: from midnight on its first day to midnight on the first day of the next month (exclusive). Prev and Next send the visible month. FullCalendar’s separate start/end parameters are not parsed. Invalid month parameters return HTTP 400.
 
-The service maps local events directly to FullCalendar hashes, obtains ticket deadlines through Courier, maps those tickets, and concatenates both arrays. Rails serializes the time objects in the JSON response. Local entries use the event’s stored `url` unchanged. Supply the complete destination when creating the event; mount changes require updating stored URLs. Ticket entries use `/support/tickets/:id`. Local events that overlap the month are included even when they started earlier; ticket deadlines must fall inside the month.
+The service maps local events directly to FullCalendar hashes, obtains ready-to-render ticket entries through Courier using `LesliSupport::TicketService#calendar_entries`, and concatenates both arrays. Rails serializes the time objects in the JSON response. Local entries use the event’s stored `url` unchanged. Supply the complete destination when creating the event; mount changes require updating stored URLs. Support supplies the ticket destinations; Calendar does not construct them. Local events that overlap the month are included even when they started earlier; ticket deadlines must fall inside the month.
 
 ## Agenda
 
-`EventService#agenda` uses the same monthly entries, removes finished events and past deadlines, sorts chronologically, and groups by start date. It keeps ongoing events. Descriptions are plain text, truncated for presentation, and links open the owning module.
+`EventService#agenda` uses the current month’s entries, removes finished events and past deadlines, sorts chronologically, and groups by start date. It keeps ongoing events. Descriptions are plain text, truncated for presentation, and links open the owning module.
 
 There is no pagination or Load more action. Agenda does not list events beyond the current month.
 

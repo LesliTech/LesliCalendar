@@ -27,6 +27,13 @@
                             <%= event[:title] %>
                         <% end %>
                     </p>
+                        <% if event[:start_at] %>
+                            <p class="text-sm text-slate-500">
+                                <%= l(event[:start_at], format: :short) %><% if event[:end_at] && event[:end_at] > event[:start_at] %> — <%= l(event[:end_at], format: :short) %><% end %> UTC
+                                <% if event[:source] %> · <%= t("lesli_calendar.events.sources.#{event[:source]}") %><% end %>
+                                <% if event[:status] %> · <%= t("lesli_calendar.events.statuses.#{event[:status]}") %><% end %>
+                            </p>
+                        <% end %>
                         <% if event[:description].present? %>
                             <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>
                         <% end %>

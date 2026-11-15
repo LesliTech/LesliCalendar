@@ -5,7 +5,7 @@
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @reference "../../../../gems/LesliAssets/source/tailwind/settings/theme.css";
 
-@source "../../app/views/lesli_calendar/calendars/show.html.erb";
+@source "../../app/views/lesli_calendar/**/*.html.erb";
 @source "../../app/views/lesli_calendar/agendas/show.html.erb";
 @source "../../app/views/lesli_calendar/partials/_calendar.html.erb";
 @source "../../app/views/lesli_calendar/partials/_agenda.html.erb";

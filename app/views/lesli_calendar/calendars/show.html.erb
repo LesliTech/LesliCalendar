@@ -1,39 +1,22 @@
 <% content_for(:application_lesli_javascript) do %>
-    <%= javascript_include_tag("lesli_assets/calendar.js", :defer => "defer") %>
+    <%= javascript_include_tag("lesli_assets/calendar.js", defer: true) %>
 <% end %>
-
 <% content_for(:head) do %>
     <%= stylesheet_link_tag(lesli_asset_path(:lesli_assets, "calendar"), media: "all", "data-turbo-track": "reload") %>
 <% end %>
-
-<%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
-
-    <%= render(LesliView::Components::Header.new(Date2.new.date_words)) do %>
-        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Calendar navigation">
-            <div>
-                <%= render LesliView::Elements::Button.new("Prev", icon:"arrow_back_ios") %>
-            </div>
-            <div>
-                <%= render LesliView::Elements::Button.new("Today", icon:"today") %>
-            </div>
-            <div>
-                <button
-                    type="button"
-                    @click="storeCalendar.nextMonth()"
-                    class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-info-600 bg-white px-4 py-2 text-sm font-semibold text-info-700 shadow-sm transition-colors hover:bg-info-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info-500/40">
-                    <span>Next</span>
-                    <span class="material-symbols text-lg leading-none" aria-hidden="true">arrow_forward_ios</span>
-                </button>
-            </div>
-        </div>
-        <%= render(LesliView::Elements::Button.new("Add event", icon:"add", solid: true, dispatch:"panel")) %>
+<%= render LesliView::Layout::Container.new("calendar-calendar") do %>
+    <%= render LesliView::Components::Header.new(content_tag(:span, t("lesli_calendar.calendars.title"), id: "calendar-period", aria: { live: "polite" })) do %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.new"), url: new_event_path, icon: "add") %>
     <% end %>
-
-    <%= render("lesli_calendar/partials/calendar") %>
-<% end %>
-
-<%= render(LesliView::Components::Panel.new("Create new event", :overlay => true)) do %>
-    <%= form_for(@event, builder: LesliView::Forms::Builder) do |form| %>
-        <%= form.field_control(:title) %>
-    <% end %>
+    <div class="flex flex-wrap gap-3" role="group" aria-label="<%= t('lesli_calendar.calendars.navigation') %>">
+        <% { prev: "chevron_left", today: "today", next: "chevron_right" }.each do |action, icon| %>
+            <%= render LesliView::Elements::Button.new(t("lesli_calendar.calendars.#{action}"), icon: icon, solid: false,
+                data: { calendar_action: action, calendar_target: "lesli-calendar-engine" }) %>
+        <% end %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.mine"), url: events_path, solid: false) %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.pending"), url: pending_events_path, solid: false) %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.available"), url: available_events_path, solid: false) %>
+    </div>
+    <p id="calendar-status" class="mt-4 text-sm" role="status" aria-live="polite"></p>
+    <%= render "lesli_calendar/partials/calendar" %>
 <% end %>

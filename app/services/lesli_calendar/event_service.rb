@@ -96,7 +96,7 @@ module LesliCalendar
         end
 
         def calendar_entries
-            start_at = Time.current.utc.beginning_of_month
+            start_at = query[:month].present? ? Time.find_zone!("UTC").iso8601("#{query[:month]}-01") : Time.current.utc.beginning_of_month
             end_at = start_at.next_month
 
             events = personal_events.where("start_at < ? AND end_at > ?", end_at, start_at)
@@ -105,21 +105,13 @@ module LesliCalendar
                     id: "lesli_calendar:event:#{event.id}", title: event.title,
                     start: event.start_at.utc, end: event.end_at.utc,
                     url: event.url, className: "lesli-calendar",
-                    extendedProps: { record_id: event.id, description: event.description }
-                }
+                    extendedProps: { record_id: event.id, description: event.description, source: "calendar", status: event.status }
+                }.compact
             end
 
             tickets = Lesli::Courier.new(:lesli_support, [], fallback_on_error: true)
                 .from(:ticket_service, current_user, { start: start_at, end: end_at })
-                .call(:with_deadline)
-                .map do |ticket|
-                    {
-                        id: "lesli_support:ticket:#{ticket.id}", title: ticket.subject,
-                        start: ticket.deadline_at.utc, end: nil,
-                        url: "/support/tickets/#{ticket.id}", className: "lesli-support",
-                        extendedProps: { record_id: ticket.id, description: ticket.description }
-                    }
-                end
+                .call(:calendar_entries)
 
             events + tickets
         end
@@ -132,7 +124,8 @@ module LesliCalendar
                 next if end_at <= now
 
                 {
-                    title: entry[:title], url: entry[:url], start_at: start_at,
+                    title: entry[:title], url: entry[:url], start_at: start_at, end_at: end_at,
+                    source: entry.dig(:extendedProps, :source), status: entry.dig(:extendedProps, :status),
                     class_name: entry[:className],
                     description: ActionController::Base.helpers.strip_tags(entry.dig(:extendedProps, :description).to_s).truncate(88)
                 }

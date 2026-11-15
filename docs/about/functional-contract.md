@@ -1,6 +1,6 @@
 # Functional Contract
 
-The rules below define event ownership, visibility, invitations, and responses. The simplified calendar feed currently covers only the current UTC month; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
+The rules below define event ownership, visibility, invitations, and responses. The simplified calendar feed covers the visible UTC month; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
 
 ## Account Boundary and Organizer
 
@@ -102,7 +102,7 @@ Agenda remains an upcoming-events list, not a today-only view. It uses the same 
 - Use stable source/record identifiers to break ties.
 - Show each entry's own time, origin, and destination.
 - Apply one explicit display timezone consistently to grouping and date labels.
-- Bound the initial query and provide a way to view additional entries.
+- The current Agenda is bounded to the current month and has no pagination.
 
 External deadlines are point-in-time entries, not meetings with attendance. Past-due work may be shown by a separate overdue widget; it must not be silently treated as an ongoing meeting.
 
