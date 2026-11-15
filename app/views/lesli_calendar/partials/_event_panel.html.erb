@@ -1,0 +1,3 @@
+<%= render LesliView::Components::Panel.new(t("lesli_calendar.events.details"), "calendar-event") do %>
+    <%= turbo_frame_tag "calendar-event-detail", target: "_top" %>
+<% end %>

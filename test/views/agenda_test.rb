@@ -16,9 +16,23 @@ class CalendarAgendaViewTest < ActionView::TestCase
         end
     end
 
+    test "calendar entries open the detail panel regardless of their destination" do
+        @agenda = { "2026-11-14" => { day_name: "Today", day_number: "14", events: [
+            { source: "calendar", record_id: 12, title: "With destination", url: "/support/tickets/7" },
+            { source: "calendar", record_id: 13, title: "Without destination" }
+        ] } }
+        render partial: "lesli_calendar/partials/agenda"
+        [12, 13].each do |id|
+            assert_select "a[href=?][data-turbo-frame=calendar-event-detail]", event_path(id) do |links|
+                assert_equal "$dispatch('calendar-event')", links.first["@click"]
+            end
+        end
+        assert_select "a[href='/support/tickets/7']", count: 0
+    end
+
     test "agenda links to records and escapes event content" do
         @agenda = { "2026-11-14" => { day_name: "Today", day_number: "14", events: [
-            { url: "/support/tickets/7", title: "<script>unsafe</script>", description: "<b>text</b>", class_name: "lesli-calendar" }
+            { source: "support", url: "/support/tickets/7", title: "<script>unsafe</script>", description: "<b>text</b>", class_name: "lesli-calendar" }
         ] } }
         render partial: "lesli_calendar/partials/agenda"
         assert_select "a[href='/support/tickets/7'][data-turbo-frame='_top']"

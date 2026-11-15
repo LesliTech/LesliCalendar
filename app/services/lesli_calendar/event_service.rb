@@ -126,7 +126,7 @@ module LesliCalendar
                 {
                     title: entry[:title], url: entry[:url], start_at: start_at, end_at: end_at,
                     source: entry.dig(:extendedProps, :source), status: entry.dig(:extendedProps, :status),
-                    class_name: entry[:className],
+                    record_id: entry.dig(:extendedProps, :record_id), class_name: entry[:className],
                     description: ActionController::Base.helpers.strip_tags(entry.dig(:extendedProps, :description).to_s).truncate(88)
                 }
             end

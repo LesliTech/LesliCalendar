@@ -79,14 +79,43 @@ module LesliCalendar
             end
         end
 
+        test "panel detail and editing stay inside the frame" do
+            event = EventService.new(@user).create(attributes.merge(url: "/support/tickets/42")).result
+            @request.headers["Turbo-Frame"] = "calendar-event-detail"
+            get :show, params: { id: event.id }
+            assert_response :success
+            assert_select "turbo-frame#calendar-event-detail" do
+                assert_select "a[href=?][data-turbo-frame=calendar-event-detail]", edit_event_path(event)
+                assert_select "a[href='/support/tickets/42'][data-turbo-frame=_top]"
+                assert_select "button[data-turbo-frame=calendar-event-detail]"
+            end
+            get :edit, params: { id: event.id }
+            assert_response :success
+            assert_select "turbo-frame#calendar-event-detail form[data-turbo-frame=calendar-event-detail]"
+            patch :update, params: { id: event.id, event: { title: "" } }, format: :turbo_stream
+            assert_response :unprocessable_content
+            assert_select "turbo-stream[target=event-form] form[data-turbo-frame=calendar-event-detail]"
+            patch :update, params: { id: event.id, event: { title: "Panel update" } }, format: :turbo_stream
+            assert_redirected_to event_path(event)
+            get :show, params: { id: event.id }, format: :turbo_stream
+            assert_select "turbo-frame#calendar-event-detail", text: /Panel update/
+            patch :cancel, params: { id: event.id }, format: :turbo_stream
+            assert_redirected_to event_path(event)
+            get :show, params: { id: event.id }, format: :turbo_stream
+            assert_select "turbo-frame#calendar-event-detail"
+            assert event.reload.cancelled?
+        end
+
         test "another organizer cannot edit a visible public event" do
             other = @account.users.new(email: "other-organizer@example.test")
             other.password = "Password123!" if other.respond_to?(:password=)
             other.confirmed_at = Time.current if other.respond_to?(:confirmed_at=)
             other.save!
             event = EventService.new(other).create(attributes).result
+            @request.headers["Turbo-Frame"] = "calendar-event-detail"
             get :show, params: { id: event.id }
             assert_response :success
+            assert_select "turbo-frame#calendar-event-detail button[data-turbo-frame=calendar-event-detail]", count: 2
             get :edit, params: { id: event.id }, format: :json
             assert_response :not_found
             patch :update, params: { id: event.id, event: { title: "Forbidden" } }, format: :json

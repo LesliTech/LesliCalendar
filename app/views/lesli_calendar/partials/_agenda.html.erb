@@ -21,7 +21,11 @@
                 <% day[:events].each do |event| %>
                     <div class="agenda-event <%= event[:class_name] %> border-l-4 px-4 py-2">
                         <p class="font-['OpenSans'] text-sm font-medium text-slate-800">
-                        <% if event[:url].present? %>
+                        <% if event[:source] == "calendar" %>
+                            <%= link_to event[:title], event_path(event[:record_id]),
+                                data: { turbo_frame: "calendar-event-detail" },
+                                "x-data": "", "@click": "$dispatch('calendar-event')" %>
+                        <% elsif event[:url].present? %>
                             <%= link_to event[:title], event[:url], data: { turbo_frame: "_top" } %>
                         <% else %>
                             <%= event[:title] %>

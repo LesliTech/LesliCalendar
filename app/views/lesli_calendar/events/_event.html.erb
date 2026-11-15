@@ -22,7 +22,8 @@
                 <% [:accepted, :declined].each do |answer| %>
                     <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.respond_#{answer}"),
                         url: event_attendant_path(@event), method: :patch, params: { attendant: { response: answer } },
-                        solid: answer == :accepted) %>
+                        solid: answer == :accepted, data: { turbo_frame: turbo_frame_request_id || "_top" }) 
+                    %>
                 <% end %>
             </div>
         <% end %>

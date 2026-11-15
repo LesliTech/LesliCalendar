@@ -1,4 +1,6 @@
-<%= render LesliView::Layout::Container.new("event-edit") do %>
-    <%= render LesliView::Components::Header.new(t("lesli_calendar.events.edit"), back: event_path(@event)) %>
-    <%= render "form" %>
+<%= turbo_frame_tag "calendar-event-detail" do %>
+    <%= render LesliView::Layout::Container.new("event-edit") do %>
+        <%= render LesliView::Components::Header.new(t("lesli_calendar.events.edit"), back: turbo_frame_request? ? nil : event_path(@event)) %>
+        <%= render "form" %>
+    <% end %>
 <% end %>

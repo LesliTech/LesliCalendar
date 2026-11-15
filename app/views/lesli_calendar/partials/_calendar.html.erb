@@ -9,6 +9,8 @@
         data-loading-message="<%= t('lesli_calendar.calendars.loading') %>"
         data-empty-message="<%= t('lesli_calendar.calendars.empty') %>"
         data-error-message="<%= t('lesli_calendar.calendars.error') %>"
+        data-detail-error-message="<%= t('lesli_calendar.events.load_error') %>"
+        data-event-url="<%= event_path("__EVENT_ID__") %>"
         data-events-url="<%= events_path(format: :json) %>">
     </lesli-calendar>
 </div>

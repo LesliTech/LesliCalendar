@@ -1,14 +1,13 @@
-<%= render LesliView::Layout::Container.new("event-show") do %>
-    <%= render LesliView::Components::Header.new(@event.title, back: events_path) do %>
-        <% if @event.user_id == current_user.id %>
-            <% unless @event.cancelled? %>
-                <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.edit"), url: edit_event_path(@event), icon: "edit") %>
-                <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.cancel"), url: cancel_event_path(@event), method: :patch,
-                    data: { turbo_confirm: t("lesli_calendar.events.confirm_cancel") }, warning: true) %>
-            <% end %>
-            <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.delete"), url: event_path(@event), method: :delete,
-                data: { turbo_confirm: t("lesli_calendar.events.confirm_delete") }, danger: true) %>
+<%= turbo_frame_tag "calendar-event-detail" do %>
+    <%= render LesliView::Layout::Container.new("event-show") do %>
+        <%= render LesliView::Components::Header.new(@event.title, back: turbo_frame_request? ? nil : events_path) do %>
+            <%= render "actions" unless turbo_frame_request? %>
+        <% end %>
+        <%= render "event" %>
+        <% if turbo_frame_request? && @event.user_id == current_user.id %>
+            <div class="mt-4 flex flex-wrap gap-3" role="group" aria-label="<%= t('actions.label', default: 'Page actions') %>">
+                <%= render "actions" %>
+            </div>
         <% end %>
     <% end %>
-    <%= render "event" %>
 <% end %>

@@ -20,10 +20,12 @@ module LesliCalendar
         test "agenda presents plain text descriptions and keeps the destination" do
             travel_to Time.utc(2026, 11, 14, 12) do
                 entries = [{ title: "Ticket", start: Time.iso8601("2026-11-15T12:00:00Z"), url: "/support/tickets/1",
-                    extendedProps: { description: "<b>Details</b> #{'words ' * 30}" } }]
+                    extendedProps: { record_id: 1, source: "support", description: "<b>Details</b> #{'words ' * 30}" } }]
                 service = EventService.new(nil)
                 service.define_singleton_method(:calendar_entries) { entries }
                 event = service.agenda.values.first[:events].first
+                assert_equal 1, event[:record_id]
+                assert_equal "support", event[:source]
                 assert_equal "/support/tickets/1", event[:url]
                 refute_includes event[:description], "<b>"
                 assert_operator event[:description].length, :<=, 88

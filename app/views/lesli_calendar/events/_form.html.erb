@@ -1,6 +1,6 @@
 <div id="event-form">
     <%= form_with model: @event, scope: :event, builder: LesliView::Forms::Builder,
-        url: @event.persisted? ? event_path(@event) : events_path, data: { turbo_frame: "_top" } do |form| %>
+        url: @event.persisted? ? event_path(@event) : events_path, data: { turbo_frame: turbo_frame_request_id || "_top" } do |form| %>
         <%= form.fieldset do %>
             <% if @event.errors.any? %>
                 <div role="alert"><%= form.field_control_builder(message_text: @event.errors.full_messages.to_sentence, category: :danger) %></div>

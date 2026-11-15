@@ -1,0 +1,25 @@
+<% if @event.user_id == current_user.id %>
+    <% unless @event.cancelled? %>
+        <%= render(LesliView::Elements::Button.new(
+            t("lesli_calendar.events.edit"), 
+            url: edit_event_path(@event), icon: "edit",
+            data: { turbo_frame: turbo_frame_request_id || "_top"},
+            small: true
+        )) %>
+        <%= render(LesliView::Elements::Button.new(
+            t("lesli_calendar.events.cancel"), 
+            url: cancel_event_path(@event), 
+            data: { turbo_frame: turbo_frame_request_id || "_top", turbo_confirm: t("lesli_calendar.events.confirm_cancel") }, 
+            warning: true,
+            method: :patch,
+            small: true
+        )) %>
+    <% end %>
+    <%= render(LesliView::Elements::Button.new(
+        t("lesli_calendar.events.delete"), 
+        url: event_path(@event), method: :delete,
+        data: { turbo_confirm: t("lesli_calendar.events.confirm_delete") }, 
+        danger: true,
+        small: true
+    )) %>
+<% end %>

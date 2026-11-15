@@ -60,3 +60,17 @@ bin/rails runner 'load LesliCalendar::Engine.root.join("db/seeds.rb")'
 ```
 
 Demo data is loaded only in development or when `Lesli.config.demo` is enabled. Existing demo dates are not shifted on subsequent runs.
+
+### Event detail panel
+
+Clicking a Calendar event in FullCalendar or Agenda opens its detail in the existing LesliView panel.
+Agenda uses the event ID for this detail link, even when the event has no destination URL.
+The panel loads the authorized event through a Turbo Frame and reuses the
+regular detail and edit views. Editing, cancelling, accepting or declining
+refreshes the calendar without changing the visible period. Validation errors
+remain in the panel. Deleting an event returns to the event list.
+
+The event's stored `url` remains its optional **Open destination** action.
+External entries, such as Support ticket deadlines, follow the URL supplied
+by their owning engine instead of opening the Calendar panel. Direct links
+to an event still render the complete detail page.

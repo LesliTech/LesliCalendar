@@ -16,6 +16,8 @@ en:
       error: "Could not load events. Use Today or change the period to retry."
     dashboards: {}
     events:
+      load_error: "Could not load this event. Close the panel and try again."
+      details: "Event details"
       title: "Title"
       description: "Description"
       start_at: "Starts"

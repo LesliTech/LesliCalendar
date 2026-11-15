@@ -16,6 +16,8 @@ es:
       error: "No se pudieron cargar los eventos. Usa Hoy o cambia el período para reintentar."
     dashboards: {}
     events:
+      load_error: "No se pudo cargar el evento. Cierra el panel e inténtalo de nuevo."
+      details: "Detalle del evento"
       title: "Título"
       description: "Descripción"
       start_at: "Inicio"
