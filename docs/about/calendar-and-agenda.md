@@ -17,17 +17,84 @@ service = LesliCalendar::EventService.new(current_user)
 service.pending_invitations.result
 ```
 
-## Visible Month
+## Calendar Feed
 
-`EventService#calendar_entries` returns FullCalendar entries for the requested UTC month (`month=YYYY-MM`), defaulting to the current month: from midnight on its first day to midnight on the first day of the next month (exclusive). Prev and Next send the visible month. FullCalendar’s separate start/end parameters are not parsed. Invalid month parameters return HTTP 400.
+FullCalendar loads the JSON URL supplied by Rails through `data-events-url`.
+There is no hardcoded fallback URL. Its requests include ISO 8601 `start` and
+`end` timestamps for the visible range, including adjacent days from other
+months. The end boundary is exclusive. Both timestamps are required when either
+is supplied; malformed timestamps return HTTP 400.
 
-The service maps local events directly to FullCalendar hashes, obtains ready-to-render ticket entries through Courier using `LesliSupport::TicketService#calendar_entries`, and concatenates both arrays. Rails serializes the time objects in the JSON response. Local entries use the event’s stored `url` unchanged. Supply the complete destination when creating the event; mount changes require updating stored URLs. Support supplies the ticket destinations; Calendar does not construct them. Local events that overlap the month are included even when they started earlier; ticket deadlines must fall inside the month.
+`EventService#calendar_entries` also accepts `month=YYYY-MM` for explicit monthly
+queries. Without a range or month, it uses the current UTC month. An explicit
+range takes precedence over `month`; malformed month values return HTTP 400
+when using the monthly query.
+
+```ruby
+service = LesliCalendar::EventService.new(
+    current_user,
+    start: "2026-11-01T00:00:00Z",
+    end: "2026-12-01T00:00:00Z"
+)
+service.calendar_entries
+```
+
+The service maps local events to FullCalendar hashes, obtains ready-to-render
+ticket entries through Courier using `LesliSupport::TicketService#calendar_entries`,
+and concatenates both arrays. The same range is passed to Support. Local events
+are included when they overlap the range, even if they began earlier; ticket
+deadlines must fall within it. Rails serializes the time objects as JSON.
+
+Local entries retain the stored event `url` as an optional destination. The
+Calendar interface opens local event details in its panel using the record ID;
+**Open destination** follows the stored URL. Support supplies its own ticket
+URLs, which navigate directly to Support. Calendar does not construct them.
 
 ## Agenda
 
-`EventService#agenda` uses the current month’s entries, removes finished events and past deadlines, sorts chronologically, and groups by start date. It keeps ongoing events. Descriptions are plain text, truncated for presentation, and links open the owning module.
+`EventService#agenda(view: "upcoming", from: nil, to: nil)` supplies four views:
 
-There is no pagination or Load more action. Agenda does not list events beyond the current month.
+| View | Entries | Date scope |
+| --- | --- | --- |
+| `upcoming` | Personal events and external entries, including ticket deadlines | Current month; keeps ongoing entries and removes finished events and past deadlines |
+| `mine` | Scheduled events organized or accepted by the current user | Includes history; optional `from` and `to` ISO dates filter overlapping events in UTC, with the final date inclusive |
+| `pending` | Invitations awaiting a response | Ongoing and future events |
+| `available` | Public events the user can join | Ongoing and future events not organized or accepted by the user |
+
+The Agenda controller defaults to `upcoming` and rejects unknown views with
+HTTP 400. Date filters apply only to `mine`; malformed dates return HTTP 400.
+There is no pagination or Load more action. Only the default Upcoming view is
+bounded to the current month; the other views do not inherit that restriction.
+
+Entries are sorted by start time and grouped by start date. Each group contains
+`day_name`, `day_number`, and `events`. Each entry provides `title`, `url`,
+`start_at`, `end_at`, `source`, `status`, `record_id`, `class_name`, and a plain-text
+description truncated to 88 characters.
+
+The UI selects the view in the URL, for example `/calendar/agenda?view=pending`.
+Calendar events open the shared detail panel, including events without a stored
+URL. Ticket links continue to open Support. See [Calendar Interface](interface.md)
+for sidebar navigation and panel behavior.
+
+## FullCalendar Lifecycle
+
+The `lesli-calendar` custom element lives in LesliAssets's `source/js/calendar.js`.
+It creates one FullCalendar instance and cleans it up when disconnected or before
+Turbo caches the page. Listeners share one AbortController signal; disconnecting
+removes them, and the custom-element registration guard prevents duplicate registration.
+
+- Rails supplies the feed URL, event detail URL template, locale and title target.
+- The initial viewport selects a month on desktop, a week on tablet, or a day on mobile.
+  There is no custom resize handler to switch views afterward.
+- Prev, Today and Next use FullCalendar navigation. `datesSet` only updates the title.
+- FullCalendar manages range loading and caching. There is no separate `visibleMonth`
+  state or extra refetch after changing periods.
+- A successful Turbo form submission inside `calendar-event-detail` explicitly
+  refreshes the grid without resetting its visible period. Unrelated forms and
+  failed submissions do not trigger that refresh.
+- The grid has no custom loading, empty-period or request-error status messages.
+  Detail-panel errors are handled separately by the shared panel.
+- Event titles are rendered with `textContent`, not interpreted as HTML.
 
 ## Optional Sources
 

@@ -10,7 +10,8 @@ Paths below assume the standard `/calendar` engine mount:
 | --- | --- |
 | `GET /calendar/calendar` | Personal calendar grid. |
 | `GET /calendar/events` | Redirect to Agenda, My events. |
-| `GET /calendar/events.json?month=2026-11` | FullCalendar entries for the specified UTC month. |
+| `GET /calendar/events.json?start=2026-11-01T00:00:00Z&end=2026-12-01T00:00:00Z` | Entries overlapping the requested range; used by FullCalendar. |
+| `GET /calendar/events.json?month=2026-11` | Optional monthly query; without a range or month, uses the current UTC month. |
 | `GET /calendar/events/pending` | Redirect to Agenda, Pending invitations. |
 | `GET /calendar/events/available` | Redirect to Agenda, Available public events. |
 | `GET /calendar/events/new` | Creation form. |
@@ -31,7 +32,15 @@ Forms use UTC datetime fields, plain text descriptions, an optional complete des
 
 Validation failures return HTTP 422 and retain submitted fields and selections. Turbo replaces the form; HTML re-renders its page; JSON returns an `errors` object. Successful HTML/Turbo mutations redirect with HTTP 303. JSON creation returns 201 and subsequent mutations return 200. Page GETs following Turbo redirects render HTML. Account isolation and organizer rules are enforced in addition to the existing screen authorization.
 
-Prev, Today, and Next use the current custom element. The title follows the visible period and the feed receives one `month` parameter. Desktop shows a month, tablet a week, and mobile a day. Period changes, successful Turbo form submissions inside the event detail panel, and page restoration reload the feed. Empty, loading, and request-error messages are translated. Local destinations remain the stored event URL; optional sources supply their own destinations.
+Prev, Today and Next use FullCalendar's navigation. Rails supplies the feed URL;
+FullCalendar sends the visible UTC range as `start` and `end` (exclusive),
+including adjacent days. `datesSet` only updates the title. The initial viewport
+selects month, week or day; resizing does not switch the view. FullCalendar manages
+range loading and caching, with an explicit refresh only after a successful
+Turbo form submission inside the event panel. The grid has no custom loading,
+empty-period or request-error status messages.
+
+See [Calendar and Agenda](calendar-and-agenda.md) for query parameters and lifecycle details.
 
 Agenda shows each entry's time in UTC, state, source, and destination. It has no persistent model or scaffold CRUD.
 
@@ -61,27 +70,37 @@ bin/rails runner 'load LesliCalendar::Engine.root.join("db/seeds.rb")'
 
 Demo data is loaded only in development or when `Lesli.config.demo` is enabled. Existing demo dates are not shifted on subsequent runs.
 
-### Event detail panel
+## Event Detail Panel
 
 Clicking a Calendar event in FullCalendar or Agenda opens its detail in the existing LesliView panel.
 Agenda uses the event ID for this detail link, even when the event has no destination URL.
 The panel loads the authorized event through a Turbo Frame and reuses the
-regular detail and edit views. Editing, cancelling, accepting or declining
-refreshes the calendar without changing the visible period. Validation errors
-remain in the panel. Deleting an event returns to My events in Agenda.
+regular detail and edit views. On the Calendar page, successful edits,
+cancellations and invitation responses refresh the grid without changing the
+visible period. This grid refresh does not automatically reload Agenda's list.
+Validation errors remain in the panel. Organizer action buttons appear below
+the detail in a wrapping group, leaving the panel header for its title and close control. Deleting an event returns to My events in Agenda.
 
 The event's stored `url` remains its optional **Open destination** action.
 External entries, such as Support ticket deadlines, follow the URL supplied
 by their owning engine instead of opening the Calendar panel. Direct links
 to an event still render the complete detail page.
 
-### Agenda navigation
+The shared event panel handles missing-frame responses and network errors with
+local Alpine listeners, in both Calendar and Agenda. It displays a translated
+alert without discarding the current form. Starting another request clears the
+alert. Normal validation responses continue to display their form errors.
+
+## Agenda Navigation
 
 The main navigation contains Dashboard, Calendar and Agenda. Agenda selects its
 view through `?view=upcoming|mine|pending|available`; the default is `upcoming`.
 The standard LesliView navigation sidebar lists these views beside the content
 on desktop and collapses into a disclosure on smaller screens. New event sits
-in the page header, while date filters remain with the event list.
+in the page header, while date filters remain with the event list. Each sidebar
+option has its own Remix Icon: calendar tasks for Upcoming, calendar events for
+My events, unread mail for Pending, and a globe for Available public events.
+The mobile disclosure displays the selected option's label and icon.
 
 - **Upcoming events** keeps the existing current-month summary of ongoing and
   upcoming personal events and external entries, ordered chronologically.
@@ -95,8 +114,3 @@ All views reuse EventService visibility and account scopes. Calendar events open
 in the shared detail panel; external ticket links continue to open LesliSupport.
 The previous HTML event-list URLs redirect to the corresponding Agenda view.
 Their JSON responses remain available, including the FullCalendar events feed.
-
-The shared event panel handles missing-frame responses and network errors with
-local Alpine listeners, in both Calendar and Agenda. It displays a translated
-alert without discarding the current form. Starting another request clears the
-alert. Normal validation responses continue to display their form errors.

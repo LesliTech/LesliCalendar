@@ -1,6 +1,6 @@
 # Functional Contract
 
-The rules below define event ownership, visibility, invitations, and responses. The simplified calendar feed covers the visible UTC month; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
+The rules below define event ownership, visibility, invitations, and responses. The calendar feed covers the requested visible UTC range; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
 
 ## Account Boundary and Organizer
 
@@ -92,9 +92,15 @@ Rescheduling a public event must not lose the previous participants from the pen
 
 Resetting a response does not imply sending email or creating a notification. Delivery integrations are separate future work.
 
-## Agenda: Upcoming Events
+## Agenda Views
 
-Agenda remains an upcoming-events list, not a today-only view. It uses the same personal eligibility rules as My Calendar and may include authorized external entries.
+Agenda groups Upcoming events, My events, Pending invitations and Available public
+events in one page. My events supports optional date filters and historical
+records; Pending and Available use their respective visibility and participation
+queries. See [Calendar and Agenda](calendar-and-agenda.md) for the query contract.
+
+The default Upcoming view is not limited to today. It uses the same personal
+eligibility rules as My Calendar and may include authorized external entries.
 
 - Include events in progress and future events; exclude events that have ended or been cancelled.
 - Include ongoing events that started on a previous day.
@@ -102,7 +108,7 @@ Agenda remains an upcoming-events list, not a today-only view. It uses the same 
 - Use stable source/record identifiers to break ties.
 - Show each entry's own time, origin, and destination.
 - Apply one explicit display timezone consistently to grouping and date labels.
-- The current Agenda is bounded to the current month and has no pagination.
+- Upcoming is bounded to the current month. Agenda currently has no pagination.
 
 External deadlines are point-in-time entries, not meetings with attendance. Past-due work may be shown by a separate overdue widget; it must not be silently treated as an ongoing meeting.
 
