@@ -32,6 +32,8 @@ Building a better future, one line of code at a time.
 =end
 %>
 
+<%= render "lesli_calendar/partials/timezone" %>
+
 <%= navigation_item(lesli_calendar.root_path, "Dashboard", "ri-dashboard-3-line"); %>
 <%= navigation_item(lesli_calendar.calendar_path, t("lesli_calendar.calendars.title"), "ri-calendar-2-fill") %>
 <%= navigation_item(lesli_calendar.agenda_path, t("lesli_calendar.agendas.title"), "ri-calendar-todo-fill") %>

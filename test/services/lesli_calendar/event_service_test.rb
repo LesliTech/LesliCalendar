@@ -17,6 +17,19 @@ module LesliCalendar
             end
         end
 
+        test "agenda groups UTC entries by the local date" do
+            Time.use_zone("America/Guatemala") do
+                travel_to Time.utc(2026, 11, 14, 12) do
+                    entries = [{ title: "Late meeting", start: Time.utc(2026, 11, 15, 2), end: Time.utc(2026, 11, 15, 3) }]
+                    service = EventService.new(nil)
+                    service.define_singleton_method(:calendar_entries) { entries }
+                    agenda = service.agenda
+                    assert_equal [Date.new(2026, 11, 14)], agenda.keys
+                    assert_equal 20, agenda.values.first[:events].first[:start_at].hour
+                end
+            end
+        end
+
         test "agenda presents plain text descriptions and keeps the destination" do
             travel_to Time.utc(2026, 11, 14, 12) do
                 entries = [{ title: "Ticket", start: Time.iso8601("2026-11-15T12:00:00Z"), url: "/support/tickets/1",

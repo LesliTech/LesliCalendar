@@ -26,7 +26,7 @@ months. The end boundary is exclusive. Both timestamps are required when either
 is supplied; malformed timestamps return HTTP 400.
 
 `EventService#calendar_entries` also accepts `month=YYYY-MM` for explicit monthly
-queries. Without a range or month, it uses the current UTC month. An explicit
+queries. Without a range or month, it uses the current month in the active timezone. An explicit
 range takes precedence over `month`; malformed month values return HTTP 400
 when using the monthly query.
 
@@ -57,7 +57,7 @@ URLs, which navigate directly to Support. Calendar does not construct them.
 | View | Entries | Date scope |
 | --- | --- | --- |
 | `upcoming` | Personal events and external entries, including ticket deadlines | Current month; keeps ongoing entries and removes finished events and past deadlines |
-| `mine` | Scheduled events organized or accepted by the current user | Includes history; optional `from` and `to` ISO dates filter overlapping events in UTC, with the final date inclusive |
+| `mine` | Scheduled events organized or accepted by the current user | Includes history; optional `from` and `to` ISO dates filter overlapping events in the browser timezone, with the final date inclusive |
 | `pending` | Invitations awaiting a response | Ongoing and future events |
 | `available` | Public events the user can join | Ongoing and future events not organized or accepted by the user |
 
@@ -75,6 +75,36 @@ The UI selects the view in the URL, for example `/calendar/agenda?view=pending`.
 Calendar events open the shared detail panel, including events without a stored
 URL. Ticket links continue to open Support. See [Calendar Interface](interface.md)
 for sidebar navigation and panel behavior.
+
+## Local Time and UTC Storage
+
+Users create, edit and view events in their browser's timezone. The shared
+navigation detects its IANA name with `Intl.DateTimeFormat`, stores it in the
+`lesli_calendar_time_zone` session cookie, and reloads once when the server's
+rendered timezone differs. Rails applies that zone with `Time.use_zone` for
+Calendar requests. Missing or invalid browser zones fall back to `Lesli.config.datetime[:time_zone]`,
+then to the Rails application timezone when no Lesli timezone is configured.
+JavaScript and cookies are required to detect the browser zone.
+
+The datetime-local form values are interpreted in that zone; Active Record
+persists UTC timestamps. For example, 09:00 in `America/Guatemala` is stored as
+15:00 UTC and displays as 09:00 when reopened in that timezone. IANA zones apply
+the offset for the event date, including daylight saving time where applicable.
+No fixed numeric offset is stored on the event.
+
+FullCalendar uses `timeZone: "local"`; its ISO range timestamps include offsets
+and the service normalizes them to UTC for queries. Event feed timestamps remain
+UTC. Agenda groups entries and applies date filters in the browser timezone;
+monthly queries use local month boundaries. Forms and detail views display the
+active timezone explicitly.
+
+API clients should send ISO 8601 datetimes with `Z` or an explicit offset to
+identify instants without relying on a browser cookie. Calls outside an HTTP
+request use the current Rails timezone for values without an offset.
+
+Existing timestamps are not rewritten. Records previously entered as UTC keep
+the same instants and now display in local time; correct individual records if
+the original input was intended to mean a different instant.
 
 ## FullCalendar Lifecycle
 

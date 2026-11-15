@@ -1,0 +1,12 @@
+<%# The first request has no browser timezone. Reload once after setting it. %>
+<div hidden
+    data-time-zone="<%= Time.zone.tzinfo.name %>"
+    x-data
+    x-init="
+        const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (zone !== $el.dataset.timeZone && !document.documentElement.hasAttribute('data-turbo-preview')) {
+            document.cookie = 'lesli_calendar_time_zone=' + encodeURIComponent(zone) + '; path=/; SameSite=Lax';
+            window.location.reload();
+        }
+    ">
+</div>

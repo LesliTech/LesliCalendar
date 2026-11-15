@@ -11,7 +11,7 @@ Paths below assume the standard `/calendar` engine mount:
 | `GET /calendar/calendar` | Personal calendar grid. |
 | `GET /calendar/events` | Redirect to Agenda, My events. |
 | `GET /calendar/events.json?start=2026-11-01T00:00:00Z&end=2026-12-01T00:00:00Z` | Entries overlapping the requested range; used by FullCalendar. |
-| `GET /calendar/events.json?month=2026-11` | Optional monthly query; without a range or month, uses the current UTC month. |
+| `GET /calendar/events.json?month=2026-11` | Optional monthly query; without a range or month, uses the current month in the active timezone. |
 | `GET /calendar/events/pending` | Redirect to Agenda, Pending invitations. |
 | `GET /calendar/events/available` | Redirect to Agenda, Available public events. |
 | `GET /calendar/events/new` | Creation form. |
@@ -28,12 +28,12 @@ The singular attendant route resolves to `LesliCalendar::Event::AttendantsContro
 
 ## Forms and Responses
 
-Forms use UTC datetime fields, plain text descriptions, an optional complete destination, privacy, and account-scoped user/role selectors. Role selection is available when Shield is installed. Empty selections replace invitations; omitted parameters preserve them.
+Forms use browser-local datetime fields, plain text descriptions, an optional complete destination, privacy, and account-scoped user/role selectors. Role selection is available when Shield is installed. Empty selections replace invitations; omitted parameters preserve them.
 
 Validation failures return HTTP 422 and retain submitted fields and selections. Turbo replaces the form; HTML re-renders its page; JSON returns an `errors` object. Successful HTML/Turbo mutations redirect with HTTP 303. JSON creation returns 201 and subsequent mutations return 200. Page GETs following Turbo redirects render HTML. Account isolation and organizer rules are enforced in addition to the existing screen authorization.
 
 Prev, Today and Next use FullCalendar's navigation. Rails supplies the feed URL;
-FullCalendar sends the visible UTC range as `start` and `end` (exclusive),
+FullCalendar sends the visible local range as `start` and `end` (exclusive),
 including adjacent days. `datesSet` only updates the title. The initial viewport
 selects month, week or day; resizing does not switch the view. FullCalendar manages
 range loading and caching, with an explicit refresh only after a successful
@@ -42,7 +42,7 @@ empty-period or request-error status messages.
 
 See [Calendar and Agenda](calendar-and-agenda.md) for query parameters and lifecycle details.
 
-Agenda shows each entry's time in UTC, state, source, and destination. It has no persistent model or scaffold CRUD.
+Agenda shows each entry's time in the browser timezone, state, source, and destination. It has no persistent model or scaffold CRUD.
 
 ## Existing Installations
 
@@ -106,7 +106,7 @@ The mobile disclosure displays the selected option's label and icon.
   upcoming personal events and external entries, ordered chronologically.
 - **My events** lists scheduled events organized by the current user or accepted
   by them, including past events. Optional `from` and `to` ISO dates filter
-  overlapping events in UTC; the final date is inclusive.
+  overlapping events in the browser timezone; the final date is inclusive.
 - **Pending invitations** lists invitations awaiting a response.
 - **Available public events** lists accessible public events not yet accepted.
 

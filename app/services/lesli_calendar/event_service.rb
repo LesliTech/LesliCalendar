@@ -101,7 +101,7 @@ module LesliCalendar
                 start_at = Time.iso8601(query[:start].to_s).utc
                 end_at = Time.iso8601(query[:end].to_s).utc
             else
-                start_at = query[:month].present? ? Time.find_zone!("UTC").iso8601("#{query[:month]}-01") : Time.current.utc.beginning_of_month
+                start_at = query[:month].present? ? Time.zone.iso8601("#{query[:month]}-01") : Time.current.beginning_of_month
                 end_at = start_at.next_month
             end
 
@@ -116,21 +116,21 @@ module LesliCalendar
         end
 
         def agenda(view: "upcoming", from: nil, to: nil)
-            now = Time.current.utc
+            now = Time.current
             records = case view
                 when "mine" then my_calendar.result
                 when "pending" then pending_invitations.result
                 when "available" then available_events.result
             end
             if view == "mine"
-                # Include events overlapping the selected dates, in the calendar's UTC timezone.
-                records = records.where("end_at > ?", Date.iso8601(from).to_time(:utc)) if from.present?
-                records = records.where("start_at < ?", Date.iso8601(to).next_day.to_time(:utc)) if to.present?
+                # Include events overlapping the selected dates, in the user's local timezone.
+                records = records.where("end_at > ?", Date.iso8601(from).in_time_zone) if from.present?
+                records = records.where("start_at < ?", Date.iso8601(to).next_day.in_time_zone) if to.present?
             end
             entries = records ? records.map { |event| calendar_entry(event) } : calendar_entries
             events = entries.filter_map do |entry|
-                start_at = entry[:start]
-                end_at = entry[:end] || start_at
+                start_at = entry[:start].in_time_zone
+                end_at = entry[:end]&.in_time_zone || start_at
                 next if view == "upcoming" && end_at <= now
 
                 {

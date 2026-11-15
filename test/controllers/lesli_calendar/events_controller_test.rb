@@ -31,6 +31,49 @@ module LesliCalendar
         tests EventsController
         setup { prepare_calendar_controller }
 
+        test "Lesli configured timezone is used before the browser zone is known" do
+            previous_datetime = Lesli.config.datetime
+            Lesli.config.datetime = { time_zone: "America/Guatemala" }
+            post :create, params: { event: attributes.merge(
+                start_at: "2027-01-15T09:00:00", end_at: "2027-01-15T10:00:00") }, format: :json
+            assert_response :created
+            event = Event.find(response.parsed_body.fetch("id"))
+            assert_equal Time.utc(2027, 1, 15, 15), event.start_at.utc
+        ensure
+            Lesli.config.datetime = previous_datetime
+        end
+
+        test "browser local times are stored in UTC and restored in edit forms" do
+            @request.cookies["lesli_calendar_time_zone"] = "America/Guatemala"
+            post :create, params: { event: attributes.merge(
+                start_at: "2027-01-15T09:00:00", end_at: "2027-01-15T10:00:00") }, format: :json
+            assert_response :created
+            event = Event.find(response.parsed_body.fetch("id"))
+            assert_equal Time.utc(2027, 1, 15, 15), event.start_at.utc
+            assert_equal Time.utc(2027, 1, 15, 16), event.end_at.utc
+            assert_equal :utc, ActiveRecord.default_timezone
+
+            get :edit, params: { id: event.id }, format: :html
+            assert_select "input[name='event[start_at]'][value='2027-01-15T09:00:00']"
+            patch :update, params: { id: event.id, event: {
+                title: "", start_at: "2027-01-15T11:00:00", end_at: "2027-01-15T12:00:00"
+            } }, format: :turbo_stream
+            assert_response :unprocessable_content
+            assert_select "input[name='event[start_at]'][value='2027-01-15T11:00:00']"
+            assert_equal Time.utc(2027, 1, 15, 15), event.reload.start_at.utc
+        end
+
+        test "browser timezone uses the event date daylight saving offset" do
+            @request.cookies["lesli_calendar_time_zone"] = "America/New_York"
+            { "2027-01-15" => 14, "2027-07-15" => 13 }.each do |date, utc_hour|
+                post :create, params: { event: attributes.merge(
+                    start_at: "#{date}T09:00:00", end_at: "#{date}T10:00:00") }, format: :json
+                assert_response :created
+                event = Event.find(response.parsed_body.fetch("id"))
+                assert_equal utc_hour, event.start_at.utc.hour
+            end
+        end
+
         test "HTML and Turbo forms retain fields and invitations on error" do
             get :new
             assert_response :success

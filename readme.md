@@ -46,7 +46,7 @@ It provides account-scoped calendars, events, agendas, and attendee management f
 ## Features
 
 - Account-scoped calendars
-- FullCalendar grid loading the visible UTC range
+- FullCalendar grid loading the visible local range
 - Agenda sidebar for upcoming events, personal history, pending invitations, and public discovery
 - Shared Turbo detail panel with actions below the detail and local error handling
 - Event creation and scheduling

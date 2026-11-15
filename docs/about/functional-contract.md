@@ -1,6 +1,6 @@
 # Functional Contract
 
-The rules below define event ownership, visibility, invitations, and responses. The calendar feed covers the requested visible UTC range; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
+The rules below define event ownership, visibility, invitations, and responses. The calendar feed covers the requested visible local range; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
 
 ## Account Boundary and Organizer
 

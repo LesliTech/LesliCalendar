@@ -3,14 +3,14 @@
         <p role="alert"><%= @event.errors.full_messages.to_sentence %></p>
     <% end %>
     <dl class="grid gap-4 sm:grid-cols-2">
-        <% { organizer: @event.user.email, start_at: l(@event.start_at.utc, format: :long),
-             end_at: l(@event.end_at.utc, format: :long), location: @event.location,
+        <% { organizer: @event.user.email, start_at: l(@event.start_at.in_time_zone, format: :long),
+             end_at: l(@event.end_at.in_time_zone, format: :long), location: @event.location,
              status: t("lesli_calendar.events.statuses.#{@event.status}"),
              privacy: t("lesli_calendar.events.#{@event.public? ? 'public' : 'private'}") }.each do |field, value| %>
             <div><dt class="font-medium"><%= t("lesli_calendar.events.#{field}") %></dt><dd class="break-words"><%= value.presence || "—" %></dd></div>
         <% end %>
     </dl>
-    <p>UTC</p>
+    <p><%= Time.zone.tzinfo.name %></p>
     <p class="whitespace-pre-wrap break-words"><%= @event.description %></p>
     <% if @event.url.present? %>
         <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.open"), url: @event.url, solid: false) %>
