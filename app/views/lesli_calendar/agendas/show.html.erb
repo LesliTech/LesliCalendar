@@ -6,9 +6,14 @@
     <div class="flex min-w-0 flex-col gap-6 lg:flex-row lg:items-start">
         <div class="space-y-3 lg:sticky lg:top-4 lg:w-60 lg:shrink-0">
             <%= render LesliView::Layout::NavigationSidebar.new(
-                items: %w[upcoming mine pending available].map { |view| {
+                items: {
+                    "upcoming" => "ri-calendar-todo-line",
+                    "mine" => "ri-calendar-event-line",
+                    "pending" => "ri-mail-unread-line",
+                    "available" => "ri-global-line"
+                }.map { |view, icon| {
                     label: t("lesli_calendar.agendas.#{view}"),
-                    path: agenda_path(view: view), selected: @agenda_view == view
+                    path: agenda_path(view: view), selected: @agenda_view == view, icon: icon
                 } },
                 label: t("lesli_calendar.agendas.views")
             ) %>
