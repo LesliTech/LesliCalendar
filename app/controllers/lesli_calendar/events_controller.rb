@@ -46,6 +46,8 @@ module LesliCalendar
             respond_with_lesli(
                 json: @events.as_json
             )
+        rescue EventService::InvalidRange
+            head :bad_request
         end
 
         # GET /events/1

@@ -97,11 +97,26 @@ module LesliCalendar
             end
         end
 
+        test "agenda uses UTC even when the Rails zone differs" do
+            Time.use_zone("America/Guatemala") do
+                travel_to Time.utc(2026, 11, 14, 20) do
+                    agenda = agenda_for([
+                        { id: 1, title: "UTC tomorrow", start: "2026-11-14T20:00:00-06:00" },
+                        { id: 2, title: "Ongoing", start: "2026-11-13T10:00:00Z", end: "2026-11-14T21:00:00Z" },
+                        { id: 3, title: "Ended", start: "2026-11-14T10:00:00Z", end: "2026-11-14T20:00:00Z" }
+                    ])
+                    assert_equal ["2026-11-13", "2026-11-15"], agenda.keys
+                    assert_equal 2, agenda["2026-11-13"][:events].first[:id]
+                    assert_equal 2, agenda["2026-11-15"][:events].first[:start_at].hour
+                end
+            end
+        end
+
         private
 
         def agenda_for(events)
             EventService.new(nil).tap do |service|
-                service.define_singleton_method(:calendar_entries) { events }
+                service.define_singleton_method(:agenda_entries) { |_page| events }
             end.agenda
         end
     end

@@ -1,7 +1,11 @@
 ---
 es:
   lesli_calendar:
-    agendas: {}
+    agendas:
+      title: "Próximos eventos"
+      today: "Hoy"
+      empty: "No hay próximos eventos."
+      load_more: "Cargar más"
     calendars: {}
     dashboards: {}
     events:

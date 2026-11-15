@@ -1,68 +1,49 @@
 # Calendar and Agenda
 
-This page describes the existing implementation. The [Functional Contract](/engines/calendar/about/functional-contract) defines the target visibility, invitation, response, and Agenda behavior for the upcoming implementation phases.
+Calendar and Agenda are views of events, not separate persistent resources. All local queries start from the authenticated user's account and current event visibility.
 
-LesliCalendar presents the same event collection in two forms:
+## Separate Collections
 
-- The calendar uses FullCalendar to render a responsive day, week, or month grid.
-- The agenda is rendered by Rails and groups upcoming events chronologically by day.
+`EventService` exposes service results containing lazy Active Record relations:
 
-Both views use `LesliCalendar::EventService` as their data source.
+- `my_calendar`: scheduled events organized by the user or accepted by that user, provided they remain visible. Historical events remain available for calendar navigation.
+- `pending_invitations`: ongoing or future invitations without an accepted/declined response, plus explicit pending responses after rescheduling. The organizer is excluded.
+- `available_events`: ongoing or future public events in the account, excluding events the user organizes or has accepted. Declined events remain available to change the response.
 
-## Event Sources
-
-`EventService#calendar_entries` combines local events the user organizes or has accepted and can still access with ticket deadlines from LesliSupport. The LesliSupport integration is optional; `Lesli::Courier` returns an empty collection when that engine is absent. Errors from an installed provider still propagate in this implementation.
-
-The resulting hashes follow FullCalendar's event-object structure:
-
-| Key | Purpose |
-| --- | --- |
-| `id` | Source record identifier |
-| `title` | Text displayed for the event |
-| `start` and `end` | Event timestamps |
-| `url` | Optional event destination |
-| `className` | Source-specific CSS classes such as `lesli-calendar` or `lesli-support` |
-| `extendedProps` | Description, location, status, and visibility metadata |
-
-The JSON endpoint consumed by FullCalendar is:
-
-```text
-GET /calendar/events.json
-```
-
-## Agenda Transformation
-
-`EventService#agenda` converts the `calendar_entries` FullCalendar payload into the structure used by the server-rendered agenda partial. It:
-
-1. Parses Rails date objects and ISO 8601 strings in the application timezone.
-2. Excludes events before the beginning of the current day.
-3. Ignores events whose start value is missing or invalid.
-4. Sorts events chronologically and groups them under ISO date keys.
-5. Removes HTML from descriptions and truncates them for display.
-
-Each group has the following shape:
+Direct and current role invitations match with OR semantics and never duplicate events. Losing an invitation removes private access even after acceptance; historical responses remain stored. Public discovery and pending invitations can overlap. Neither automatically adds an event to My Calendar.
 
 ```ruby
-{
-  "2026-10-11" => {
-    day_name: "Today",
-    day_number: "14:30",
-    events: [
-      {
-        id: 42,
-        title: "Planning session",
-        description: "Review the next release...",
-        start_at: Time.zone.parse("2026-10-11T14:30:00-06:00"),
-        end_at: nil,
-        url: nil,
-        class_name: "lesli-calendar"
-      }
-    ]
-  }
-}
+service = LesliCalendar::EventService.new(current_user)
+service.pending_invitations.result
 ```
 
-Keep `calendar_entries` compatible with FullCalendar; CRUD `index` returns a service whose `result` is the visible event relation. When adding another event source, map its records to the FullCalendar structure in `calendar_entries`; `agenda` will then normalize that shared payload for the list view.
+## Calendar Range and Timezone
+
+`GET /calendar/events.json?start=2026-11-01T00:00:00Z&end=2026-12-01T00:00:00Z`
+
+The endpoint uses `calendar_entries`. Local events overlap when `start_at < range_end` and `end_at > range_start`, including events beginning before the range. The end is exclusive. Cancelled and deleted events are excluded. Without boundaries the service defaults to the current UTC month. Invalid ISO dates or reversed/empty ranges return HTTP 400.
+
+Both FullCalendar and Agenda display **UTC**, independently of browser timezone. Request offsets are respected; feed timestamps use ISO 8601 UTC. Date-only boundaries mean midnight UTC. User-specific display zones are not implemented.
+
+FullCalendar entries include `id`, `title`, `start`, `end`, `url`, `className`, and `extendedProps` with description and local event metadata.
+
+## Agenda and Loading More
+
+`EventService#agenda(page: 1)` returns day groups containing `day_name`, `day_number`, and `events`. Entries include `id`, `title`, a plain-text truncated description, `start_at`, `end_at`, `url`, and `class_name`.
+
+Agenda includes events in progress, even from previous days, and future events. Events ending at or before now are excluded; deadline entries are excluded when their timestamp is in the past. Ordering is by start time, source, and ID. Day grouping uses the UTC start date, so ongoing events precede future events.
+
+Pages contain at most 20 entries. Each source is limited in the database to the rows needed for the requested page plus one. `agenda_next_page` is nil when exhausted. Nested Turbo frames and Load more append subsequent pages. ERB does not query records. Pagination is offset-based; concurrent edits can shift subsequent pages.
+
+## Optional Sources
+
+Ticket deadlines use `Lesli::Courier` and `LesliSupport::TicketService#with_deadline`. Missing Support returns an empty collection; provider errors propagate. The provider applies account scoping and range boundaries and returns an ordered relation that Agenda limits before loading.
+
+Support currently exposes account ticket deadlines. Local event invitation rules do not apply to tickets. More granular provider authorization and additional providers remain separate integration work. New providers should return scoped, ordered relations supporting database limits.
+
+## Compatibility
+
+The unused `LesliCalendar::Agenda` model and scaffold CRUD/views have been removed. Agenda remains the singular read-only `/calendar/agenda` route. There was no Agenda table or migration to remove.
 
 ## Frontend Styles
 

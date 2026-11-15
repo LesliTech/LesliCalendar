@@ -76,4 +76,4 @@ Only the organizer may cancel. Repeated cancellation preserves the existing time
 
 `calendar_entries` retains the FullCalendar payload while `index` now follows the CRUD service contract. Its local entries include scheduled events organized or accepted by the current user, subject to current visibility. Reading an event or feed never creates an attendance record.
 
-Bounded range queries, separate invitation/discovery lists, improved Agenda ordering, external-provider permissions, and frontend controls belong to the next phases. The existing Support source remains separate from these local event operations.
+Range queries, separate invitation/discovery lists, and paginated Agenda are described in [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda). External-provider permissions and invitation frontend controls remain separate integration work.

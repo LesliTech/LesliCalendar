@@ -16,7 +16,6 @@ module LesliCalendar
         def show
             #@calendar = @calendar.show
             @event = Event.new
-            @agenda = EventService.new(current_user, query).agenda
             # respond_to do |format|
             #     format.html { }
             #     format.json { respond_with_successful(@calendar.show()) }
