@@ -1,4 +1,4 @@
 <%= render LesliView::Layout::Container.new("event-new") do %>
-    <%= render LesliView::Components::Header.new(t("lesli_calendar.events.new"), back: events_path) %>
+    <%= render LesliView::Components::Header.new(t("lesli_calendar.events.new"), back: agenda_path(view: "mine")) %>
     <%= render "form" %>
 <% end %>

@@ -100,14 +100,7 @@ module LesliCalendar
             end_at = start_at.next_month
 
             events = personal_events.where("start_at < ? AND end_at > ?", end_at, start_at)
-                .order(:start_at, :id).map do |event|
-                {
-                    id: "lesli_calendar:event:#{event.id}", title: event.title,
-                    start: event.start_at.utc, end: event.end_at.utc,
-                    url: event.url, className: "lesli-calendar",
-                    extendedProps: { record_id: event.id, description: event.description, source: "calendar", status: event.status }
-                }.compact
-            end
+                .order(:start_at, :id).map { |event| calendar_entry(event) }
 
             tickets = Lesli::Courier.new(:lesli_support, [], fallback_on_error: true)
                 .from(:ticket_service, current_user, { start: start_at, end: end_at })
@@ -116,12 +109,23 @@ module LesliCalendar
             events + tickets
         end
 
-        def agenda
+        def agenda(view: "upcoming", from: nil, to: nil)
             now = Time.current.utc
-            events = calendar_entries.filter_map do |entry|
+            records = case view
+                when "mine" then my_calendar.result
+                when "pending" then pending_invitations.result
+                when "available" then available_events.result
+            end
+            if view == "mine"
+                # Include events overlapping the selected dates, in the calendar's UTC timezone.
+                records = records.where("end_at > ?", Date.iso8601(from).to_time(:utc)) if from.present?
+                records = records.where("start_at < ?", Date.iso8601(to).next_day.to_time(:utc)) if to.present?
+            end
+            entries = records ? records.map { |event| calendar_entry(event) } : calendar_entries
+            events = entries.filter_map do |entry|
                 start_at = entry[:start]
                 end_at = entry[:end] || start_at
-                next if end_at <= now
+                next if view == "upcoming" && end_at <= now
 
                 {
                     title: entry[:title], url: entry[:url], start_at: start_at, end_at: end_at,
@@ -142,6 +146,15 @@ module LesliCalendar
         end
 
         private
+
+        def calendar_entry(event)
+            {
+                id: "lesli_calendar:event:#{event.id}", title: event.title,
+                start: event.start_at.utc, end: event.end_at.utc,
+                url: event.url, className: "lesli-calendar",
+                extendedProps: { record_id: event.id, description: event.description, source: "calendar", status: event.status }
+            }.compact
+        end
 
         def visible_events
             Event.visible_to(current_user).where(status: :scheduled)

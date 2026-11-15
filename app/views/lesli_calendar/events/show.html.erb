@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "calendar-event-detail" do %>
     <%= render LesliView::Layout::Container.new("event-show") do %>
-        <%= render LesliView::Components::Header.new(@event.title, back: turbo_frame_request? ? nil : events_path) do %>
+        <%= render LesliView::Components::Header.new(@event.title, back: turbo_frame_request? ? nil : agenda_path(view: "mine")) do %>
             <%= render "actions" unless turbo_frame_request? %>
         <% end %>
         <%= render "event" %>

@@ -13,9 +13,7 @@
             <%= render LesliView::Elements::Button.new(t("lesli_calendar.calendars.#{action}"), icon: icon, solid: false,
                 data: { calendar_action: action, calendar_target: "lesli-calendar-engine" }) %>
         <% end %>
-        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.mine"), url: events_path, solid: false) %>
-        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.pending"), url: pending_events_path, solid: false) %>
-        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.available"), url: available_events_path, solid: false) %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.agendas.title"), url: agenda_path, solid: false) %>
     </div>
     <p id="calendar-status" class="mt-4 text-sm" role="status" aria-live="polite"></p>
     <%= render "lesli_calendar/partials/calendar" %>

@@ -1,6 +1,34 @@
-<%= render(LesliView::Layout::Container.new("calendar-agenda")) do %>
-    <%= render(LesliView::Components::Header.new(t("lesli_calendar.agendas.title"))) %>
-    <%= render("lesli_calendar/partials/agenda") %>
+<%= render LesliView::Layout::Container.new("calendar-agenda") do %>
+    <%= render LesliView::Components::Header.new(t("lesli_calendar.agendas.title")) do %>
+        <%= render LesliView::Elements::Button.new(t("lesli_calendar.events.new"),
+            url: new_event_path, icon: "add") %>
+    <% end %>
+    <div class="flex min-w-0 flex-col gap-6 lg:flex-row lg:items-start">
+        <div class="space-y-3 lg:sticky lg:top-4 lg:w-60 lg:shrink-0">
+            <%= render LesliView::Layout::NavigationSidebar.new(
+                items: %w[upcoming mine pending available].map { |view| {
+                    label: t("lesli_calendar.agendas.#{view}"),
+                    path: agenda_path(view: view), selected: @agenda_view == view
+                } },
+                label: t("lesli_calendar.agendas.views")
+            ) %>
+        </div>
+        <div class="min-w-0 flex-1">
+            <% if @agenda_view == "mine" %>
+                <%= form_with url: agenda_path, method: :get, builder: LesliView::Forms::Builder,
+                    data: { turbo_frame: "_top" } do |form| %>
+                    <%= hidden_field_tag :view, "mine" %>
+                    <div class="mb-5 flex flex-wrap items-end gap-3">
+                        <%= form.field_control(:from, type: "date", label: t("lesli_calendar.agendas.from"), value: params[:from]) %>
+                        <%= form.field_control(:to, type: "date", label: t("lesli_calendar.agendas.to"), value: params[:to]) %>
+                        <%= render LesliView::Elements::Button.new(t("lesli_calendar.agendas.filter"), type: :submit) %>
+                        <%= render LesliView::Elements::Button.new(t("lesli_calendar.agendas.clear"), url: agenda_path(view: "mine"), solid: false) %>
+                    </div>
+                <% end %>
+            <% end %>
+            <%= render "lesli_calendar/partials/agenda" %>
+        </div>
+    </div>
 <% end %>
 
 <%= render "lesli_calendar/partials/event_panel" %>

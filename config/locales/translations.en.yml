@@ -2,7 +2,16 @@
 en:
   lesli_calendar:
     agendas:
-      title: "Upcoming events"
+      title: "Agenda"
+      upcoming: "Upcoming events"
+      mine: "My events"
+      pending: "Pending invitations"
+      available: "Available public events"
+      views: "Agenda views"
+      from: "From"
+      to: "To"
+      filter: "Filter"
+      clear: "Clear"
       today: "Today"
       empty: "No upcoming events."
     calendars:

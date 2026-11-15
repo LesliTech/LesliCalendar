@@ -12,23 +12,19 @@ module LesliCalendar
             if request.format.json?
                 return respond_with_lesli(json: @service.calendar_entries)
             end
-            @events = @service.my_calendar.result
-            @list_title = t("lesli_calendar.events.mine")
-            respond_with_lesli
+            respond_with_lesli(redirect: agenda_path(view: "mine"))
         rescue ArgumentError
             head :bad_request
         end
 
         def pending
-            @events = @service.pending_invitations.result
-            @list_title = t("lesli_calendar.events.pending")
-            respond_with_lesli(html: :index, json: @events.as_json)
+            respond_with_lesli(json: @service.pending_invitations.result.as_json,
+                redirect: agenda_path(view: "pending"))
         end
 
         def available
-            @events = @service.available_events.result
-            @list_title = t("lesli_calendar.events.available")
-            respond_with_lesli(html: :index, json: @events.as_json)
+            respond_with_lesli(json: @service.available_events.result.as_json,
+                redirect: agenda_path(view: "available"))
         end
 
         def show
@@ -59,7 +55,7 @@ module LesliCalendar
         def destroy
             @service.destroy
             success(t("lesli_calendar.events.deleted"))
-            respond_with_lesli(json: { id: @event.id }, redirect: events_path)
+            respond_with_lesli(json: { id: @event.id }, redirect: agenda_path(view: "mine"))
         end
 
         def cancel

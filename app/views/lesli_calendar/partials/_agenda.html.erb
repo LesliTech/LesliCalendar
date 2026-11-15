@@ -1,13 +1,13 @@
 <section
-    class="lesli-calendar-agenda mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    class="lesli-calendar-agenda overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
     aria-label="<%= t("lesli_calendar.agendas.title") %>">
 
     <h2 class="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-800">
-        <%= t("lesli_calendar.agendas.title") %> (UTC)
+        <%= t("lesli_calendar.agendas.#{@agenda_view || 'upcoming'}") %> (UTC)
     </h2>
 
     <% if @agenda.empty? %>
-        <p class="px-5 py-4 text-slate-500"><%= t("lesli_calendar.agendas.empty") %></p>
+        <p class="px-5 py-4 text-slate-500"><%= t(@agenda_view.present? && @agenda_view != "upcoming" ? "lesli_calendar.events.empty" : "lesli_calendar.agendas.empty") %></p>
     <% end %>
     <div class="divide-y divide-slate-200">
         <% @agenda.each do |_date, day| %>

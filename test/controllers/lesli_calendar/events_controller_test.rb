@@ -61,7 +61,7 @@ module LesliCalendar
             assert_response :success
             assert event.reload.cancelled?
             delete :destroy, params: { id: event.id }, format: :turbo_stream
-            assert_redirected_to events_path
+            assert_redirected_to agenda_path(view: "mine")
             assert Event.with_deleted.find(event.id).deleted_at
         end
 
@@ -72,10 +72,9 @@ module LesliCalendar
             assert_includes response.parsed_body.pluck("id"), "lesli_calendar:event:#{event.id}"
             get :index, params: { month: "not-a-month" }, format: :json
             assert_response :bad_request
-            [:index, :pending, :available].each do |action|
+            { index: "mine", pending: "pending", available: "available" }.each do |action, view|
                 get action, format: :html
-                assert_response :success
-                assert_select "a[href=?]", new_event_path
+                assert_redirected_to agenda_path(view: view)
             end
         end
 
