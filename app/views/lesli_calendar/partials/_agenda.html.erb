@@ -1,45 +1,39 @@
-<%= turbo_frame_tag "agenda_page_#{@agenda_page}" do %>
+<section
+    class="lesli-calendar-agenda mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    aria-label="<%= t("lesli_calendar.agendas.title") %>">
 
-    <section
-        class="lesli-calendar-agenda mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
-        aria-label="<%= t("lesli_calendar.agendas.title") %>">
+    <h2 class="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-800">
+        <%= t("lesli_calendar.agendas.title") %> (UTC)
+    </h2>
 
-        <h2 class="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-800">
-            <%= t("lesli_calendar.agendas.title") %> (UTC)
-        </h2>
-
-        <% if @agenda.empty? %>
-            <p class="px-5 py-4 text-slate-500"><%= t("lesli_calendar.agendas.empty") %></p>
-        <% end %>
-        <div class="divide-y divide-slate-200">
-            <% @agenda.each do |_date, day| %>
-                <article class="flex py-4 items-stretch">
-                    <div class="flex w-20 shrink-0 flex-col items-center justify-center border-r border-slate-200 bg-slate-50 px-3 py-4 text-center text-slate-700">
-                        <p class="text-xs font-medium uppercase tracking-wide text-slate-500"><%= day[:day_name] %></p>
-                        <p class="mt-1 text-xl font-semibold"><%= day[:day_number] %></p>
-                    </div>
-
-                    <div class="min-w-0 flex-1 py-2">
-                    <% day[:events].each do |event| %>
-                        <div class="agenda-event <%= event[:class_name] %> border-l-4 px-4 py-2">
-                            <p class="font-['OpenSans'] text-sm font-medium text-slate-800"><%= event[:title] %></p>
-                            <% if event[:description].present? %>
-                                <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>
-                            <% end %>
-                        </div>
-                    <% end %>
-                    </div>
-                </article>
-            <% end %>
-        </div>
-    </section>
-    <% if @agenda_next_page %>
-        <%= turbo_frame_tag "agenda_page_#{@agenda_next_page}" do %>
-            <%= render LesliView::Elements::Button.new(
-                t("lesli_calendar.agendas.load_more"),
-                url: agenda_path(page: @agenda_next_page),
-                data: { turbo_frame: "agenda_page_#{@agenda_next_page}" }
-            ) %>
-        <% end %>
+    <% if @agenda.empty? %>
+        <p class="px-5 py-4 text-slate-500"><%= t("lesli_calendar.agendas.empty") %></p>
     <% end %>
-<% end %>
+    <div class="divide-y divide-slate-200">
+        <% @agenda.each do |_date, day| %>
+            <article class="flex py-4 items-stretch">
+                <div class="flex w-20 shrink-0 flex-col items-center justify-center border-r border-slate-200 bg-slate-50 px-3 py-4 text-center text-slate-700">
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500"><%= day[:day_name] %></p>
+                    <p class="mt-1 text-xl font-semibold"><%= day[:day_number] %></p>
+                </div>
+
+                <div class="min-w-0 flex-1 py-2">
+                <% day[:events].each do |event| %>
+                    <div class="agenda-event <%= event[:class_name] %> border-l-4 px-4 py-2">
+                        <p class="font-['OpenSans'] text-sm font-medium text-slate-800">
+                        <% if event[:url].present? %>
+                            <%= link_to event[:title], event[:url], data: { turbo_frame: "_top" } %>
+                        <% else %>
+                            <%= event[:title] %>
+                        <% end %>
+                    </p>
+                        <% if event[:description].present? %>
+                            <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>
+                        <% end %>
+                    </div>
+                <% end %>
+                </div>
+            </article>
+        <% end %>
+    </div>
+</section>

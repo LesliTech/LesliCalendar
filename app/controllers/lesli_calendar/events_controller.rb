@@ -36,18 +36,8 @@ module LesliCalendar
 
         # GET /events
         def index
-            # FullCalendar sends the visible range with every event request.
-            calendar_query = query.merge(
-                start: params[:start],
-                end: params[:end]
-            )
-
-            @events = LesliCalendar::EventService.new(current_user, calendar_query).calendar_entries
-            respond_with_lesli(
-                json: @events.as_json
-            )
-        rescue EventService::InvalidRange
-            head :bad_request
+            events = EventService.new(current_user).calendar_entries
+            respond_with_lesli(json: events.as_json)
         end
 
         # GET /events/1

@@ -1,6 +1,6 @@
 # Functional Contract
 
-This document defines the behavior to implement in the next Calendar phases. It is the target contract, not a claim that the current controllers, models, or schema already enforce these rules. Phase 1 changed documentation only. Phase 2 implements the model and database contract described in [Database](/engines/calendar/about/database); Phase 3 implements service-level visibility, organizer ownership, invitation replacement, individual responses, and cancellation; see [Event Operations](/engines/calendar/about/event-operations). Phase 4 implements separate collections, bounded calendar feeds, and paginated Agenda; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda). Frontend invitation actions and screen authorization integration still require the following phases.
+The rules below define event ownership, visibility, invitations, and responses. The simplified calendar feed currently covers only the current UTC month; see [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda) for its implemented scope.
 
 ## Account Boundary and Organizer
 

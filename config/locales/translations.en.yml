@@ -5,7 +5,6 @@ en:
       title: "Upcoming events"
       today: "Today"
       empty: "No upcoming events."
-      load_more: "Load more"
     calendars: {}
     dashboards: {}
     events:

@@ -7,6 +7,7 @@ Phase 3 provides backend operations. Screen-level permissions remain the caller'
 ```ruby
 service = LesliCalendar::EventService.new(current_user).create(
     title: "Planning",
+    url: "/support/tickets/42",
     start_at: 1.day.from_now,
     end_at: 1.day.from_now + 1.hour,
     public: false,
@@ -72,8 +73,10 @@ event = LesliCalendar::EventCancellationOperator
 
 Only the organizer may cancel. Repeated cancellation preserves the existing timestamp. Cancellation retains invitations and response history, prevents subsequent responses and edits, and excludes the event from the local personal calendar feed. Reopening is not supported. Deletion is soft deletion and also retains dependent history.
 
+## Event Destination
+
+Pass the complete destination when creating an event, for example `url: "/support/tickets/42"` or an HTTP/HTTPS URL. The calendar uses the stored `url` directly; it does not build or update routes automatically. If a module's mount path changes, update the stored destinations. An event without a URL has no navigation destination.
+
 ## Existing Calendar Consumer
 
-`calendar_entries` retains the FullCalendar payload while `index` now follows the CRUD service contract. Its local entries include scheduled events organized or accepted by the current user, subject to current visibility. Reading an event or feed never creates an attendance record.
-
-Range queries, separate invitation/discovery lists, and paginated Agenda are described in [Calendar and Agenda](/engines/calendar/about/calendar-and-agenda). External-provider permissions and invitation frontend controls remain separate integration work.
+`EventService#calendar_entries` retains the FullCalendar payload while `index` now follows the CRUD service contract. Its local entries include scheduled events organized or accepted by the current user, subject to current visibility. Reading an event or feed never creates an attendance record.

@@ -45,33 +45,33 @@ module LesliCalendar
 
         alias_method :find, :show
 
-        class InvalidRange < ArgumentError; end
-
-        AGENDA_PAGE_SIZE = 20
-        attr_reader :agenda_next_page
-
         def my_calendar
-            response(EventQuery.new(current_user).personal.order(:start_at, :id))
+            response(personal_events.order(:start_at, :id))
         end
 
         def pending_invitations
-            response(EventQuery.new(current_user).pending)
+            visible = visible_events
+            direct = Event::UserInvitation.where(user_id: current_user.id).select(:event_id)
+            invited = visible.where(id: direct)
+            if defined?(LesliShield)
+                roles = current_user.roles.where(account_id: current_user.account_id).select(:id)
+                role_events = Event::RoleInvitation.where(role_id: roles).select(:event_id)
+                invited = invited.or(visible.where(id: role_events))
+            end
+
+            # Pending responses also include public participants asked to reconfirm a new time.
+            events = invited.or(visible.where(id: response_event_ids(:pending)))
+                .where.not(user_id: current_user.id)
+                .where.not(id: response_event_ids([:accepted, :declined]))
+                .where("end_at > ?", Time.current).order(:start_at, :id)
+            response(events)
         end
 
         def available_events
-            response(EventQuery.new(current_user).available)
-        end
-
-        def calendar_entries
-            # FullCalendar uses an exclusive end. A missing range defaults to this UTC month.
-            start_at = range_boundary(:start) || Time.current.utc.beginning_of_month
-            end_at = range_boundary(:end) || start_at.next_month
-            raise InvalidRange, "Invalid calendar range" unless end_at > start_at
-
-            events = EventQuery.new(current_user).overlapping(start_at, end_at)
-            tickets = support_entries(start_at: start_at, end_at: end_at)
-            entries = events.map { |event| calendar_entry(event) } + tickets
-            entries.sort_by { |entry| [entry[:start], entry[:className], entry[:id]] }
+            events = visible_events.where(public: true).where.not(user_id: current_user.id)
+                .where.not(id: response_event_ids(:accepted))
+                .where("end_at > ?", Time.current).order(:start_at, :id)
+            response(events)
         end
 
         def create(attributes)
@@ -95,98 +95,72 @@ module LesliCalendar
             response(event)
         end
 
-        def agenda(page: 1)
-            page = [page.to_i, 1].max
-            current_time = Time.current.utc
+        def calendar_entries
+            start_at = Time.current.utc.beginning_of_month
+            end_at = start_at.next_month
 
-            # Convert FullCalendar's payload into the simpler shape consumed by the agenda view.
-            upcoming_events = agenda_entries(page).filter_map do |event|
-                start_at = normalize_agenda_time(value_from(event, :start))
-                end_at = normalize_agenda_time(value_from(event, :end))
-                next if start_at.nil?
-                # Deadline entries are points; local events remain visible until their end.
-                finished = end_at && end_at > start_at ? end_at <= current_time : start_at < current_time
-                next if finished
-
-                extended_props = value_from(event, :extendedProps) || {}
-
+            events = personal_events.where("start_at < ? AND end_at > ?", end_at, start_at)
+                .order(:start_at, :id).map do |event|
                 {
-                    id: value_from(event, :id),
-                    title: value_from(event, :title),
-                    description: agenda_description(value_from(extended_props, :description)),
-                    start_at: start_at,
-                    end_at: end_at,
-                    url: value_from(event, :url),
-                    class_name: Array(value_from(event, :className)).join(" ")
+                    id: "lesli_calendar:event:#{event.id}", title: event.title,
+                    start: event.start_at.utc, end: event.end_at.utc,
+                    url: event.url, className: "lesli-calendar",
+                    extendedProps: { record_id: event.id, description: event.description }
                 }
             end
 
-            # Sorting first preserves chronological order for both days and their events.
-            upcoming_events.sort_by! { |event| [event[:start_at], event[:class_name], event[:id].to_i] }
-            offset = (page - 1) * AGENDA_PAGE_SIZE
-            @agenda_next_page = upcoming_events.length > offset + AGENDA_PAGE_SIZE ? page + 1 : nil
-            upcoming_events.drop(offset).take(AGENDA_PAGE_SIZE).each_with_object({}) do |event, agenda|
-                start_at = event[:start_at]
-                date_key = start_at.to_date.iso8601
-                today = start_at.to_date == current_time.to_date
+            tickets = Lesli::Courier.new(:lesli_support, [], fallback_on_error: true)
+                .from(:ticket_service, current_user, { start: start_at, end: end_at })
+                .call(:with_deadline)
+                .map do |ticket|
+                    {
+                        id: "lesli_support:ticket:#{ticket.id}", title: ticket.subject,
+                        start: ticket.deadline_at.utc, end: nil,
+                        url: "/support/tickets/#{ticket.id}", className: "lesli-support",
+                        extendedProps: { record_id: ticket.id, description: ticket.description }
+                    }
+                end
 
-                agenda[date_key] ||= {
-                    day_name: today ? I18n.t("lesli_calendar.agendas.today") : I18n.l(start_at.to_date, format: "%a"),
-                    day_number: today ? start_at.strftime("%H:%M") : start_at.strftime("%d"),
-                    events: []
+            events + tickets
+        end
+
+        def agenda
+            now = Time.current.utc
+            events = calendar_entries.filter_map do |entry|
+                start_at = entry[:start]
+                end_at = entry[:end] || start_at
+                next if end_at <= now
+
+                {
+                    title: entry[:title], url: entry[:url], start_at: start_at,
+                    class_name: entry[:className],
+                    description: ActionController::Base.helpers.strip_tags(entry.dig(:extendedProps, :description).to_s).truncate(88)
                 }
+            end
 
-                agenda[date_key][:events] << event
+            events.sort_by { |event| event[:start_at] }.group_by { |event| event[:start_at].to_date }.transform_values do |day_events|
+                date = day_events.first[:start_at]
+                {
+                    day_name: date.to_date == now.to_date ? I18n.t("lesli_calendar.agendas.today") : I18n.l(date.to_date, format: "%a"),
+                    day_number: date.strftime("%d"),
+                    events: day_events
+                }
             end
         end
 
         private
 
-        def range_boundary(key)
-            value = query[key] || query[key.to_s]
-            return if value.blank?
-
-            Time.find_zone!("UTC").iso8601(value.to_s)
-        rescue ArgumentError
-            raise InvalidRange, "Invalid calendar range"
+        def visible_events
+            Event.visible_to(current_user).where(status: :scheduled)
         end
 
-        def agenda_entries(page)
-            # Fetch only enough from each source to merge this page, plus one for "Load more".
-            limit = page * AGENDA_PAGE_SIZE + 1
-            events = EventQuery.new(current_user).upcoming.limit(limit)
-            events.map { |event| calendar_entry(event) } + support_entries(start_at: Time.current, limit: limit)
+        def personal_events
+            visible = visible_events
+            visible.where(user_id: current_user.id).or(visible.where(id: response_event_ids(:accepted)))
         end
 
-        def calendar_entry(event)
-            {
-                id: event.id,
-                title: event.title,
-                start: event.start_at.utc.iso8601(6),
-                end: event.end_at.utc.iso8601(6),
-                url: event.url,
-                className: "lesli-calendar",
-                extendedProps: {
-                    description: event.description, location: event.location,
-                    status: event.status, public: event.public
-                }
-            }
-        end
-
-        def support_entries(start_at:, end_at: nil, limit: nil)
-            tickets = Lesli::Courier.new(:lesli_support, [])
-                .from(:ticket_service, current_user, { start: start_at.iso8601(6), end: end_at&.iso8601(6) })
-                .call(:with_deadline)
-            # The provider returns an ordered relation; absent engines return an empty array.
-            tickets = tickets.limit(limit) if limit && tickets.respond_to?(:limit)
-            tickets.map do |ticket|
-                {
-                    id: ticket.id, title: ticket.subject,
-                    start: ticket.deadline_at.utc.iso8601(6), end: ticket.deadline_at.utc.iso8601(6),
-                    className: "lesli-support",
-                    extendedProps: { description: ticket.description, public: true }
-                }
-            end
+        def response_event_ids(value)
+            Event::Attendant.where(user_id: current_user.id, response: value).select(:event_id)
         end
 
         def owned_events
@@ -255,31 +229,5 @@ module LesliCalendar
             association.where.not(foreign_key => ids).each(&:destroy!)
         end
 
-        def value_from(hash, key)
-            return unless hash.respond_to?(:[])
-
-            hash[key] || hash[key.to_s]
-        end
-
-        # FullCalendar sources may provide dates as Rails objects or ISO 8601 strings.
-        def normalize_agenda_time(value)
-            case value
-            when ActiveSupport::TimeWithZone
-                value.utc
-            when Time, DateTime, Date
-                value.in_time_zone("UTC")
-            when String
-                Time.find_zone!("UTC").iso8601(value)
-            end
-        rescue ArgumentError, TypeError
-            nil
-        end
-
-        def agenda_description(description)
-            return if description.blank?
-
-            text = ActionController::Base.helpers.strip_tags(description.to_s).squish
-            ActionController::Base.helpers.truncate(text, length: 88)
-        end
     end
 end

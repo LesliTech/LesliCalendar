@@ -194,7 +194,7 @@ module LesliCalendar
             repeated = EventCancellationOperator.new(@author, event.id).operate
             assert_equal cancelled.updated_at, repeated.updated_at
             assert_equal response.attributes, response.reload.attributes
-            assert_not EventService.new(@reader).calendar_entries.any? { |entry| entry[:id] == event.id }
+            assert_not EventService.new(@reader).calendar_entries.any? { |entry| entry[:extendedProps][:record_id] == event.id }
             assert_not update_event(event, title: "Reopen", status: "scheduled").successful?
             EventService.new(@author).show(event.id).destroy
             assert Event.with_deleted.find(event.id).deleted_at.present?
@@ -208,7 +208,7 @@ module LesliCalendar
             assert_no_difference("Event::Attendant.count") { EventService.new(@reader).show(event.id) }
             assert_empty EventService.new(@reader).calendar_entries
             respond_to_event(event, :accepted)
-            assert_equal [event.id], EventService.new(@reader).calendar_entries.pluck(:id)
+            assert_equal [event.id], EventService.new(@reader).calendar_entries.map { |entry| entry[:extendedProps][:record_id] }
             assert update_event(event, public: false).successful?
             assert_empty EventService.new(@reader).calendar_entries
             assert_raises(ActiveRecord::RecordNotFound) { EventService.new(@reader).show(event.id) }
