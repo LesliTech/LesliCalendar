@@ -1,4 +1,4 @@
 module LesliCalendar
-  VERSION = "1.1.2"
-  BUILD = "1792716730"
+  VERSION = "1.1.3"
+  BUILD = "1794799887"
 end

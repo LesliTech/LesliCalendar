@@ -49,7 +49,7 @@ Gem::Specification.new do |spec|
 
     spec.metadata["homepage_uri"] = spec.homepage
     spec.metadata["changelog_uri"] = "https://github.com/LesliTech/lesli_calendar"
-    spec.metadata["source_code_uri"] = "https://github.com/LesliTech/lesli_calendar"
+    spec.metadata["source_code_uri"] = "https://github.com/LesliTech/LesliCalendar"
 
     spec.files = Dir.chdir(File.expand_path(__dir__)) do
         Dir["{app,config,db,lib}/**/*", "license", "Rakefile", "readme.md"]
