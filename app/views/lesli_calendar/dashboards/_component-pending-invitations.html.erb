@@ -1,0 +1,1 @@
+<%= render "lesli_calendar/dashboards/widget", kind: :pending_invitations, entries: LesliCalendar::EventService.new(current_user).dashboard_entries(:pending_invitations) %>

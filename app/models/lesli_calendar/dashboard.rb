@@ -1,5 +1,5 @@
 module LesliCalendar
     class Dashboard < Lesli::Shared::Dashboard
-        COMPONENTS = [].freeze
+        COMPONENTS = [:upcoming_events, :pending_invitations, :upcoming_deadlines].freeze
     end
 end

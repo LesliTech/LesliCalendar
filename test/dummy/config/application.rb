@@ -11,9 +11,10 @@ module Dummy
         config.autoload_lib(ignore: %w[assets tasks])
 
         initializer :load_core_migrations do |app|
-            Dir[Lesli::Engine.root.join("db/migrate/*")].each do |path|
-                app.config.paths["db/migrate"] << path if File.directory?(path)
-            end
+            app.config.paths["db/migrate"] << Lesli::Engine.root.join("db/migrate").to_s
+            # Schema loading must see the same migrations as db:migrate and the tests.
+            ActiveRecord::Migrator.migrations_paths = (app.config.paths["db/migrate"].expanded +
+                [LesliCalendar::Engine.root.join("db/migrate").to_s]).uniq
         end
     end
 end

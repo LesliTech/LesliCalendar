@@ -42,6 +42,36 @@ module LesliCalendar
             assert_empty @service.available_events.result
         end
 
+        test "dashboard queries are personal ordered and limited" do
+            event(title: "Private to organizer")
+            pending = 7.times.map { |index| event(title: "Invitation #{index}", user_ids: [@reader.id],
+                start_at: (index + 2).hours.from_now, end_at: (index + 3).hours.from_now) }
+            assert_empty @service.dashboard_entries(:upcoming_events)
+            assert_equal pending.first(5).map(&:id), @service.dashboard_entries(:pending_invitations)
+                .map { |entry| entry[:extendedProps][:record_id] }
+
+            EventResponseOperator.new(@reader, pending.last.id).operate(response: :accepted)
+            assert_equal [pending.last.id], @service.dashboard_entries(:upcoming_events)
+                .map { |entry| entry[:extendedProps][:record_id] }
+            assert_empty EventService.new(user("uninvited")).dashboard_entries(:pending_invitations)
+            assert_equal 5, EventService.new(@author).dashboard_entries(:upcoming_events).size
+        end
+
+        test "deadline widget uses the external source with a bounded range and five entries" do
+            travel_to Time.utc(2026, 11, 14, 12) do
+                ranges = []
+                @service.define_singleton_method(:external_calendar_entries) do |start_at:, end_at:|
+                    ranges << [start_at, end_at]
+                    7.times.map { |index| { id: "ticket:#{index}", start: start_at + index.days,
+                        title: "Ticket #{index}", url: "/support/tickets/#{index}" } }.reverse
+                end
+                entries = @service.dashboard_entries(:upcoming_deadlines)
+                assert_equal [[Time.current, Time.current + 30.days]], ranges
+                assert_equal (0..4).map { |index| "ticket:#{index}" }, entries.pluck(:id)
+                assert_equal "/support/tickets/0", entries.first[:url]
+            end
+        end
+
         test "changing a profile zone changes agenda dates without changing events or responses" do
             travel_to Time.utc(2026, 11, 2) do
                 meeting = event(start_at: Time.utc(2026, 11, 15, 0, 30),

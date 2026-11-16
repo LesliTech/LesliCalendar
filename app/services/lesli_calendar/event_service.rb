@@ -49,6 +49,23 @@ module LesliCalendar
             response(personal_events.order(:start_at, :id))
         end
 
+        def upcoming_events
+            response(my_calendar.result.where("end_at > ?", Time.current))
+        end
+
+        def dashboard_entries(kind)
+            case kind
+            when :upcoming_deadlines
+                now = Time.current
+                external_calendar_entries(start_at: now, end_at: now + 30.days)
+                    .sort_by { |entry| [entry[:start], entry[:id]] }.first(5)
+            when :pending_invitations
+                pending_invitations.result.limit(5).map { |event| calendar_entry(event) }
+            when :upcoming_events
+                upcoming_events.result.limit(5).map { |event| calendar_entry(event) }
+            end
+        end
+
         def pending_invitations
             visible = visible_events
             direct = Event::UserInvitation.where(user_id: current_user.id).select(:event_id)
@@ -108,11 +125,14 @@ module LesliCalendar
             events = personal_events.where("start_at < ? AND end_at > ?", end_at, start_at)
                 .order(:start_at, :id).map { |event| calendar_entry(event) }
 
-            tickets = Lesli::Courier.new(:lesli_support, [], fallback_on_error: true)
+            events + external_calendar_entries(start_at: start_at, end_at: end_at)
+        end
+
+        # Providers own their account permissions, entry format and destination URLs.
+        def external_calendar_entries(start_at:, end_at:)
+            Lesli::Courier.new(:lesli_support, [], fallback_on_error: true)
                 .from(:ticket_service, current_user, { start: start_at, end: end_at })
                 .call(:calendar_entries)
-
-            events + tickets
         end
 
         def agenda(view: "upcoming", from: nil, to: nil)

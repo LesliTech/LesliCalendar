@@ -1,6 +1,14 @@
 ---
 en:
   lesli_calendar:
+    widgets:
+      upcoming_events: "Upcoming commitments"
+      pending_invitations: "Pending invitations"
+      upcoming_deadlines: "Upcoming deadlines"
+      upcoming_events_empty: "No upcoming commitments."
+      pending_invitations_empty: "No pending invitations."
+      upcoming_deadlines_empty: "No deadlines in the next 30 days."
+      open_agenda: "Open Agenda"
     agendas:
       title: "Agenda"
       upcoming: "Upcoming events"
