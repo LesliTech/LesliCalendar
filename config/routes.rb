@@ -32,7 +32,8 @@ Building a better future, one line of code at a time.
 
 LesliCalendar::Engine.routes.draw do
 
-    Lesli::Router.mount_lesli_engine_routes(self)
+    root to: "dashboards#show"
+    resource :dashboard, only: :show
 
     resource :calendar, only: :show
     resource :agenda, only: :show

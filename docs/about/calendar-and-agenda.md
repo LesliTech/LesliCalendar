@@ -153,6 +153,40 @@ removes them, and the custom-element registration guard prevents duplicate regis
 Courier uses an empty-array fallback when an engine is absent or fails. With `fallback_on_error: true`, Courier reports errors through Rails and the other sources still render. There is no extra source-status protocol or browser warning in this version.
 
 
+### Provider contract
+
+`EventService#external_calendar_entries(start_at:, end_at:)` delegates to the
+explicit Support source through Courier. `calendar_entries` concatenates those
+results with local events; the deadline widget reuses the same source. Adding
+another provider means adding an explicit Courier call here, not a new table.
+
+Providers receive the authenticated user and an inclusive start/exclusive end
+range. They must apply their own account and record permissions before returning
+an array of FullCalendar entries, for example:
+
+```ruby
+{
+    id: "lesli_support:ticket:42",
+    title: "Customer follow-up",
+    start: ticket.deadline_at.utc,
+    end: nil,
+    url: "/support/tickets/42",
+    className: "lesli-support",
+    extendedProps: {
+        record_id: 42,
+        source: "support",
+        status: "deadline",
+        description: "Contact the customer"
+    }
+}
+```
+
+Use a unique engine/type/record ID and return the destination from the owning
+module. Dates must be temporal values representing instants. A normal empty
+array means no authorized records match; a provider exception is reported by
+Courier before falling back to an empty array. Tasks without a deadline remain
+outside this feed.
+
 ## Frontend Styles
 
 Calendar and agenda templates use Tailwind utilities. FullCalendar creates its internal markup at runtime, so its component rules live in the engine Tailwind entrypoint:

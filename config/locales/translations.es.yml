@@ -28,9 +28,6 @@ es:
       prev: "Anterior"
       today: "Hoy"
       next: "Siguiente"
-      loading: "Cargando eventos…"
-      empty: "No hay eventos en este período."
-      error: "No se pudieron cargar los eventos. Usa Hoy o cambia el período para reintentar."
     dashboards: {}
     events:
       load_error: "No se pudo cargar el evento. Cierra el panel e inténtalo de nuevo."

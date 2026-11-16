@@ -24,6 +24,7 @@
     --font-weight-semibold: 600;
     --tracking-wide: 0.025em;
     --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
   }
 }
 @layer utilities {
@@ -47,6 +48,9 @@
   }
   .grid {
     display: grid;
+  }
+  .h-full {
+    height: 100%;
   }
   .w-20 {
     width: calc(var(--spacing) * 20);
@@ -110,6 +114,9 @@
   .overflow-hidden {
     overflow: hidden;
   }
+  .rounded-2xl {
+    border-radius: var(--radius-2xl);
+  }
   .rounded-xl {
     border-radius: var(--radius-xl);
   }
@@ -141,6 +148,9 @@
   .p-0 {
     padding: 0px;
   }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
   .p-5 {
     padding: calc(var(--spacing) * 5);
   }
@@ -155,6 +165,9 @@
   }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
+  }
+  .py-3 {
+    padding-block: calc(var(--spacing) * 3);
   }
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
@@ -224,6 +237,11 @@
   }
   .filter {
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+  }
+  @media (hover: hover) {
+    .hover\:underline:hover {
+      text-decoration-line: underline;
+    }
   }
   @media (width >= 40rem) {
     .sm\:grid-cols-2 {

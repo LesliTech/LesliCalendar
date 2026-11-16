@@ -58,7 +58,7 @@ This uses the existing resource registration, account initialization, and Shield
 
 The development/demo seeder visits configured Calendar accounts and uses their first user as the primary demo user. When a second user exists, it adds invitations organized by that colleague. Role examples use an existing role of the primary user; no users, role memberships, or permissions are created by this seeder.
 
-Scenarios include personal and private inaccessible events, public discovery, direct and role invitations, combined invitations, accepted/declined/pending responses, rescheduling requiring reconfirmation, cancellation with preserved participation, ongoing/overnight/completed events, and month boundaries. The original JSON examples are spread predictably across the previous, current, and next month.
+Scenarios include personal and private inaccessible events, public discovery, direct and role invitations, combined invitations, accepted/declined/pending responses, rescheduling requiring reconfirmation, cancellation with preserved participation, ongoing/overnight/completed events, UTC date boundaries, cancelled public events, and month boundaries. The original JSON examples are spread predictably across the previous, current, and next month.
 
 Demo titles have a `Demo:` prefix. Repeating the seeder preserves records with the same title, including soft-deleted records. Renaming a demo title permits that example to be recreated on the next run. Each new event gets its complete detail path stored in `url`; changing the mount path requires updating those stored destinations.
 

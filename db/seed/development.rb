@@ -49,6 +49,8 @@ LesliCalendar::Account.includes(:account).find_each do |workspace|
         { title: "Overnight work", start_at: now.beginning_of_day - 2.hours, end_at: now + 1.hour },
         { title: "Month boundary", start_at: month - 2.hours, end_at: month + 2.hours },
         { title: "Next month planning", start_at: month.next_month + 10.days },
+        { title: "UTC date boundary", start_at: now.tomorrow.beginning_of_day + 30.minutes },
+        { title: "Cancelled public meeting", public: true, cancel: true },
         { title: "Cancelled meeting", cancel: true },
         { title: "Public meeting by organizer", public: true }
     ]

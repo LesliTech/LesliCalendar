@@ -21,6 +21,10 @@ module LesliCalendar
             assert events.find_by!(title: "Demo: In progress").end_at > Time.current
             assert events.find_by!(title: "Demo: Completed meeting").end_at < Time.current
             assert events.find_by!(title: "Demo: Cancelled accepted invitation").cancelled?
+            public_cancelled = events.find_by!(title: "Demo: Cancelled public meeting")
+            assert public_cancelled.public?
+            assert public_cancelled.cancelled?
+            assert_equal 0, events.find_by!(title: "Demo: UTC date boundary").start_at.utc.hour
             assert_equal "accepted", events.find_by!(title: "Demo: Private invitation accepted").attendants.find_by!(user: owner).response
             assert_equal "declined", events.find_by!(title: "Demo: Private invitation declined").attendants.find_by!(user: owner).response
             assert_equal "pending", events.find_by!(title: "Demo: Rescheduled invitation").attendants.find_by!(user: owner).response

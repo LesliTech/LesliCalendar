@@ -32,7 +32,7 @@ class CalendarDashboardWidgetsTest < ActionView::TestCase
             kind: :upcoming_events, entries: [{ title: "Meeting", start: Time.current,
                 url: "https://example.com", extendedProps: { source: "calendar", record_id: 12 } }]
         }
-        assert_select "a[href='/lesli_calendar/events/12'][data-turbo-frame='_top']"
+        assert_select "a[href=?][data-turbo-frame='_top']", view.lesli_calendar.event_path(12)
         assert_select "a[href='https://example.com']", count: 0
     end
 end

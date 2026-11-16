@@ -206,3 +206,8 @@ The complete license text is available in the [license file](./license).
     <img width="80" alt="Lesli icon" src="https://cdn.lesli.tech/lesli/brand/app-icon.svg" />
     <h3 align="center">The Open-Source SaaS Development Framework for Ruby on Rails.</h3>
 </div>
+
+## Verification
+
+See [Testing and release verification](docs/about/testing.md) for standalone,
+Builder and PostgreSQL commands, covered behavior and current Agenda limits.

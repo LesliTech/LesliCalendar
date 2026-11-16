@@ -120,6 +120,19 @@ module LesliCalendar
             end
         end
 
+        test "upcoming Agenda is chronological and bounded to the active month" do
+            Time.use_zone("America/Guatemala") do
+                travel_to Time.zone.local(2026, 11, 14, 9) do
+                    event(title: "Ended", start_at: 2.hours.ago, end_at: 1.hour.ago)
+                    ongoing = event(title: "Ongoing", start_at: 1.hour.ago, end_at: 1.hour.from_now)
+                    future = event(title: "Future", start_at: 2.hours.from_now, end_at: 3.hours.from_now)
+                    event(title: "Next month", start_at: Time.zone.local(2026, 12, 1), end_at: Time.zone.local(2026, 12, 1, 1))
+                    entries = EventService.new(@author).agenda.values.flat_map { |day| day[:events] }
+                    assert_equal [ongoing.id, future.id], entries.pluck(:record_id)
+                end
+            end
+        end
+
         test "role eligibility follows current memberships and never crosses accounts" do
             skip "LesliShield is optional" unless defined?(LesliShield)
             role = @account.roles.first!

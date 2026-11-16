@@ -50,3 +50,16 @@ Rebuild existing disposable development/test databases to adopt these changes; r
 The dummy schema and Builder schema include this contract. Model tests exercise account relations, explicit calendar lookup, defaults, date and URL validation, uniqueness, foreign keys, and history retention.
 
 See [Functional Contract](/engines/calendar/about/functional-contract), [Database Architecture](/engines/lesli/database/structure), and [Migration Versioning](/engines/lesli/database/versioning).
+
+## Removed legacy interfaces
+
+Agenda is a read-only projection, not a persistent resource. Event invitations
+and individual responses replace the old attendee/scaffold workflows. The
+engine exposes only its dashboard entry point; dashboard administration belongs
+to LesliDashboard. Unimplemented dashboard editing and Item scaffold routes are
+no longer registered by Calendar. Frontend code lives in LesliAssets' Calendar
+custom element, not the former empty Webpack asset.
+
+For the profile timezone change, existing `lesli_users` tables need the optional
+`time_zone` column before using the updated Core. No event timestamp conversion
+is required. See the [Core upgrade guide](/engines/lesli/start/upgrading).

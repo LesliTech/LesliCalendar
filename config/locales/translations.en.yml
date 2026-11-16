@@ -28,9 +28,6 @@ en:
       prev: "Previous"
       today: "Today"
       next: "Next"
-      loading: "Loading events…"
-      empty: "No events in this period."
-      error: "Could not load events. Use Today or change the period to retry."
     dashboards: {}
     events:
       load_error: "Could not load this event. Close the panel and try again."
