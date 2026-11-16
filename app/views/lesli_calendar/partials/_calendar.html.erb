@@ -1,9 +1,11 @@
 <div class="lesli-calendar-calendar mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-0 shadow-sm">
+    <p class="px-5 py-4 text-sm text-slate-500"><%= Time.zone.tzinfo.name %></p>
     <%# The custom element owns the FullCalendar render and Turbo lifecycle. %>
     <lesli-calendar
         id="lesli-calendar-engine"
         class="block"
         data-locale="<%= I18n.locale %>"
+        data-time-zone="<%= Time.zone.tzinfo.name %>"
         data-title-id="calendar-period"
         data-status-id="calendar-status"
         data-event-url="<%= event_path("__EVENT_ID__") %>"

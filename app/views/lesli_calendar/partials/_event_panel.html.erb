@@ -3,7 +3,8 @@
         x-data="{ failed: false }"
         @turbo:before-fetch-request="failed = false"
         @turbo:frame-missing.prevent="failed = true"
-        @turbo:fetch-request-error="failed = true">
+        @turbo:fetch-request-error="failed = true"
+        @turbo:submit-end="if ($event.detail.success) $dispatch('calendar-event-saved')">
         <p x-show="failed" x-cloak role="alert" class="mb-4 text-red-700">
             <%= t("lesli_calendar.events.load_error") %>
         </p>

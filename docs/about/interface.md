@@ -28,7 +28,7 @@ The singular attendant route resolves to `LesliCalendar::Event::AttendantsContro
 
 ## Forms and Responses
 
-Forms use browser-local datetime fields, plain text descriptions, an optional complete destination, privacy, and account-scoped user/role selectors. Role selection is available when Shield is installed. Empty selections replace invitations; omitted parameters preserve them.
+Forms use datetime fields interpreted in the active profile or application timezone, plain text descriptions, an optional complete destination, privacy, and account-scoped user/role selectors. Role selection is available when Shield is installed. Empty selections replace invitations; omitted parameters preserve them.
 
 Validation failures return HTTP 422 and retain submitted fields and selections. Turbo replaces the form; HTML re-renders its page; JSON returns an `errors` object. Successful HTML/Turbo mutations redirect with HTTP 303. JSON creation returns 201 and subsequent mutations return 200. Page GETs following Turbo redirects render HTML. Account isolation and organizer rules are enforced in addition to the existing screen authorization.
 
@@ -42,7 +42,7 @@ empty-period or request-error status messages.
 
 See [Calendar and Agenda](calendar-and-agenda.md) for query parameters and lifecycle details.
 
-Agenda shows each entry's time in the browser timezone, state, source, and destination. It has no persistent model or scaffold CRUD.
+Agenda shows each entry's time in the active timezone, state, source, and destination. It has no persistent model or scaffold CRUD.
 
 ## Existing Installations
 
@@ -77,7 +77,9 @@ Agenda uses the event ID for this detail link, even when the event has no destin
 The panel loads the authorized event through a Turbo Frame and reuses the
 regular detail and edit views. On the Calendar page, successful edits,
 cancellations and invitation responses refresh the grid without changing the
-visible period. This grid refresh does not automatically reload Agenda's list.
+visible period. In Agenda, successful panel submissions reload only the list's Turbo Frame,
+using its current view and date filters. The panel remains open and failed
+submissions do not refresh the list.
 Validation errors remain in the panel. Organizer action buttons appear below
 the detail in a wrapping group, leaving the panel header for its title and close control. Deleting an event returns to My events in Agenda.
 
@@ -106,7 +108,7 @@ The mobile disclosure displays the selected option's label and icon.
   upcoming personal events and external entries, ordered chronologically.
 - **My events** lists scheduled events organized by the current user or accepted
   by them, including past events. Optional `from` and `to` ISO dates filter
-  overlapping events in the browser timezone; the final date is inclusive.
+  overlapping events in the active timezone; the final date is inclusive.
 - **Pending invitations** lists invitations awaiting a response.
 - **Available public events** lists accessible public events not yet accepted.
 

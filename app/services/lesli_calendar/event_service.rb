@@ -141,17 +141,21 @@ module LesliCalendar
                 }
             end
 
+            group_agenda_events_by_date(events, today: now.to_date)
+        end
+
+        private
+
+        def group_agenda_events_by_date(events, today:)
             events.sort_by { |event| event[:start_at] }.group_by { |event| event[:start_at].to_date }.transform_values do |day_events|
                 date = day_events.first[:start_at]
                 {
-                    day_name: date.to_date == now.to_date ? I18n.t("lesli_calendar.agendas.today") : I18n.l(date.to_date, format: "%a"),
+                    day_name: date.to_date == today ? I18n.t("lesli_calendar.agendas.today") : I18n.l(date.to_date, format: "%a"),
                     day_number: date.strftime("%d"),
                     events: day_events
                 }
             end
         end
-
-        private
 
         def calendar_entry(event)
             {

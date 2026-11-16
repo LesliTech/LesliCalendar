@@ -5,8 +5,8 @@ module LesliCalendar
         setup do
             @core = Lesli::Account.create!(name: "Calendar", email: "calendar-contract@example.test", status: :active)
             @foreign = Lesli::Account.create!(name: "Other", email: "calendar-other@example.test", status: :active)
-            @user = @core.users.create!(email: "calendar-author@example.test")
-            @other_user = @foreign.users.create!(email: "calendar-other-user@example.test")
+            @user = create_user(@core, "calendar-author@example.test")
+            @other_user = create_user(@foreign, "calendar-other-user@example.test")
             @event = @core.calendar.events.build(
                 calendar: @core.calendar.default_calendar, user: @user,
                 title: " Planning ", start_at: Time.current, end_at: 1.hour.from_now
@@ -156,6 +156,17 @@ module LesliCalendar
             assert_not service.successful?
             assert service.result.errors[:start_at].present?
             assert_not service.result.persisted?
+        end
+        private
+
+        def create_user(account, email)
+            user = account.users.new(email: email)
+            if user.respond_to?(:password=)
+                user.password = "Password123!"
+                user.confirmed_at = Time.current
+            end
+            user.save!
+            user
         end
     end
 end

@@ -80,6 +80,15 @@ If eligibility is restored, the existing response remains applicable provided it
 
 Changing visibility from public to private immediately applies the private audience rules. Users without a current invitation lose access even if they previously accepted. Changing from private to public broadens discovery, but never automatically accepts the event for additional users.
 
+## Timezone Policy
+
+Event instants are stored in UTC. Forms and displayed dates use the user's profile
+timezone, with `Lesli.config.datetime[:time_zone]` as the global fallback.
+Changing the display timezone never moves an event or resets participation.
+Users select their timezone in their profile; login and browser changes do not update it.
+See [Calendar and Agenda](calendar-and-agenda.md#local-time-and-utc-storage)
+for detection, fallback behavior and API expectations.
+
 ## Schedule Changes
 
 Both start and end are mandatory. The end must be strictly later than the start; malformed dates are rejected. A scheduled event defaults to private visibility, with defaults defined in the models.

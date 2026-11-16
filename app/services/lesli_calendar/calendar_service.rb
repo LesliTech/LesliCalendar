@@ -39,9 +39,5 @@ module LesliCalendar
         def find_default
             response(current_user.account.calendar.default_calendar)
         end
-
-        def show
-            { id: resource.id, name: resource.name }
-        end
     end
 end

@@ -31,7 +31,12 @@
                     </div>
                 <% end %>
             <% end %>
-            <%= render "lesli_calendar/partials/agenda" %>
+            <%= turbo_frame_tag "calendar-agenda-list", target: "_top",
+                data: { refresh_url: agenda_path(view: @agenda_view, from: params[:from], to: params[:to]) },
+                "x-data": "",
+                "@calendar-event-saved.window": "if ($el.src) { $el.reload() } else { $el.src = $el.dataset.refreshUrl }" do %>
+                <%= render "lesli_calendar/partials/agenda" %>
+            <% end %>
         </div>
     </div>
 <% end %>
