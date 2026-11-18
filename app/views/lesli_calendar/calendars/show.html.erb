@@ -2,7 +2,7 @@
     <%= javascript_include_tag("lesli_assets/calendar.js", defer: true) %>
 <% end %>
 <% content_for(:head) do %>
-    <%= stylesheet_link_tag(lesli_asset_path(:lesli_assets, "calendar"), media: "all", "data-turbo-track": "reload") %>
+    <%= stylesheet_link_tag(lesli_asset_path(:lesli_assets, "calendar"), media: "all", "data-turbo-track": "dynamic") %>
 <% end %>
 <%= render(LesliView::Layout::Container.new("calendar-calendar")) do %>
     <%= render(LesliView::Components::Header.new(content_tag(:span, t("lesli_calendar.calendars.title"), id: "calendar-period", aria: { live: "polite" }))) do %>

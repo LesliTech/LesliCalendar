@@ -1,9 +1,10 @@
 /* Tailwind utilities and component rules used by LesliCalendar. */
 @layer theme, components, utilities;
 
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities) source(none);
+/* Theme values are loaded once by LesliAssets. */
+@import "tailwindcss/theme.css" theme(reference);
 @reference "../../../../gems/LesliAssets/source/tailwind/settings/theme.css";
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
 
 @source "../../app/views/lesli_calendar/**/*.html.erb";
 @source "../../app/views/lesli_calendar/agendas/show.html.erb";
@@ -12,19 +13,23 @@
 
 @layer components {
     .lesli-calendar-agenda .agenda-event {
-        @apply border-l-slate-400;
+        @apply border-l-neutral-400;
     }
 
     .lesli-calendar-agenda .agenda-event.lesli-calendar {
-        @apply border-l-[#3689e6];
+        @apply border-l-primary;
     }
 
     .lesli-calendar-agenda .agenda-event.lesli-support {
-        @apply border-l-[#a56de2];
+        @apply border-l-bugambilia-500;
     }
 
     .lesli-calendar-agenda .agenda-event.cloud-focus-tasks,
     .lesli-calendar-agenda .agenda-event.lesli-tasks {
-        @apply border-l-[#28bca3];
+        @apply border-l-jade-500;
     }
 }
+
+
+@source "../../app/views/lesli_calendar";
+@source "../../app/helpers";

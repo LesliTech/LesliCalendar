@@ -1,26 +1,26 @@
 <section
-    class="lesli-calendar-agenda overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    class="lesli-calendar-agenda overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm"
     aria-label="<%= t("lesli_calendar.agendas.title") %>">
 
-    <h2 class="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-800">
+    <h2 class="border-b border-neutral-200 px-5 py-4 text-lg font-semibold text-neutral-800">
         <%= t("lesli_calendar.agendas.#{@agenda_view || 'upcoming'}") %> (<%= Time.zone.tzinfo.name %>)
     </h2>
 
     <% if @agenda.empty? %>
-        <p class="px-5 py-4 text-slate-500"><%= t(@agenda_view.present? && @agenda_view != "upcoming" ? "lesli_calendar.events.empty" : "lesli_calendar.agendas.empty") %></p>
+        <p class="px-5 py-4 text-neutral-500"><%= t(@agenda_view.present? && @agenda_view != "upcoming" ? "lesli_calendar.events.empty" : "lesli_calendar.agendas.empty") %></p>
     <% end %>
-    <div class="divide-y divide-slate-200">
+    <div class="divide-y divide-neutral-200">
         <% @agenda.each do |_date, day| %>
             <article class="flex py-4 items-stretch">
-                <div class="flex w-20 shrink-0 flex-col items-center justify-center border-r border-slate-200 bg-slate-50 px-3 py-4 text-center text-slate-700">
-                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500"><%= day[:day_name] %></p>
+                <div class="flex w-20 shrink-0 flex-col items-center justify-center border-r border-neutral-200 bg-neutral-50 px-3 py-4 text-center text-neutral-700">
+                    <p class="text-xs font-medium uppercase tracking-wide text-neutral-500"><%= day[:day_name] %></p>
                     <p class="mt-1 text-xl font-semibold"><%= day[:day_number] %></p>
                 </div>
 
                 <div class="min-w-0 flex-1 py-2">
                 <% day[:events].each do |event| %>
                     <div class="agenda-event <%= event[:class_name] %> border-l-4 px-4 py-2">
-                        <p class="font-['OpenSans'] text-sm font-medium text-slate-800">
+                        <p class="font-['OpenSans'] text-sm font-medium text-neutral-800">
                         <% if event[:source] == "calendar" %>
                             <%= link_to event[:title], event_path(event[:record_id]),
                                 data: { turbo_frame: "calendar-event-detail" },
@@ -32,14 +32,14 @@
                         <% end %>
                     </p>
                         <% if event[:start_at] %>
-                            <p class="text-sm text-slate-500">
+                            <p class="text-sm text-neutral-500">
                                 <%= l(event[:start_at], format: :short) %><% if event[:end_at] && event[:end_at] > event[:start_at] %> — <%= l(event[:end_at], format: :short) %><% end %>
                                 <% if event[:source] %> · <%= t("lesli_calendar.events.sources.#{event[:source]}") %><% end %>
                                 <% if event[:status] %> · <%= t("lesli_calendar.events.statuses.#{event[:status]}") %><% end %>
                             </p>
                         <% end %>
                         <% if event[:description].present? %>
-                            <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-slate-500"><%= event[:description] %></p>
+                            <p class="mt-1 font-['OpenSans'] text-sm leading-5 text-neutral-500"><%= event[:description] %></p>
                         <% end %>
                     </div>
                 <% end %>

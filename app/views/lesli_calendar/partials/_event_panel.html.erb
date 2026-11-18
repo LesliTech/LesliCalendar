@@ -5,7 +5,7 @@
         @turbo:frame-missing.prevent="failed = true"
         @turbo:fetch-request-error="failed = true"
         @turbo:submit-end="if ($event.detail.success) $dispatch('calendar-event-saved')">
-        <p x-show="failed" x-cloak role="alert" class="mb-4 text-red-700">
+        <p x-show="failed" x-cloak role="alert" class="mb-4 text-danger-700">
             <%= t("lesli_calendar.events.load_error") %>
         </p>
         <%= turbo_frame_tag "calendar-event-detail", target: "_top" %>

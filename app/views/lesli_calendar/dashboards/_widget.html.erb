@@ -1,15 +1,15 @@
-<section class="h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" aria-label="<%= t("lesli_calendar.widgets.#{kind}") %>">
+<section class="h-full rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm" aria-label="<%= t("lesli_calendar.widgets.#{kind}") %>">
     <h2 class="text-lg font-semibold"><%= t("lesli_calendar.widgets.#{kind}") %></h2>
-    <p class="text-sm text-slate-500"><%= Time.zone.tzinfo.name %></p>
+    <p class="text-sm text-neutral-500"><%= Time.zone.tzinfo.name %></p>
     <% if entries.empty? %>
-        <p class="py-4 text-slate-500"><%= t("lesli_calendar.widgets.#{kind}_empty") %></p>
+        <p class="py-4 text-neutral-500"><%= t("lesli_calendar.widgets.#{kind}_empty") %></p>
     <% else %>
-        <ul class="divide-y divide-slate-200">
+        <ul class="divide-y divide-neutral-200">
             <% entries.each do |entry| %>
                 <li class="py-3">
                     <% url = entry.dig(:extendedProps, :source) == "calendar" ? lesli_calendar.event_path(entry.dig(:extendedProps, :record_id)) : entry[:url] %>
                     <%= link_to entry[:title], url, class: "font-medium hover:underline", data: { turbo_frame: "_top" } %>
-                    <time class="block text-sm text-slate-500" datetime="<%= entry[:start].iso8601 %>"><%= l(entry[:start].in_time_zone, format: :short) %></time>
+                    <time class="block text-sm text-neutral-500" datetime="<%= entry[:start].iso8601 %>"><%= l(entry[:start].in_time_zone, format: :short) %></time>
                 </li>
             <% end %>
         </ul>
