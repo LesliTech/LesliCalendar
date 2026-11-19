@@ -28,7 +28,7 @@ module LesliCalendar
         private
 
         def reject!(event, reason)
-            event.errors.add(:base, I18n.t("lesli_calendar.events.errors.#{reason}"))
+            event.errors.add(:base, I18n.t("lesli_calendar.events.errors_#{reason}"))
             raise ActiveRecord::RecordInvalid.new(event)
         end
     end

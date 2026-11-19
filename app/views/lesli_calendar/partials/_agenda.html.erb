@@ -34,8 +34,8 @@
                         <% if event[:start_at] %>
                             <p class="text-sm text-neutral-500">
                                 <%= l(event[:start_at], format: :short) %><% if event[:end_at] && event[:end_at] > event[:start_at] %> — <%= l(event[:end_at], format: :short) %><% end %>
-                                <% if event[:source] %> · <%= t("lesli_calendar.events.sources.#{event[:source]}") %><% end %>
-                                <% if event[:status] %> · <%= t("lesli_calendar.events.statuses.#{event[:status]}") %><% end %>
+                                <% if event[:source] %> · <%= t("lesli_calendar.events.sources_#{event[:source]}") %><% end %>
+                                <% if event[:status] %> · <%= t("lesli_calendar.events.statuses_#{event[:status]}") %><% end %>
                             </p>
                         <% end %>
                         <% if event[:description].present? %>

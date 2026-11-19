@@ -67,24 +67,20 @@ en:
       deleted: "Event deleted."
       cancelled_notice: "Event cancelled."
       response_saved: "Response saved."
-      statuses:
-        scheduled: "Scheduled"
-        cancelled: "Cancelled"
-        deadline: "Deadline"
-      responses:
-        pending: "Pending"
-        accepted: "Accepted"
-        declined: "Declined"
-      sources:
-        calendar: "Calendar"
-        support: "Support"
-      errors:
-        cancelled: "This event has been cancelled."
-        ended: "This event has already ended."
-        organizer_response: "The organizer does not need to respond."
-        invalid_response: "Choose accepted or declined."
-        invalid_users: "Invited users must belong to this account."
-        invalid_roles: "Invited roles must belong to this account and require LesliShield."
+      statuses_scheduled: "Scheduled"
+      statuses_cancelled: "Cancelled"
+      statuses_deadline: "Deadline"
+      responses_pending: "Pending"
+      responses_accepted: "Accepted"
+      responses_declined: "Declined"
+      sources_calendar: "Calendar"
+      sources_support: "Support"
+      errors_cancelled: "This event has been cancelled."
+      errors_ended: "This event has already ended."
+      errors_organizer_response: "The organizer does not need to respond."
+      errors_invalid_response: "Choose accepted or declined."
+      errors_invalid_users: "Invited users must belong to this account."
+      errors_invalid_roles: "Invited roles must belong to this account and require LesliShield."
     events/attendants: {}
     items/attachments: {}
     items/discussions: {}

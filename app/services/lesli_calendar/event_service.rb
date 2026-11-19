@@ -216,7 +216,7 @@ module LesliCalendar
                 event.valid?
                 validate_invitations(event, attributes)
                 if event.cancelled?
-                    event.errors.add(:base, I18n.t("lesli_calendar.events.errors.cancelled"))
+                    event.errors.add(:base, I18n.t("lesli_calendar.events.errors_cancelled"))
                 end
                 raise ActiveRecord::RecordInvalid.new(event) if event.errors.any?
 
@@ -251,11 +251,11 @@ module LesliCalendar
             valid_users = current_user.account.users.where(id: event.user_ids).pluck(:id).map(&:to_s)
             valid_roles = current_user.account.roles.where(id: event.role_ids).pluck(:id).map(&:to_s)
             if (event.user_ids.map(&:to_s) - valid_users).any?
-                event.errors.add(:base, I18n.t("lesli_calendar.events.errors.invalid_users"))
+                event.errors.add(:base, I18n.t("lesli_calendar.events.errors_invalid_users"))
             end
             if (event.role_ids.map(&:to_s) - valid_roles).any? ||
                 (attributes.key?(:role_ids) && event.role_ids.any? && !defined?(LesliShield))
-                event.errors.add(:base, I18n.t("lesli_calendar.events.errors.invalid_roles"))
+                event.errors.add(:base, I18n.t("lesli_calendar.events.errors_invalid_roles"))
             end
         end
 
