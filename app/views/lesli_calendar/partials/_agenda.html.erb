@@ -3,7 +3,7 @@
     aria-label="<%= t("lesli_calendar.agendas.title") %>">
 
     <h2 class="border-b border-neutral-200 px-5 py-4 text-lg font-semibold text-neutral-800">
-        <%= t("lesli_calendar.agendas.#{@agenda_view || 'upcoming'}") %> (<%= Time.zone.tzinfo.name %>)
+        <%= t("lesli_calendar.agendas.#{@agenda_view || 'upcoming'}") %> (<%= current_user.effective_timezone.tzinfo.name %>)
     </h2>
 
     <% if @agenda.empty? %>

@@ -90,9 +90,9 @@ The timezone policy is:
 3. Otherwise use `Lesli.config.datetime[:time_zone]` from the initializer, then
    the Rails application timezone if the Lesli setting is absent.
 
-Core applies this zone with `Time.use_zone` for each request, including services,
-LesliDate formatting, forms and Agenda. FullCalendar receives the same IANA zone
-from Rails. Browser location and device timezone do not change this preference.
+Calendar uses `current_user.effective_timezone` explicitly for formatting,
+local date input, month boundaries and Agenda grouping. Core does not change
+`Time.zone` during requests. FullCalendar receives the same IANA zone from Rails. Browser location and device timezone do not change this preference.
 Login does not detect or save a timezone, and there is no timezone cookie,
 session setting or automatic page reload. Users can change their zone in their
 profile; clearing it restores the application default.
@@ -121,8 +121,8 @@ monthly queries use local month boundaries. Forms and detail views display the
 active timezone explicitly.
 
 API clients should send ISO 8601 datetimes with `Z` or an explicit offset to
-identify instants without relying on a session timezone. Calls outside an HTTP
-request use the current Rails timezone for values without an offset.
+identify instants without relying on a session timezone. EventService interprets values without an offset in the supplied user's
+`effective_timezone`, including calls outside HTTP requests.
 
 Existing timestamps are not rewritten. Records previously entered as UTC keep
 the same instants and now display in local time; correct individual records if

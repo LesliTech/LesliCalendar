@@ -83,7 +83,7 @@ module LesliCalendar
 
                 { "Europe/Berlin" => Date.new(2026, 11, 15), "America/Guatemala" => Date.new(2026, 11, 14) }.each do |zone, date|
                     @reader.update!(time_zone: zone)
-                    Time.use_zone(@reader.effective_time_zone) do
+                    Time.use_zone(@reader.effective_timezone) do
                         assert_equal [date], @service.agenda(view: "mine").keys
                         entry = @service.calendar_entries.sole
                         assert_equal Time.utc(2026, 11, 15, 0, 30), entry[:start]

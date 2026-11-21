@@ -32,6 +32,6 @@ Building a better future, one line of code at a time.
 =end
 %>
 
-<%= navigation_item(lesli_calendar.root_path, "Dashboard", "ri-dashboard-3-line"); %>
-<%= navigation_item(lesli_calendar.calendar_path, t("lesli_calendar.calendars.title"), "ri-calendar-2-fill") %>
-<%= navigation_item(lesli_calendar.agenda_path, t("lesli_calendar.agendas.title"), "ri-calendar-todo-fill") %>
+<%= navigation_item(lesli_calendar.root_path, "Dashboard", "ri-dashboard-3-line", access: ["lesli_calendar/dashboards", :show]); %>
+<%= navigation_item(lesli_calendar.calendar_path, t("lesli_calendar.calendars.title"), "ri-calendar-2-fill", access: ["lesli_calendar/calendars", :show]) %>
+<%= navigation_item(lesli_calendar.agenda_path, t("lesli_calendar.agendas.title"), "ri-calendar-todo-fill", access: ["lesli_calendar/agendas", :show]) %>
